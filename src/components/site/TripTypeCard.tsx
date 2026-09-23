@@ -256,16 +256,6 @@ export function RouteGraphic({ type, light }: { type: "one-way" | "round-trip"; 
         >
           Mysore
         </text>
-        {isRound && (
-          <text x="150" y="14" textAnchor="middle" fontSize="9" fill="currentColor" opacity="0.55">
-            outbound
-          </text>
-        )}
-        {isRound && (
-          <text x="150" y="76" textAnchor="middle" fontSize="9" fill="currentColor" opacity="0.55">
-            return
-          </text>
-        )}
       </svg>
     </div>
   );
