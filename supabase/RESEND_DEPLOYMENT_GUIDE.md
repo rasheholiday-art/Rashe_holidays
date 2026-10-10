@@ -71,7 +71,7 @@ supabase functions deploy resend-booking-email --no-verify-jwt
 
 ### A. Submit a Test Booking
 1. Open the website booking form at `/booking`.
-2. Fill in the departure date, route, vehicle, name, phone (`+91 98765 43210`), and **your own email address**.
+2. Fill in the departure date, route, vehicle, name, phone (`+91 97869 63659`), and **your own email address**.
 3. Submit the booking.
 
 ### B. Verify in Resend Dashboard

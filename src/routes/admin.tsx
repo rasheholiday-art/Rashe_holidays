@@ -542,9 +542,11 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
               className="h-10 rounded-xl border border-input bg-background px-3 text-xs font-semibold outline-none focus:border-gold"
             >
               <option value="all">All Vehicle Types</option>
-              <option value="4-seater">4-Seater Cars</option>
-              <option value="8-seater">8-Seater Innova</option>
-              <option value="19-seater">19-Seater Traveller</option>
+              <option value="4-seater">4-Seater Sedan</option>
+              <option value="7-seater">7-Seater (Crysta / HyCross)</option>
+              <option value="9-seater">9-Seater Tavera</option>
+              <option value="12-seater">12-Seater Tempo Traveller</option>
+              <option value="16-seater">16-Seater Urbania</option>
             </select>
 
             {/* Trip Type Dropdown */}
@@ -768,6 +770,11 @@ function ReservationRow({
               <Car className="size-3.5 text-gold" />
               {vehicleName}
             </span>
+            {item.waitingDays && item.waitingDays > 0 ? (
+              <span className="rounded-full bg-gold/15 px-2 py-0.5 text-[10px] font-bold text-gold border border-gold/30">
+                {item.waitingDays} waiting day{item.waitingDays > 1 ? "s" : ""}
+              </span>
+            ) : null}
           </div>
 
           {item.notes && (
@@ -999,6 +1006,15 @@ function ReservationModal({
                 : ""}
             </span>
           </div>
+
+          {reservation.waitingDays && reservation.waitingDays > 0 ? (
+            <div className="flex justify-between border-b border-border/60 pb-2">
+              <span className="text-muted-foreground">Waiting Days (Parked)</span>
+              <span className="font-semibold text-gold">
+                {reservation.waitingDays} day{reservation.waitingDays > 1 ? "s" : ""} (idle / standby)
+              </span>
+            </div>
+          ) : null}
 
           <div className="flex justify-between border-b border-border/60 pb-2">
             <span className="text-muted-foreground">Passengers</span>

@@ -4,11 +4,13 @@ export interface CustomerConfirmationEmailProps {
   customerName: string;
   tripType: string;
   vehicleCategory: string;
+  preferredVehicle?: string | null;
   passengers: number;
   pickupLocation: string;
   destination: string;
   departureDate: string;
   returnDate?: string | null;
+  waitingDays?: number | null;
   companyName?: string;
 }
 
@@ -16,11 +18,13 @@ export function CustomerConfirmationEmail({
   customerName,
   tripType,
   vehicleCategory,
+  preferredVehicle,
   passengers,
   pickupLocation,
   destination,
   departureDate,
   returnDate,
+  waitingDays,
   companyName = "Rashe Holidays",
 }: CustomerConfirmationEmailProps) {
   const formattedTripType = tripType === "one-way" ? "One Way" : "Round Trip";
@@ -154,7 +158,10 @@ export function CustomerConfirmationEmail({
                 <table width="100%" border={0} cellPadding={0} cellSpacing={0}>
                   <tbody>
                     <Row label="Trip Type" value={formattedTripType} />
-                    <Row label="Vehicle" value={vehicleCategory} />
+                    <Row
+                      label="Vehicle"
+                      value={preferredVehicle ? `${preferredVehicle} (${vehicleCategory})` : vehicleCategory}
+                    />
                     <Row label="Passengers" value={`${passengers} Travelers`} />
                     <Row label="Pickup" value={pickupLocation} />
                     <Row label="Destination" value={destination} />
@@ -163,6 +170,12 @@ export function CustomerConfirmationEmail({
                       label="Return"
                       value={tripType === "round-trip" && returnDate ? returnDate : "N/A (One Way)"}
                     />
+                    {waitingDays && waitingDays > 0 ? (
+                      <Row
+                        label="Waiting Days"
+                        value={`${waitingDays} day${waitingDays > 1 ? "s" : ""} (vehicle parked)`}
+                      />
+                    ) : null}
                   </tbody>
                 </table>
               </div>

@@ -1,9 +1,10 @@
 import { Link } from "@tanstack/react-router";
-import { CheckCircle2, Info, RefreshCw, Sparkles } from "lucide-react";
+import { CheckCircle2, Info, RefreshCw, Sparkles, MapPin, Tag } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   categories,
+  destinations,
   estimateDistance,
   estimateFare,
   inr,
@@ -36,10 +37,10 @@ export function BookingForm({ initial }: { initial: BookingSearch }) {
   }, []);
 
   const [tripType, setTripType] = useState<TripType>(initial.tripType ?? "round-trip");
-  const [category, setCategory] = useState<CategoryId>(initial.category ?? "8-seater");
+  const [category, setCategory] = useState<CategoryId>(initial.category ?? "7-seater");
   const [vehicle, setVehicle] = useState(initial.vehicle ?? "");
   const [from, setFrom] = useState(initial.from ?? "Ooty");
-  const [to, setTo] = useState(initial.to ?? "Mysore");
+  const [to, setTo] = useState(initial.to ?? "Coonoor");
   const [date, setDate] = useState(() => {
     if (initial.date && initial.date >= todayStr) return initial.date;
     return "";
@@ -50,6 +51,7 @@ export function BookingForm({ initial }: { initial: BookingSearch }) {
   });
   const [passengers, setPassengers] = useState(initial.passengers ?? 4);
   const [days, setDays] = useState(() => daysBetween(initial.date, initial.returnDate) ?? 1);
+  const [waitingDays, setWaitingDays] = useState(initial.waitingDays ?? 0);
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
@@ -59,10 +61,16 @@ export function BookingForm({ initial }: { initial: BookingSearch }) {
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const [submitError, setSubmitError] = useState<string | null>(null);
 
+  // Check if waiting days rule applies: round trip AND days > 2
+  const isWaitingDaysApplicable = tripType === "round-trip" && days > 2;
+  const effectiveWaitingDays = isWaitingDaysApplicable
+    ? Math.min(Math.max(0, waitingDays), Math.max(0, days - 1))
+    : 0;
+
   // Dynamic route calculation state
   const [routeInfo, setRouteInfo] = useState<RouteCalculationResult | null>(() => {
     const initFrom = initial.from ?? "Ooty";
-    const initTo = initial.to ?? "Mysore";
+    const initTo = initial.to ?? "Coonoor";
     const sync = estimateDistance(initFrom, initTo);
     return sync !== null ? { km: sync, source: "local", fromName: initFrom, toName: initTo } : null;
   });
@@ -109,16 +117,46 @@ export function BookingForm({ initial }: { initial: BookingSearch }) {
     };
   }, [from, to]);
 
-  const cat = categories.find((c) => c.id === category)!;
+  const cat = categories.find((c) => c.id === category) ?? categories[0];
   const options = vehiclesByCategory(category);
+
+  // Check if this matches a fixed package destination from Ooty
+  const matchedDestination = useMemo(() => {
+    if (from.trim().toLowerCase() !== "ooty") return null;
+    return destinations.find((d) => d.name.toLowerCase() === to.trim().toLowerCase());
+  }, [from, to]);
+
+  const activeFixedPrice = useMemo(() => {
+    if (!matchedDestination) return null;
+    if (vehicle && matchedDestination.fixedPrices[vehicle]) {
+      return matchedDestination.fixedPrices[vehicle];
+    }
+    const firstOption = options[0];
+    if (firstOption && matchedDestination.fixedPrices[firstOption.slug]) {
+      return matchedDestination.fixedPrices[firstOption.slug];
+    }
+    return null;
+  }, [matchedDestination, vehicle, options]);
+
   const estimate = useMemo(
-    () => estimateFare({ category, tripType, from, to, days, customKm: routeInfo?.km }),
-    [category, tripType, from, to, days, routeInfo?.km],
+    () =>
+      estimateFare({
+        category,
+        vehicle,
+        tripType,
+        from,
+        to,
+        days,
+        waitingDays: effectiveWaitingDays,
+        customKm: routeInfo?.km,
+      }),
+    [category, vehicle, tripType, from, to, days, effectiveWaitingDays, routeInfo?.km],
   );
+
   const seatWarning = passengers > cat.seats;
 
   if (submitted) {
-    const summary = `Booking request: ${tripType === "one-way" ? "One Way" : "Round Trip"}, ${cat.label}${vehicle ? ` (${vehicles.find((v) => v.slug === vehicle)?.name})` : ""}, ${from} → ${to}, ${date || "date TBD"}${tripType === "round-trip" && returnDate ? ` to ${returnDate}` : ""}, ${passengers} pax. Name: ${name}, Phone: ${phone}.`;
+    const summary = `Booking request: ${tripType === "one-way" ? "One Way" : "Round Trip"}, ${cat.label}${vehicle ? ` (${vehicles.find((v) => v.slug === vehicle)?.name})` : ""}, ${from} → ${to}, ${date || "date TBD"}${tripType === "round-trip" && returnDate ? ` to ${returnDate}` : ""} (${days} days${effectiveWaitingDays > 0 ? `, ${effectiveWaitingDays} waiting days` : ""}), ${passengers} pax. Name: ${name}, Phone: ${phone}.`;
     return (
       <div className="rounded-[2rem] border border-border bg-card p-8 text-center shadow-card sm:p-12 animate-fade-up">
         <span className="mx-auto grid size-16 place-items-center rounded-full bg-success-soft text-success">
@@ -129,18 +167,36 @@ export function BookingForm({ initial }: { initial: BookingSearch }) {
         </h2>
         <p className="mx-auto mt-3 max-w-md text-[15px] leading-relaxed text-muted-foreground">
           Your travel request has been received. Our team will contact you shortly to confirm
-          availability and pricing.
+          availability, timings and final pricing.
         </p>
 
         <div className="mx-auto mt-8 max-w-md rounded-2xl bg-secondary p-5 text-left text-sm">
           <Row k="Trip" v={`${tripType === "one-way" ? "One Way" : "Round Trip"} · ${cat.label}`} />
+          {vehicle && (
+            <Row
+              k="Vehicle"
+              v={vehicles.find((v) => v.slug === vehicle)?.name ?? vehicle}
+            />
+          )}
           <Row k="Route" v={`${from} → ${to}${tripType === "round-trip" ? ` → ${from}` : ""}`} />
           <Row
             k="Dates"
             v={`${date || "To be confirmed"}${tripType === "round-trip" && returnDate ? ` – ${returnDate}` : ""}`}
           />
+          {tripType === "round-trip" && <Row k="Total Duration" v={`${days} day${days > 1 ? "s" : ""}`} />}
+          {effectiveWaitingDays > 0 && (
+            <Row
+              k="Waiting Days"
+              v={`${effectiveWaitingDays} day${effectiveWaitingDays > 1 ? "s" : ""} (vehicle parked)`}
+            />
+          )}
           <Row k="Passengers" v={`${passengers}`} />
-          {estimate && <Row k="Estimate" v={`${inr(estimate.low)} – ${inr(estimate.high)}`} />}
+          {activeFixedPrice ? (
+            <Row k="Fixed Package" v={`${inr(activeFixedPrice)} (fixed fare)`} />
+          ) : (
+            estimate && <Row k="Estimate" v={`${inr(estimate.low)} – ${inr(estimate.high)}`} />
+          )}
+          <Row k="Toll & Parking" v="At actuals (state to state)" />
         </div>
         <div className="mt-8 flex flex-wrap justify-center gap-3">
           <Button asChild variant="gold" size="lg">
@@ -162,7 +218,7 @@ export function BookingForm({ initial }: { initial: BookingSearch }) {
         e.preventDefault();
         setSubmitError(null);
 
-        // Client-side validation using shared rules
+        // Client-side validation
         const validation = validateBookingInput({
           customerName: name,
           phoneNumber: phone,
@@ -186,7 +242,7 @@ export function BookingForm({ initial }: { initial: BookingSearch }) {
         setIsSubmitting(true);
 
         try {
-          const res = await saveBookingAsync({
+          await saveBookingAsync({
             tripType,
             category,
             vehicle: vehicle || undefined,
@@ -196,11 +252,22 @@ export function BookingForm({ initial }: { initial: BookingSearch }) {
             returnDate: tripType === "round-trip" ? returnDate : undefined,
             passengers,
             days,
+            waitingDays: effectiveWaitingDays,
             name,
             phone,
             email: email || undefined,
             notes: notes || undefined,
-            estimate,
+            estimate: activeFixedPrice
+              ? {
+                  low: activeFixedPrice,
+                  high: activeFixedPrice,
+                  km: routeInfo?.km ?? 0,
+                  days,
+                  waitingDays: effectiveWaitingDays,
+                  travelDays: days - effectiveWaitingDays,
+                  tollNote: "Tolls are not included and billed at actuals as they vary state to state",
+                }
+              : estimate,
           });
 
           setSubmitted(true);
@@ -227,13 +294,20 @@ export function BookingForm({ initial }: { initial: BookingSearch }) {
             <L label="Trip Type">
               <select
                 value={tripType}
-                onChange={(e) => setTripType(e.target.value as TripType)}
+                onChange={(e) => {
+                  const t = e.target.value as TripType;
+                  setTripType(t);
+                  if (t === "one-way") {
+                    setWaitingDays(0);
+                  }
+                }}
                 className={inputCls}
               >
-                <option value="one-way">One Way</option>
                 <option value="round-trip">Round Trip</option>
+                <option value="one-way">One Way</option>
               </select>
             </L>
+
             <L label="Vehicle Category">
               <select
                 value={category}
@@ -245,12 +319,13 @@ export function BookingForm({ initial }: { initial: BookingSearch }) {
               >
                 {categories.map((c) => (
                   <option key={c.id} value={c.id}>
-                    {c.label}
+                    {c.label} ({c.seats} Seats)
                   </option>
                 ))}
               </select>
             </L>
-            <L label="Preferred Vehicle" hint="Optional">
+
+            <L label="Specific Vehicle" hint="Optional">
               <select
                 value={vehicle}
                 onChange={(e) => setVehicle(e.target.value)}
@@ -260,11 +335,11 @@ export function BookingForm({ initial }: { initial: BookingSearch }) {
                 {options.map((v) => (
                   <option key={v.slug} value={v.slug}>
                     {v.name}
-                    {v.available ? "" : " (on request)"}
                   </option>
                 ))}
               </select>
             </L>
+
             <L label="Number of Passengers">
               <select
                 value={passengers}
@@ -274,15 +349,15 @@ export function BookingForm({ initial }: { initial: BookingSearch }) {
                   (seatWarning || fieldErrors.passengers) && "border-destructive",
                 )}
               >
-                {Array.from({ length: 19 }, (_, i) => i + 1).map((n) => (
+                {Array.from({ length: 16 }, (_, i) => i + 1).map((n) => (
                   <option key={n} value={n}>
-                    {n}
+                    {n} passenger{n > 1 ? "s" : ""}
                   </option>
                 ))}
               </select>
               {seatWarning && (
                 <p className="mt-1.5 text-xs text-destructive">
-                  This category seats {cat.seats}. Choose a larger vehicle or we'll arrange two.
+                  This category seats {cat.seats}. Choose a larger vehicle or we can arrange two vehicles.
                 </p>
               )}
               {fieldErrors.passengers && (
@@ -311,6 +386,7 @@ export function BookingForm({ initial }: { initial: BookingSearch }) {
                 <p className="mt-1 text-xs text-destructive">{fieldErrors.pickupLocation}</p>
               )}
             </L>
+
             <L label="Destination">
               <input
                 list="locs"
@@ -320,18 +396,20 @@ export function BookingForm({ initial }: { initial: BookingSearch }) {
                   if (fieldErrors.destination) setFieldErrors((f) => ({ ...f, destination: "" }));
                 }}
                 className={cn(inputCls, fieldErrors.destination && "border-destructive")}
-                placeholder="e.g. Mysore"
+                placeholder="e.g. Coonoor"
                 required
               />
               {fieldErrors.destination && (
                 <p className="mt-1 text-xs text-destructive">{fieldErrors.destination}</p>
               )}
             </L>
+
             <datalist id="locs">
               {locations.map((l) => (
                 <option key={l} value={l} />
               ))}
             </datalist>
+
             <L label="Departure Date">
               <input
                 type="date"
@@ -357,6 +435,7 @@ export function BookingForm({ initial }: { initial: BookingSearch }) {
                 <p className="mt-1 text-xs text-destructive">{fieldErrors.departureDate}</p>
               )}
             </L>
+
             {tripType === "round-trip" && (
               <L label="Return Date">
                 <input
@@ -376,17 +455,56 @@ export function BookingForm({ initial }: { initial: BookingSearch }) {
                 )}
               </L>
             )}
+
             {tripType === "round-trip" && (
-              <L label="Number of Days">
+              <L label="Total Trip Days">
                 <input
                   type="number"
                   min={1}
                   max={30}
                   value={days}
-                  onChange={(e) => setDays(Math.max(1, Number(e.target.value)))}
+                  onChange={(e) => {
+                    const nextDays = Math.max(1, Number(e.target.value));
+                    setDays(nextDays);
+                    if (waitingDays >= nextDays) {
+                      setWaitingDays(Math.max(0, nextDays - 1));
+                    }
+                  }}
                   className={inputCls}
                 />
               </L>
+            )}
+
+            {/* WAITING DAYS FIELD: Only applicable for Round Trip AND when trip days > 2 */}
+            {isWaitingDaysApplicable && (
+              <div className="sm:col-span-2 rounded-2xl border border-gold/40 bg-gold-soft/40 p-4 transition-all animate-fade-up">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                  <div>
+                    <span className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-foreground">
+                      <Sparkles className="size-3.5 text-gold" /> Waiting Days (Parked / Idle at Stay)
+                    </span>
+                    <p className="mt-1 text-xs text-muted-foreground leading-relaxed">
+                      Only available for round trips above 2 days. E.g., on a 5-day tour with 2 traveling days and 3 parked days, enter 3. You only pay driver allowance & idle charges on waiting days.
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="number"
+                      min={0}
+                      max={Math.max(0, days - 1)}
+                      value={waitingDays}
+                      onChange={(e) => {
+                        const val = Number(e.target.value);
+                        setWaitingDays(Math.min(Math.max(0, val), Math.max(0, days - 1)));
+                      }}
+                      className={cn(inputCls, "w-24 text-center font-bold text-base")}
+                    />
+                    <span className="text-xs font-semibold text-foreground whitespace-nowrap">
+                      / {days - 1} max
+                    </span>
+                  </div>
+                </div>
+              </div>
             )}
           </div>
         </Section>
@@ -409,6 +527,7 @@ export function BookingForm({ initial }: { initial: BookingSearch }) {
                 <p className="mt-1 text-xs text-destructive">{fieldErrors.customerName}</p>
               )}
             </L>
+
             <L label="Phone Number" hint="+91 · 10 digits">
               <input
                 type="tel"
@@ -425,7 +544,7 @@ export function BookingForm({ initial }: { initial: BookingSearch }) {
                   }
                 }}
                 className={cn(inputCls, fieldErrors.phoneNumber && "border-destructive")}
-                placeholder="+91 98765 43210"
+                placeholder="+91 97869 63659"
                 maxLength={16}
                 required
                 autoComplete="tel"
@@ -451,21 +570,22 @@ export function BookingForm({ initial }: { initial: BookingSearch }) {
                 <p className="mt-1 text-xs text-destructive">{fieldErrors.emailAddress}</p>
               )}
             </L>
+
             <L label="Special Requirements" hint="Optional" className="sm:col-span-2">
               <textarea
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
                 rows={4}
                 className={cn(inputCls, "h-auto py-3")}
-                placeholder="Extra luggage, child seat, multiple destinations, hotel pickup, sightseeing requirements…"
+                placeholder="Flight numbers, child seat, hotel pickup, multiple sightseeing spots, extra luggage…"
               />
               <div className="mt-2 flex flex-wrap gap-1.5">
                 {[
-                  "Extra luggage",
+                  "Airport pickup",
+                  "Sightseeing itinerary",
                   "Child seat",
-                  "Multiple destinations",
-                  "Hotel pickup",
-                  "Sightseeing",
+                  "Extra luggage",
+                  "Senior citizen travelling",
                 ].map((s) => (
                   <button
                     key={s}
@@ -482,14 +602,23 @@ export function BookingForm({ initial }: { initial: BookingSearch }) {
         </Section>
       </div>
 
-      {/* Summary */}
+      {/* Summary Sidebar */}
       <aside className="lg:sticky lg:top-24 rounded-[2rem] border border-border bg-card p-6 shadow-card">
-        <p className="eyebrow">Estimate</p>
+        <div className="flex items-center justify-between">
+          <p className="eyebrow">Instant Fare</p>
+          {matchedDestination && (
+            <span className="rounded-full bg-gold/20 px-2 py-0.5 text-[10px] font-bold text-gold uppercase tracking-wider">
+              {matchedDestination.typeLabel}
+            </span>
+          )}
+        </div>
+
         <h3 className="mt-3 text-2xl font-semibold tracking-tight">{cat.title}</h3>
         <p className="mt-1 text-sm text-muted-foreground">
           {from || "—"} → {to || "—"}
           {tripType === "round-trip" ? ` → ${from || "—"}` : ""}
         </p>
+
         <div className="mt-5 rounded-2xl bg-ink p-5 text-ink-foreground">
           {isCalculatingRoute ? (
             <div className="py-4 text-center">
@@ -498,6 +627,23 @@ export function BookingForm({ initial }: { initial: BookingSearch }) {
                 Calculating live road distance…
               </p>
             </div>
+          ) : activeFixedPrice ? (
+            <>
+              <div className="flex items-center justify-between">
+                <p className="text-[11px] font-bold uppercase tracking-wider text-ink-muted">
+                  Fixed Package Fare
+                </p>
+                <span className="rounded-full bg-gold/20 px-2 py-0.5 text-[10px] font-bold text-gold">
+                  Fixed Price
+                </span>
+              </div>
+              <p className="mt-1 text-3xl font-bold tracking-tight text-gold">
+                {inr(activeFixedPrice)}
+              </p>
+              <p className="mt-2 text-xs text-ink-muted">
+                Fixed package for Ooty → {matchedDestination?.name} ({options[0]?.shortName ?? "Car"})
+              </p>
+            </>
           ) : estimate ? (
             <>
               <div className="flex items-center justify-between">
@@ -515,11 +661,16 @@ export function BookingForm({ initial }: { initial: BookingSearch }) {
                 <span className="text-base font-medium text-ink-muted">– {inr(estimate.high)}</span>
               </p>
               <p className="mt-2 text-xs text-ink-muted">
-                ≈ {estimate.km} km {routeInfo?.source === "osrm" ? "(via road routing)" : ""} ·{" "}
+                ≈ {estimate.km} km ·{" "}
                 {tripType === "one-way"
                   ? `${inr(cat.pricing.oneWayPerKm)}/km`
                   : `${inr(cat.pricing.roundTripPerKm)}/km · ${estimate.days} day${estimate.days > 1 ? "s" : ""}`}
               </p>
+              {effectiveWaitingDays > 0 && (
+                <p className="mt-1 text-[11px] text-gold font-medium">
+                  {days - effectiveWaitingDays} travel days + {effectiveWaitingDays} waiting days
+                </p>
+              )}
             </>
           ) : (
             <>
@@ -534,16 +685,24 @@ export function BookingForm({ initial }: { initial: BookingSearch }) {
             </>
           )}
         </div>
-        <ul className="mt-4 space-y-2 text-xs text-muted-foreground">
-          <li className="flex gap-2">
+
+        <ul className="mt-4 space-y-2.5 text-xs text-muted-foreground">
+          <li className="flex gap-2 text-foreground font-medium">
             <Sparkles className="size-3.5 shrink-0 text-gold" />
-            Driver allowance included in estimate
+            Driver allowance included in fare
           </li>
-          <li className="flex gap-2">
+          <li className="flex gap-2 text-foreground font-medium">
             <Info className="size-3.5 shrink-0 text-gold" />
-            Toll, parking & permits at actuals
+            Toll, parking & state permits are NOT included (billed at actuals as they vary state to state)
           </li>
+          {effectiveWaitingDays > 0 && (
+            <li className="flex gap-2 text-gold font-medium">
+              <CheckCircle2 className="size-3.5 shrink-0 text-gold" />
+              {effectiveWaitingDays} waiting days covered with daily driver allowance
+            </li>
+          )}
         </ul>
+
         <Button
           type="submit"
           variant="gold"
@@ -553,14 +712,14 @@ export function BookingForm({ initial }: { initial: BookingSearch }) {
         >
           {isSubmitting ? (
             <span className="flex items-center gap-2">
-              <RefreshCw className="size-4 animate-spin" /> Submitting Enquiry…
+              <RefreshCw className="size-4 animate-spin" /> Submitting Request…
             </span>
           ) : (
             "Request Booking"
           )}
         </Button>
         <p className="mt-3 text-center text-[11px] text-muted-foreground">
-          No payment now. We confirm availability and final price first.
+          No advance payment required now. Our team confirms availability and driver details first.
         </p>
       </aside>
     </form>

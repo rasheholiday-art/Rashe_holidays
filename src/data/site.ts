@@ -1,32 +1,29 @@
-import hycross1 from "@/assets/vehicles/hycross-4.jpg";
-import hycross2 from "@/assets/vehicles/hycross-2.jpg";
-import hycross3 from "@/assets/vehicles/hycross-3.jpg";
-import hycross4 from "@/assets/vehicles/hycross-1.jpg";
-import traveller1 from "@/assets/vehicles/traveller-1.jpg";
-import traveller2 from "@/assets/vehicles/traveller-2.jpg";
-import traveller3 from "@/assets/vehicles/traveller-3.jpg";
-import etios from "@/assets/vehicles/etios.jpg";
-import dzire from "@/assets/vehicles/dzire.jpg";
-import aura from "@/assets/vehicles/aura.jpg";
-import amaze from "@/assets/vehicles/amaze.jpg";
-import glanza from "@/assets/vehicles/glanza.jpg";
+import sedanImg from "@/assets/vehicles/sedan.png";
+import taveraImg from "@/assets/vehicles/tavera.png";
+import crystaImg from "@/assets/vehicles/crysta.png";
+import hycrossImg from "@/assets/vehicles/hycross.png";
+import tempoImg from "@/assets/vehicles/tempo-traveller.png";
+import urbaniaImg from "@/assets/vehicles/urbania.png";
 
-import ooty from "@/assets/destinations/ooty.jpg";
-import mysore from "@/assets/destinations/mysore.jpg";
-import coimbatore from "@/assets/destinations/coimbatore.jpg";
-import bangalore from "@/assets/destinations/bangalore.jpg";
-import chennai from "@/assets/destinations/chennai.jpg";
-import kerala from "@/assets/destinations/kerala.jpg";
-import coorg from "@/assets/destinations/coorg.jpg";
+import ootyImg from "@/assets/destinations/ooty.jpg";
+import coonoorImg from "@/assets/destinations/coorg.jpg";
+import pykaraImg from "@/assets/destinations/mysore.jpg";
+import mudumalaiImg from "@/assets/destinations/mysore.jpg";
+import coimbatoreImg from "@/assets/destinations/coimbatore.jpg";
+import bangaloreImg from "@/assets/destinations/bangalore.jpg";
+import cochinImg from "@/assets/destinations/kerala.jpg";
+import chennaiImg from "@/assets/destinations/chennai.jpg";
+import calicutImg from "@/assets/destinations/kerala.jpg";
+import trichyImg from "@/assets/destinations/coorg.jpg";
 
 export const company = {
   name: "Rashe Holidays",
   tagline: "Premium Travels & Transportation · Ooty",
-  phone: "+91 98765 43210",
-  phoneHref: "tel:+919876543210",
-  emergency: "+91 98765 00000",
-  emergencyHref: "tel:+919876500000",
-  whatsapp: "919876543210",
+  phone: "+91 97869 63659",
+  phoneHref: "tel:+919786963659",
+  emergency: "+91 97869 63659",
+  emergencyHref: "tel:+919786963659",
+  whatsapp: "919786963659",
   email: "hello@rasheholidays.in",
   address: "12, Commercial Road, Near Charring Cross, Ooty, The Nilgiris, Tamil Nadu 643001",
   mapEmbed: "https://www.google.com/maps?q=Charring+Cross,+Ooty,+Tamil+Nadu&output=embed",
@@ -36,7 +33,7 @@ export const company = {
 export const whatsappUrl = (text = "Hi! I'd like to plan a trip with Rashe Holidays.") =>
   `https://wa.me/${company.whatsapp}?text=${encodeURIComponent(text)}`;
 
-export type CategoryId = "4-seater" | "8-seater" | "19-seater";
+export type CategoryId = "4-seater" | "7-seater" | "9-seater" | "12-seater" | "16-seater";
 
 export interface Pricing {
   oneWayPerKm: number;
@@ -78,248 +75,312 @@ export const categories: {
 }[] = [
   {
     id: "4-seater",
-    label: "4 Seater Car",
-    title: "Comfortable 4-Seater Cars",
+    label: "4 Seater Sedan",
+    title: "Sedan (4 Seater)",
     seats: 4,
     blurb:
-      "Perfect for couples, solo travelers and small families. Ideal for airport transfers, local travel, business trips and outstation journeys.",
+      "Comfortable and nimble sedan, perfect for couples, solo travelers, small families, and airport transfers.",
     pricing: {
       oneWayPerKm: 14,
       roundTripPerKm: 12,
-      perDay: 2800,
-      minKmPerDay: 250,
-      driverAllowance: 400,
-    },
-  },
-  {
-    id: "8-seater",
-    label: "8 Seater Innova HyCross",
-    title: "Toyota Innova HyCross",
-    seats: 8,
-    blurb:
-      "Premium comfort and space for families, tourists and small groups on comfortable long-distance journeys.",
-    pricing: {
-      oneWayPerKm: 20,
-      roundTripPerKm: 17,
-      perDay: 4500,
-      minKmPerDay: 250,
-      driverAllowance: 500,
-    },
-  },
-  {
-    id: "19-seater",
-    label: "19 Seater Traveller / Van",
-    title: "19 Seater Traveller / Van",
-    seats: 19,
-    blurb:
-      "Designed for group journeys, family tours, corporate trips and tourist groups — travel together in one vehicle.",
-    pricing: {
-      oneWayPerKm: 32,
-      roundTripPerKm: 28,
-      perDay: 8500,
+      perDay: 3000,
       minKmPerDay: 250,
       driverAllowance: 700,
     },
   },
+  {
+    id: "7-seater",
+    label: "7 Seater (Crysta / HyCross)",
+    title: "7 Seater Premium MPV",
+    seats: 7,
+    blurb:
+      "Supreme comfort and space with Toyota Innova Crysta & Innova HyCross for family vacations and long ghat journeys.",
+    pricing: {
+      oneWayPerKm: 22,
+      roundTripPerKm: 19,
+      perDay: 5000,
+      minKmPerDay: 250,
+      driverAllowance: 1000,
+    },
+  },
+  {
+    id: "9-seater",
+    label: "9 Seater Tavera",
+    title: "Tavera (9 Seater)",
+    seats: 9,
+    blurb:
+      "The proven hill warrior with generous room for 9 passengers, high ground clearance, and luggage space.",
+    pricing: {
+      oneWayPerKm: 24,
+      roundTripPerKm: 20,
+      perDay: 5000,
+      minKmPerDay: 250,
+      driverAllowance: 800,
+    },
+  },
+  {
+    id: "12-seater",
+    label: "12 Seater Tempo Traveller",
+    title: "Tempo Traveller (12 Seater)",
+    seats: 12,
+    blurb:
+      "High-roof comfort with push-back seats and dedicated luggage carrier for extended group outings.",
+    pricing: {
+      oneWayPerKm: 32,
+      roundTripPerKm: 27,
+      perDay: 7000,
+      minKmPerDay: 250,
+      driverAllowance: 1000,
+    },
+  },
+  {
+    id: "16-seater",
+    label: "16 Seater Urbania",
+    title: "Urbania (16 Seater)",
+    seats: 16,
+    blurb:
+      "Next-generation luxury group travel with panoramic windows, individual AC vents, and plush reclining seats.",
+    pricing: {
+      oneWayPerKm: 48,
+      roundTripPerKm: 40,
+      perDay: 10000,
+      minKmPerDay: 250,
+      driverAllowance: 1000,
+    },
+  },
 ];
 
-export const categoryById = (id: CategoryId) => categories.find((c) => c.id === id)!;
-
-const carFeatures = [
-  "Seating Capacity: 4 Passengers",
-  "Comfortable Interiors",
-  "Air Conditioned",
-  "Ideal for Small Families",
-  "Airport Transfers",
-  "Local & Outstation Trips",
-  "Budget Friendly Travel",
-];
-
-const carWhy = [
-  "Easy on narrow hill roads and city traffic",
-  "Efficient and budget friendly for long runs",
-  "Clean, sanitised interiors on every trip",
-  "Perfect for airport and railway station transfers",
-  "Boot space for two large suitcases",
-];
+export const categoryById = (id: CategoryId) =>
+  categories.find((c) => c.id === id) ?? categories[0];
 
 export const vehicles: Vehicle[] = [
   {
-    slug: "toyota-innova-hycross",
-    name: "Toyota Innova HyCross",
-    shortName: "Innova HyCross",
-    category: "8-seater",
-    categoryLabel: "Premium MPV",
-    type: "8-Seater Premium",
-    seats: 8,
+    slug: "sedan",
+    name: "Sedan (4 Seater)",
+    shortName: "Sedan",
+    category: "4-seater",
+    categoryLabel: "4 Seater Sedan",
+    type: "4-Seater Sedan",
+    seats: 4,
+    luggage: "Medium",
+    rating: 4.8,
+    reviews: 324,
+    available: true,
+    featured: true,
+    tagline: "Comfortable and nimble for scenic Nilgiri curves and airport runs",
+    description:
+      "Enjoy a smooth, effortless journey in our comfortable 4-seater sedans. Spotless interiors, prompt hill-certified chauffeur, and generous boot space for small family vacations and airport transfers.",
+    features: [
+      "Seating Capacity: 4 Passengers",
+      "Air Conditioned Cabin",
+      "Comfortable Legroom",
+      "Boot Space for 2-3 Bags",
+      "Ideal for Couples & Small Families",
+      "Airport & Railway Transfers",
+      "Smooth Ghat Road Ride",
+    ],
+    whyChoose: [
+      "Agile and smooth on winding ghat curves",
+      "Economical per-km and fixed package fares",
+      "Spotless, sanitized interiors on every trip",
+      "Experienced local Nilgiris chauffeur",
+      "Boot space for two large suitcases",
+    ],
+    suitableFor: ["Couples", "Small Families", "Airport Drops"],
+    images: [sedanImg],
+    pricing: categoryById("4-seater").pricing,
+  },
+  {
+    slug: "tavera",
+    name: "Tavera (9 Seater)",
+    shortName: "Tavera",
+    category: "9-seater",
+    categoryLabel: "9 Seater MPV",
+    type: "9-Seater MPV",
+    seats: 9,
+    luggage: "Large",
+    rating: 4.7,
+    reviews: 218,
+    available: true,
+    featured: true,
+    tagline: "The proven Nilgiri hill warrior for large families and tourist groups",
+    description:
+      "The Chevrolet Tavera remains the most trusted utility vehicle in the Western Ghats. Rugged suspension, roomy 9-seat capacity, and powerful torque for steep climbs across Ooty, Coonoor, and Mudumalai.",
+    features: [
+      "Seating Capacity: Up to 9 Passengers",
+      "Powerful Hill-Climb Engine",
+      "Dual AC Vents",
+      "Generous Luggage & Roof Carrier",
+      "Comfortable Family Seating",
+      "Local Sightseeing Specialist",
+      "High Ground Clearance",
+    ],
+    whyChoose: [
+      "Handles steep ghat hairpins effortlessly",
+      "Accommodates up to 9 adults comfortably",
+      "Budget-friendly group travel per person",
+      "High ground clearance for rugged terrain",
+      "Room for luggage and personal belongings",
+    ],
+    suitableFor: ["Large Families", "Friends Groups", "Sightseeing"],
+    images: [taveraImg],
+    pricing: categoryById("9-seater").pricing,
+  },
+  {
+    slug: "crysta",
+    name: "Innova Crysta (7 Seater)",
+    shortName: "Innova Crysta",
+    category: "7-seater",
+    categoryLabel: "7 Seater Premium",
+    type: "7-Seater Premium MPV",
+    seats: 7,
     luggage: "Large",
     rating: 4.9,
-    reviews: 412,
+    reviews: 486,
     available: true,
     featured: true,
-    tagline: "The premium 8-seater for families and long journeys",
+    tagline: "The undisputed king of comfortable long-distance highway & hill travel",
     description:
-      "Experience premium comfort and space with the Toyota Innova HyCross. Perfect for families, tourists and small groups looking for a comfortable long-distance journey.",
+      "Travel in supreme comfort with the Toyota Innova Crysta. Renowned for plush captain seating, low NVH levels, and unmatched road stability across ghats and outstation highways.",
     features: [
-      "Seating Capacity: Up to 8 Passengers",
-      "Spacious Interiors",
-      "Comfortable Long Distance Travel",
-      "Powerful Air Conditioning",
-      "Large Luggage Space",
-      "Premium Seating",
-      "Smooth Highway Performance",
+      "Seating Capacity: 7 Passengers",
+      "Captain Seats with Armrests",
+      "Powerful Dual Air Conditioning",
+      "Ample Luggage Bay",
+      "Superior Highway & Hill Ride",
+      "USB Charging Ports",
+      "Unmatched Passenger Safety",
     ],
     whyChoose: [
-      "Comfortable captain-style seating",
-      "Premium, quiet interiors",
-      "Smooth hybrid ride on ghat roads",
-      "Perfect for hill station travel",
-      "Spacious luggage area",
+      "Top safety rating with reliable braking",
+      "Extraordinary comfort for seniors and kids",
+      "Spacious boot for big luggage trolley bags",
+      "Silent, refined cabin for peaceful travel",
+      "Mastery of Nilgiri mountain ghats",
     ],
-    suitableFor: ["Family", "Tourism", "Business"],
-    images: [hycross1, hycross2, hycross3, hycross4],
-    pricing: categoryById("8-seater").pricing,
+    suitableFor: ["Family Holidays", "Corporate Travel", "Airport Transfers"],
+    images: [crystaImg],
+    pricing: {
+      oneWayPerKm: 22,
+      roundTripPerKm: 19,
+      perDay: 5000,
+      minKmPerDay: 250,
+      driverAllowance: 1000,
+    },
   },
   {
-    slug: "19-seater-traveller",
-    name: "19 Seater Traveller / Van",
-    shortName: "19 Seater Traveller",
-    category: "19-seater",
-    categoryLabel: "Group Van",
-    type: "19-Seater Group",
-    seats: 19,
+    slug: "hycross",
+    name: "Innova HyCross (7 Seater)",
+    shortName: "Innova HyCross",
+    category: "7-seater",
+    categoryLabel: "7 Seater Hybrid",
+    type: "7-Seater Luxury Hybrid",
+    seats: 7,
+    luggage: "Large",
+    rating: 4.9,
+    reviews: 312,
+    available: true,
+    featured: true,
+    tagline: "Next-gen hybrid luxury with ultra-quiet gliding ride quality",
+    description:
+      "Experience modern luxury in the Toyota Innova HyCross. Ultra-quiet electric hybrid propulsion, panoramic glass ambiance, and executive lounge comfort across the Nilgiris.",
+    features: [
+      "Seating Capacity: 7 Passengers",
+      "Ultra-Quiet Hybrid Powertrain",
+      "Lounge-Style Reclining Seats",
+      "Independent Climate Control",
+      "Ambient Cabin Lighting",
+      "Large Boot & Modern Tech",
+      "Silky Smooth Acceleration",
+    ],
+    whyChoose: [
+      "Whisper-quiet electric drive on ghats",
+      "Top-tier executive comfort and styling",
+      "Smooth ride with minimal body roll",
+      "State-of-the-art safety & convenience",
+      "Spacious legroom across all three rows",
+    ],
+    suitableFor: ["Luxury Tours", "VIP Transfers", "Executive Travel"],
+    images: [hycrossImg],
+    pricing: {
+      oneWayPerKm: 24,
+      roundTripPerKm: 20,
+      perDay: 5500,
+      minKmPerDay: 250,
+      driverAllowance: 1000,
+    },
+  },
+  {
+    slug: "tempo-traveller",
+    name: "Tempo Traveller (12 Seater)",
+    shortName: "Tempo Traveller",
+    category: "12-seater",
+    categoryLabel: "12 Seater Minibus",
+    type: "12-Seater Group Van",
+    seats: 12,
     luggage: "Extra Large",
     rating: 4.8,
-    reviews: 236,
+    reviews: 245,
     available: true,
     featured: true,
-    tagline: "One vehicle for the whole group",
+    tagline: "Travel together without convoys — spacious 12-seater pushback coach",
     description:
-      "Designed for group journeys, family tours, corporate trips and tourist groups. Enjoy comfortable and spacious travel together without worrying about multiple vehicles.",
+      "Tailored for joint family vacations, corporate offsites, and tourist teams. Wide aisle, pushback seats, and dedicated high-capacity AC keep everyone comfortable and together.",
     features: [
-      "Seating Capacity: 19 Passengers",
-      "Comfortable Group Travel",
-      "Air Conditioned",
-      "Spacious Seating",
-      "Luggage Space",
-      "Ideal for Tours",
-      "Corporate & Family Trips",
+      "Seating Capacity: 12 Passengers",
+      "Pushback Reclining Seats",
+      "Individual AC Vents & Reading Lights",
+      "Dedicated High-Capacity Luggage Bay",
+      "High Ceiling with Easy Walk-In",
+      "Music System & Mic Available",
+      "Experienced Hill Coach Driver",
     ],
     whyChoose: [
-      "Pushback seats with generous legroom",
-      "Powerful AC for the whole cabin",
-      "Everyone travels together — no convoys",
-      "Experienced hill-road drivers",
-      "Roof carrier and rear luggage bay",
+      "Keep entire group together in one vehicle",
+      "Generous legroom for long interstate tours",
+      "Roof rack + rear luggage storage",
+      "Professional hill-coach certified driver",
+      "Economical per-seat travel",
     ],
-    suitableFor: ["Groups", "Corporate", "Tours"],
-    images: [traveller1, traveller2, traveller3],
-    pricing: categoryById("19-seater").pricing,
+    suitableFor: ["Family Reunions", "Corporate Groups", "Pilgrimage Tours"],
+    images: [tempoImg],
+    pricing: categoryById("12-seater").pricing,
   },
   {
-    slug: "toyota-etios",
-    name: "Toyota Etios",
-    shortName: "Etios",
-    category: "4-seater",
-    categoryLabel: "Sedan",
-    type: "4-Seater Sedan",
-    seats: 4,
-    luggage: "Medium",
-    rating: 4.7,
-    reviews: 318,
+    slug: "urbania",
+    name: "Urbania (16 Seater)",
+    shortName: "Urbania",
+    category: "16-seater",
+    categoryLabel: "16 Seater Luxury Van",
+    type: "16-Seater Luxury Van",
+    seats: 16,
+    luggage: "Extra Large",
+    rating: 4.9,
+    reviews: 189,
     available: true,
-    tagline: "The dependable outstation sedan",
+    featured: true,
+    tagline: "State-of-the-art European comfort with panoramic views for 16 passengers",
     description:
-      "A proven outstation favourite. The Toyota Etios offers a roomy cabin, a large boot and effortless comfort on long highway runs.",
-    features: carFeatures,
-    whyChoose: carWhy,
-    suitableFor: ["Couples", "Business", "Airport"],
-    images: [etios],
-    pricing: categoryById("4-seater").pricing,
-  },
-  {
-    slug: "maruti-suzuki-dzire",
-    name: "Maruti Suzuki Dzire",
-    shortName: "Dzire",
-    category: "4-seater",
-    categoryLabel: "Sedan",
-    type: "4-Seater Sedan",
-    seats: 4,
-    luggage: "Medium",
-    rating: 4.7,
-    reviews: 289,
-    available: true,
-    tagline: "Efficient and comfortable for every trip",
-    description:
-      "India's most-loved compact sedan. The new Dzire brings a refined ride, excellent mileage and a comfortable rear seat for city and outstation trips.",
-    features: carFeatures,
-    whyChoose: carWhy,
-    suitableFor: ["Couples", "Local", "Airport"],
-    images: [dzire],
-    pricing: categoryById("4-seater").pricing,
-  },
-  {
-    slug: "hyundai-aura",
-    name: "Hyundai Aura",
-    shortName: "Aura",
-    category: "4-seater",
-    categoryLabel: "Sedan",
-    type: "4-Seater Sedan",
-    seats: 4,
-    luggage: "Medium",
-    rating: 4.6,
-    reviews: 174,
-    available: true,
-    tagline: "Modern comfort with a quiet cabin",
-    description:
-      "The Hyundai Aura pairs a modern, feature-rich cabin with a smooth, quiet drive — ideal for business travellers and small families.",
-    features: carFeatures,
-    whyChoose: carWhy,
-    suitableFor: ["Business", "Small Family", "Local"],
-    images: [aura],
-    pricing: categoryById("4-seater").pricing,
-  },
-  {
-    slug: "honda-amaze",
-    name: "Honda Amaze",
-    shortName: "Amaze",
-    category: "4-seater",
-    categoryLabel: "Sedan",
-    type: "4-Seater Sedan",
-    seats: 4,
-    luggage: "Medium",
-    rating: 4.7,
-    reviews: 201,
-    available: false,
-    tagline: "Refined ride, spacious rear seat",
-    description:
-      "The Honda Amaze offers a supple ride and one of the most spacious rear seats in its class — a comfortable choice for outstation journeys.",
-    features: carFeatures,
-    whyChoose: carWhy,
-    suitableFor: ["Small Family", "Outstation", "Business"],
-    images: [amaze],
-    pricing: categoryById("4-seater").pricing,
-  },
-  {
-    slug: "toyota-glanza",
-    name: "Toyota Glanza",
-    shortName: "Glanza",
-    category: "4-seater",
-    categoryLabel: "Hatchback",
-    type: "4-Seater Hatchback",
-    seats: 4,
-    luggage: "Compact",
-    rating: 4.6,
-    reviews: 143,
-    available: true,
-    tagline: "Nimble and easy for local sightseeing",
-    description:
-      "A premium hatchback that's perfect for local Ooty sightseeing, short transfers and couples travelling light.",
-    features: carFeatures,
-    whyChoose: carWhy,
-    suitableFor: ["Local", "Couples", "Sightseeing"],
-    images: [glanza],
-    pricing: categoryById("4-seater").pricing,
+      "The pinnacle of modern group transportation. The Force Urbania combines world-class styling, independent front suspension, aerodynamic design, and opulent luxury for 16 passengers.",
+    features: [
+      "Seating Capacity: 16 Passengers",
+      "Executive Luxury Reclining Seats",
+      "Panoramic UV Cut Windows",
+      "Independent Soft-Ride Suspension",
+      "Tri-Zone Powerful AC System",
+      "Huge Luggage Bay",
+      "European Monocoque Safety",
+    ],
+    whyChoose: [
+      "Unmatched European styling and ride quality",
+      "Supremely quiet and vibration-free ride",
+      "Breathtaking mountain views through panoramic glass",
+      "The premier choice for VIP groups & destination weddings",
+      "Individual USB ports and LED reading lamps",
+    ],
+    suitableFor: ["VIP Delegations", "Wedding Groups", "Premium Tours"],
+    images: [urbaniaImg],
+    pricing: categoryById("16-seater").pricing,
   },
 ];
 
@@ -329,113 +390,356 @@ export const vehiclesByCategory = (id: CategoryId) => vehicles.filter((v) => v.c
 export interface Destination {
   slug: string;
   name: string;
-  state: string;
+  type: "sightseeing" | "transfer";
+  typeLabel: "Sightseeing" | "Airport / Railway Transfer";
+  startPlace: string;
   image: string;
   kmFromOoty: number;
   hours: string;
   blurb: string;
+  highlights: string[];
+  fixedPrices: Record<string, number>;
 }
 
 export const destinations: Destination[] = [
+  // SIGHTSEEING
   {
     slug: "ooty",
     name: "Ooty",
-    state: "Tamil Nadu",
-    image: ooty,
+    type: "sightseeing",
+    typeLabel: "Sightseeing",
+    startPlace: "Ooty",
+    image: ootyImg,
     kmFromOoty: 0,
-    hours: "Local",
-    blurb: "Tea estates, Doddabetta and the toy train — explore the Queen of Hills.",
+    hours: "Full Day",
+    blurb:
+      "Botanical Gardens, Doddabetta Peak, Rose Garden, Tea Museum, and Ooty Boat House lake — explore the Queen of Hills.",
+    highlights: [
+      "Government Botanical Garden",
+      "Doddabetta Peak Viewpoint",
+      "Ooty Boat House & Lake",
+      "Tea Factory & Museum",
+      "Government Rose Garden",
+    ],
+    fixedPrices: {
+      sedan: 2000,
+      tavera: 2500,
+      crysta: 4500,
+      hycross: 5000,
+      "tempo-traveller": 4000,
+      urbania: 6500,
+    },
   },
   {
-    slug: "mysore",
-    name: "Mysore",
-    state: "Karnataka",
-    image: mysore,
-    kmFromOoty: 125,
-    hours: "3.5 hrs",
-    blurb: "Palaces and gardens via Bandipur forest — the most loved day trip from Ooty.",
+    slug: "coonoor",
+    name: "Coonoor",
+    type: "sightseeing",
+    typeLabel: "Sightseeing",
+    startPlace: "Ooty",
+    image: coonoorImg,
+    kmFromOoty: 19,
+    hours: "Full Day",
+    blurb:
+      "Sim's Park, Lamb's Rock, Dolphin's Nose, tea gardens, and picturesque Nilgiri Mountain Railway views.",
+    highlights: [
+      "Sim's Park & Botanical Trees",
+      "Lamb's Rock Coimbatore Plains View",
+      "Dolphin's Nose & Catherine Falls View",
+      "Highfield Tea Factory Walk",
+      "Toy Train Heritage Stations",
+    ],
+    fixedPrices: {
+      sedan: 2500,
+      tavera: 3000,
+      crysta: 4500,
+      hycross: 5500,
+      "tempo-traveller": 5000,
+      urbania: 7000,
+    },
   },
   {
-    slug: "coimbatore",
-    name: "Coimbatore",
-    state: "Tamil Nadu",
-    image: coimbatore,
-    kmFromOoty: 86,
-    hours: "2.5 hrs",
-    blurb: "Airport and railway transfers down the scenic Mettupalayam ghat.",
+    slug: "pykara",
+    name: "Pykara",
+    type: "sightseeing",
+    typeLabel: "Sightseeing",
+    startPlace: "Ooty",
+    image: pykaraImg,
+    kmFromOoty: 23,
+    hours: "Half / Full Day",
+    blurb:
+      "Pykara Lake speed boating, majestic Pykara Waterfalls, Pine Forest, and the picturesque 9th Mile shooting meadows.",
+    highlights: [
+      "Pykara Lake Speed Boat Cruises",
+      "Pykara Cascading Waterfalls",
+      "Wenlock Downs (9th Mile)",
+      "Dense Pine Forest Strolls",
+      "Kamraj Sagar Dam Catchment",
+    ],
+    fixedPrices: {
+      sedan: 2500,
+      tavera: 3000,
+      crysta: 4500,
+      hycross: 5500,
+      "tempo-traveller": 5000,
+      urbania: 7000,
+    },
   },
   {
-    slug: "bangalore",
-    name: "Bangalore",
-    state: "Karnataka",
-    image: bangalore,
-    kmFromOoty: 270,
-    hours: "6.5 hrs",
-    blurb: "Comfortable one-way and round trips to the Garden City.",
+    slug: "mudumalai",
+    name: "Mudumalai",
+    type: "sightseeing",
+    typeLabel: "Sightseeing",
+    startPlace: "Ooty",
+    image: mudumalaiImg,
+    kmFromOoty: 40,
+    hours: "Full Day",
+    blurb:
+      "Mudumalai National Park & Tiger Reserve safari, Theppakadu Elephant Camp, and Kalhatty 36 Hairpin Ghat descent.",
+    highlights: [
+      "Tiger Reserve Forest Safari",
+      "Theppakadu Asian Elephant Camp",
+      "Kalhatty 36 Hairpin Bends",
+      "Moyar River & Forest Canopy",
+      "Spotted Deer, Gaur & Wild Elephant Spotting",
+    ],
+    fixedPrices: {
+      sedan: 3000,
+      tavera: 4500,
+      crysta: 6000,
+      hycross: 7000,
+      "tempo-traveller": 7000,
+      urbania: 9000,
+    },
   },
   {
-    slug: "chennai",
-    name: "Chennai",
-    state: "Tamil Nadu",
-    image: chennai,
-    kmFromOoty: 555,
-    hours: "10 hrs",
-    blurb: "Long-distance comfort all the way to the Marina.",
+    slug: "ooty-coonoor",
+    name: "Ooty & Coonoor",
+    type: "sightseeing",
+    typeLabel: "Sightseeing",
+    startPlace: "Ooty",
+    image: ootyImg,
+    kmFromOoty: 35,
+    hours: "Combined Full Day",
+    blurb:
+      "The ultimate Nilgiri combo tour covering key Ooty highlights in the morning and Coonoor viewpoints in the afternoon.",
+    highlights: [
+      "Doddabetta Peak & Telescope House",
+      "Ooty Botanical Gardens",
+      "Sim's Park & Tea Plantations",
+      "Dolphin's Nose Viewpoint",
+      "Nilgiri Essential Oils & Homemade Chocolates",
+    ],
+    fixedPrices: {
+      sedan: 3000,
+      tavera: 4500,
+      crysta: 5000,
+      hycross: 6000,
+      "tempo-traveller": 7500,
+      urbania: 8500,
+    },
+  },
+
+  // AIRPORT OR RAILWAY TRANSFERS
+  {
+    slug: "coimbatore-airport",
+    name: "Coimbatore Airport",
+    type: "transfer",
+    typeLabel: "Airport / Railway Transfer",
+    startPlace: "Ooty",
+    image: coimbatoreImg,
+    kmFromOoty: 96,
+    hours: "2.5 – 3 hrs",
+    blurb:
+      "Direct highway and scenic Mettupalayam ghat transfer between Ooty and Coimbatore International Airport (CJB).",
+    highlights: [
+      "Scenic Mettupalayam Ghat Descent",
+      "Punctual Flight-Scheduled Pickup",
+      "Real-Time Flight Delay Monitoring",
+      "Luggage Assistance & Chilled Water",
+    ],
+    fixedPrices: {
+      sedan: 3000,
+      tavera: 4500,
+      crysta: 6500,
+      hycross: 7500,
+      "tempo-traveller": 9000,
+      urbania: 12500,
+    },
   },
   {
-    slug: "kerala",
-    name: "Kerala",
-    state: "Kerala",
-    image: kerala,
+    slug: "bangalore-airport",
+    name: "Bangalore Airport",
+    type: "transfer",
+    typeLabel: "Airport / Railway Transfer",
+    startPlace: "Ooty",
+    image: bangaloreImg,
+    kmFromOoty: 310,
+    hours: "6.5 – 7.5 hrs",
+    blurb:
+      "Interstate direct transit between Ooty and Kempegowda International Airport (BLR) via Mysore expressway.",
+    highlights: [
+      "Smooth Bangalore-Mysore Expressway",
+      "Bandipur Forest Corridor Crossing",
+      "Doorstep Terminal Pickup & Drop",
+      "Comfortable Highway Rest Stops",
+    ],
+    fixedPrices: {
+      sedan: 9500,
+      tavera: 15000,
+      crysta: 20000,
+      hycross: 24000,
+      "tempo-traveller": 26000,
+      urbania: 35000,
+    },
+  },
+  {
+    slug: "cochin-airport",
+    name: "Cochin Airport",
+    type: "transfer",
+    typeLabel: "Airport / Railway Transfer",
+    startPlace: "Ooty",
+    image: cochinImg,
     kmFromOoty: 250,
-    hours: "6 hrs",
-    blurb: "Backwaters, Munnar and Wayanad — multi-day tours across God's Own Country.",
+    hours: "6 – 6.5 hrs",
+    blurb:
+      "Comfortable transit connecting Ooty and Cochin International Airport (COK) via Palakkad and Thrissur.",
+    highlights: [
+      "Scenic Kerala Foothills",
+      "Palakkad Gap Highway Crossing",
+      "24/7 Timed Airport Drop",
+      "Professional Interstate Chauffeur",
+    ],
+    fixedPrices: {
+      sedan: 9500,
+      tavera: 15000,
+      crysta: 20000,
+      hycross: 24000,
+      "tempo-traveller": 26000,
+      urbania: 35000,
+    },
   },
   {
-    slug: "coorg",
-    name: "Coorg",
-    state: "Karnataka",
-    image: coorg,
-    kmFromOoty: 240,
-    hours: "6 hrs",
-    blurb: "Coffee estates and misty hills, perfect as a round trip.",
+    slug: "chennai-airport",
+    name: "Chennai Airport",
+    type: "transfer",
+    typeLabel: "Airport / Railway Transfer",
+    startPlace: "Ooty",
+    image: chennaiImg,
+    kmFromOoty: 550,
+    hours: "9.5 – 10.5 hrs",
+    blurb:
+      "Long-distance expressway transit to Chennai International Airport (MAA) via Salem and Ulundurpet.",
+    highlights: [
+      "Smooth Multi-Lane Expressway",
+      "Experienced Long-Haul Drivers",
+      "Maximum Luggage Capacity",
+      "Continuous AC Comfort",
+    ],
+    fixedPrices: {
+      sedan: 17000,
+      tavera: 26000,
+      crysta: 35000,
+      hycross: 40000,
+      "tempo-traveller": 45000,
+      urbania: 58000,
+    },
+  },
+  {
+    slug: "calicut-airport",
+    name: "Calicut Airport",
+    type: "transfer",
+    typeLabel: "Airport / Railway Transfer",
+    startPlace: "Ooty",
+    image: calicutImg,
+    kmFromOoty: 155,
+    hours: "4 – 4.5 hrs",
+    blurb:
+      "Swift ghat and teak-corridor drop connecting Ooty with Calicut / Kozhikode Airport (CCJ) via Nilambur.",
+    highlights: [
+      "Teak Plantation Scenic Corridor",
+      "Nadugani Ghat Route",
+      "Punctual Morning & Night Flights",
+      "Door-to-Terminal Drop",
+    ],
+    fixedPrices: {
+      sedan: 6000,
+      tavera: 8500,
+      crysta: 12000,
+      hycross: 14000,
+      "tempo-traveller": 16000,
+      urbania: 22000,
+    },
+  },
+  {
+    slug: "trichy-airport",
+    name: "Trichy Airport",
+    type: "transfer",
+    typeLabel: "Airport / Railway Transfer",
+    startPlace: "Ooty",
+    image: trichyImg,
+    kmFromOoty: 290,
+    hours: "6 – 6.5 hrs",
+    blurb:
+      "Comfortable outstation transfer to Tiruchirappalli International Airport (TRZ) via Karur and Kangeyam.",
+    highlights: [
+      "Smooth Central Tamil Nadu Highway",
+      "Reliable Flight Punctuality",
+      "Door-to-Terminal Service",
+      "Driver Allowance Included",
+    ],
+    fixedPrices: {
+      sedan: 9500,
+      tavera: 15000,
+      crysta: 20000,
+      hycross: 24000,
+      "tempo-traveller": 26000,
+      urbania: 35000,
+    },
   },
 ];
+
+export const destinationBySlug = (slug: string) => destinations.find((d) => d.slug === slug);
 
 export const popularLocations = [
   "Ooty",
   "Coonoor",
-  "Kotagiri",
-  "Mettupalayam",
-  "Coimbatore",
+  "Pykara",
+  "Mudumalai",
+  "Ooty & Coonoor",
   "Coimbatore Airport",
+  "Bangalore Airport",
+  "Cochin Airport",
+  "Chennai Airport",
+  "Calicut Airport",
+  "Trichy Airport",
+  "Coimbatore",
   "Mysore",
   "Bangalore",
-  "Bangalore Airport",
   "Wayanad",
   "Coorg",
   "Munnar",
   "Kodaikanal",
-  "Kochi",
-  "Chennai",
-  "Madurai",
-  "Salem",
-  "Tiruppur",
+  "Kotagiri",
+  "Mettupalayam",
 ];
 
 export const locations = [
-  // Primary Hubs
+  // Primary Sightseeing & Hubs
   "Ooty",
   "Coonoor",
+  "Pykara",
+  "Mudumalai",
+  "Ooty & Coonoor",
+  "Coimbatore Airport",
+  "Bangalore Airport",
+  "Cochin Airport",
+  "Chennai Airport",
+  "Calicut Airport",
+  "Trichy Airport",
+
+  // Nilgiris Towns & Sightseeing
   "Kotagiri",
   "Mettupalayam",
-  "Coimbatore",
-  "Coimbatore Airport",
-  "Mysore",
-  "Bangalore",
-  "Bangalore Airport",
-
-  // Nilgiris Sightseeing & Towns
   "Pykara Lake",
   "Pykara Waterfalls",
   "Avalanche Lake",
@@ -450,157 +754,95 @@ export const locations = [
   "Kalhatty Falls",
   "Needle Rock Viewpoint",
   "Kodanad Viewpoint",
-  "Upper Bhavani",
-  "Kundah Dam",
 
-  // Kerala
-  "Wayanad",
-  "Sulthan Bathery",
-  "Kalpetta",
-  "Vythiri",
+  // Transit Hubs & Cities
+  "Coimbatore",
+  "Mysore",
+  "Bangalore",
   "Calicut",
-  "Calicut Airport",
-  "Palakkad",
-  "Thrissur",
-  "Munnar",
   "Kochi",
-  "Cochin Airport",
-  "Alappuzha (Alleppey)",
-  "Kannur",
-  "Trivandrum",
-
-  // Tamil Nadu
-  "Pollachi",
-  "Tiruppur",
-  "Erode",
-  "Salem",
-  "Palani",
-  "Dindigul",
-  "Kodaikanal",
+  "Chennai",
   "Trichy",
   "Madurai",
-  "Thanjavur",
-  "Pondicherry",
-  "Rameswaram",
-  "Kanyakumari",
-  "Chennai",
-
-  // Karnataka
-  "Kabini / Nagarhole",
-  "Kushalnagar",
+  "Salem",
+  "Erode",
+  "Tiruppur",
+  "Wayanad",
   "Coorg",
-  "Coorg (Madikeri)",
-  "Hassan",
-  "Chikmagalur",
-  "Mangalore",
-  "Udupi",
+  "Munnar",
+  "Kodaikanal",
 ];
 
-/** Road distances from Ooty (km) based on official highway & Nilgiris cab benchmarks. */
 export const distanceFromOoty: Record<string, number> = {
-  // Nilgiris & Local Sightseeing
+  // Sightseeing & Local
   Ooty: 0,
+  Coonoor: 19,
+  Pykara: 23,
+  "Pykara Lake": 21,
+  "Pykara Waterfalls": 23,
+  Mudumalai: 40,
+  "Mudumalai Tiger Reserve": 40,
+  "Ooty & Coonoor": 35,
   "Doddabetta Peak": 10,
   "Kalhatty Falls": 14,
   Lovedale: 6,
   Wellington: 16,
-  Coonoor: 19,
   "Emerald Lake": 20,
-  "Pykara Lake": 21,
-  "Pykara Waterfalls": 23,
   "Avalanche Lake": 26,
   Glenmorgan: 28,
   Kotagiri: 30,
   "Kundah Dam": 32,
-  "Mudumalai Tiger Reserve": 40,
   "Needle Rock Viewpoint": 42,
   "Kodanad Viewpoint": 45,
   Gudalur: 50,
   Mettupalayam: 50,
-  "Upper Bhavani": 50,
   "Bandipur Safari Gate": 52,
 
-  // Transit Hubs & Airports
-  Coimbatore: 86,
+  // Airports
   "Coimbatore Airport": 96,
-  "Mysore Airport": 115,
   "Calicut Airport": 155,
   "Cochin Airport": 250,
+  "Trichy Airport": 290,
   "Bangalore Airport": 310,
+  "Chennai Airport": 550,
 
-  // Karnataka
+  // Cities
+  Coimbatore: 86,
   Mysore: 125,
-  "Kabini / Nagarhole": 145,
-  Kushalnagar: 205,
-  Coorg: 240,
-  "Coorg (Madikeri)": 240,
-  Hassan: 240,
-  Bangalore: 275,
-  Chikmagalur: 295,
-  Mangalore: 370,
-  Udupi: 410,
-
-  // Kerala
-  "Sulthan Bathery": 115,
   Wayanad: 135,
-  Kalpetta: 135,
-  "Kalpetta (Wayanad)": 135,
-  Palakkad: 135,
-  Vythiri: 145,
   Calicut: 165,
-  Thrissur: 205,
+  Coorg: 240,
   Munnar: 250,
-  Kochi: 280,
-  "Alappuzha (Alleppey)": 330,
-  Kannur: 220,
-  Trivandrum: 480,
-
-  // Tamil Nadu
-  Pollachi: 130,
-  Tiruppur: 135,
-  Erode: 155,
-  Palani: 195,
-  Salem: 220,
-  Dindigul: 240,
-  Kodaikanal: 260,
+  Bangalore: 275,
   Trichy: 290,
+  Kochi: 280,
   Madurai: 315,
-  Thanjavur: 335,
-  Kanyakumari: 545,
+  Salem: 220,
+  Erode: 155,
+  Tiruppur: 135,
   Chennai: 550,
-  Pondicherry: 490,
-  Rameswaram: 485,
+  Kodaikanal: 260,
 };
 
 export const locationCoordinates: Record<string, [number, number]> = {
   Ooty: [76.6953, 11.4102],
   Coonoor: [76.7959, 11.353],
-  Kotagiri: [76.8667, 11.4333],
-  Mettupalayam: [76.95, 11.3],
-  Coimbatore: [76.9558, 11.0168],
+  Pykara: [76.6025, 11.454],
+  Mudumalai: [76.5744, 11.5833],
+  "Ooty & Coonoor": [76.75, 11.38],
   "Coimbatore Airport": [77.0434, 11.03],
+  "Bangalore Airport": [77.7066, 13.1986],
+  "Cochin Airport": [76.4019, 10.1518],
+  "Chennai Airport": [80.1709, 12.9941],
+  "Calicut Airport": [75.9553, 11.1369],
+  "Trichy Airport": [78.7107, 10.7654],
+  Coimbatore: [76.9558, 11.0168],
   Mysore: [76.6394, 12.2958],
   Bangalore: [77.5946, 12.9716],
-  "Bangalore Airport": [77.7066, 13.1986],
   Chennai: [80.2707, 13.0827],
   Kochi: [76.2673, 9.9312],
-  Munnar: [77.0595, 10.0889],
-  Wayanad: [76.132, 11.6854],
-  Coorg: [75.7382, 12.4244],
-  Kodaikanal: [77.4892, 10.2381],
-  Madurai: [78.1198, 9.9252],
-  Salem: [78.146, 11.6643],
-  Erode: [77.7172, 11.341],
-  Tiruppur: [77.3411, 11.1085],
-  Gudalur: [76.495, 11.505],
-  "Pykara Lake": [76.6025, 11.454],
-  "Avalanche Lake": [76.5925, 11.298],
-  "Mudumalai Tiger Reserve": [76.5744, 11.5833],
-  "Bandipur Safari Gate": [76.6265, 11.6664],
-  Calicut: [75.7804, 11.2588],
-  Palakkad: [76.6548, 10.7867],
-  Thrissur: [76.2144, 10.5276],
-  Pollachi: [77.0089, 10.658],
+  Kotagiri: [76.8667, 11.4333],
+  Mettupalayam: [76.95, 11.3],
 };
 
 export function estimateDistance(from: string, to: string): number | null {
@@ -609,30 +851,60 @@ export function estimateDistance(from: string, to: string): number | null {
   const a = distanceFromOoty[normFrom];
   const b = distanceFromOoty[normTo];
   if (a === undefined || b === undefined) return null;
-  if (normFrom.toLowerCase() === normTo.toLowerCase()) return 80; // local sightseeing package
+  if (normFrom.toLowerCase() === normTo.toLowerCase()) return 80;
   if (normFrom.toLowerCase() === "ooty" || normTo.toLowerCase() === "ooty") return Math.max(a, b);
-  return Math.abs(a - b) + 40; // both non-Ooty: rough triangulation
+  return Math.abs(a - b) + 40;
 }
 
 export function estimateFare(opts: {
   category: CategoryId;
+  vehicle?: string | undefined;
   tripType: "one-way" | "round-trip";
   from: string;
   to: string;
   days?: number | undefined;
+  waitingDays?: number | undefined;
   customKm?: number | undefined;
 }) {
-  const p = categoryById(opts.category).pricing;
+  const vehicleObj = opts.vehicle ? vehicleBySlug(opts.vehicle) : undefined;
+  const p = vehicleObj ? vehicleObj.pricing : categoryById(opts.category).pricing;
   const dist = opts.customKm ?? estimateDistance(opts.from, opts.to);
   if (dist === null) return null;
-  const days = Math.max(1, opts.days ?? 1);
+
+  const totalDays = Math.max(1, opts.days ?? 1);
+  const waitingDays =
+    opts.tripType === "round-trip" && totalDays > 2
+      ? Math.min(Math.max(0, opts.waitingDays ?? 0), totalDays - 1)
+      : 0;
+  const travelDays = Math.max(1, totalDays - waitingDays);
+
   if (opts.tripType === "one-way") {
     const km = Math.max(dist, 100);
-    return { km, low: km * p.oneWayPerKm, high: km * p.oneWayPerKm + p.driverAllowance, days: 1 };
+    return {
+      km,
+      low: km * p.oneWayPerKm,
+      high: km * p.oneWayPerKm + p.driverAllowance,
+      days: 1,
+      waitingDays: 0,
+      travelDays: 1,
+      tollNote: "Tolls are not included and billed at actuals as they vary state to state",
+    };
   }
-  const km = Math.max(dist * 2, p.minKmPerDay * days);
-  const base = km * p.roundTripPerKm + p.driverAllowance * days;
-  return { km, low: base, high: Math.round(base * 1.15), days };
+
+  // Round trip calculation
+  const km = Math.max(dist * 2, p.minKmPerDay * travelDays);
+  // Fuel running cost for active travel days + daily driver allowance for entire tour (travel + waiting)
+  const base = km * p.roundTripPerKm + p.driverAllowance * totalDays;
+
+  return {
+    km,
+    low: base,
+    high: Math.round(base * 1.15),
+    days: totalDays,
+    waitingDays,
+    travelDays,
+    tollNote: "Tolls are not included and billed at actuals as they vary state to state",
+  };
 }
 
 export const inr = (n: number) => `₹${Math.round(n).toLocaleString("en-IN")}`;
@@ -642,29 +914,28 @@ export const testimonials = [
     name: "Priya Raghavan",
     location: "Chennai",
     rating: 5,
-    text: "Our family trip from Ooty to Mysore was extremely comfortable. The Innova was clean, spacious and the driver was very professional.",
+    text: "Our family trip from Ooty to Coonoor was extremely comfortable. The Crysta was immaculate, spacious, and the driver navigated the hairpin ghats with immense skill.",
     initials: "PR",
   },
   {
     name: "Arjun Menon",
     location: "Kochi",
     rating: 5,
-    text: "Booked the 19-seater for our office outing. Punctual pickup, smooth ride through the ghats and the team handled every change of plan calmly.",
+    text: "Booked the 12-seater Tempo Traveller for our office retreat in Ooty. Punctual airport pickup at Coimbatore, smooth ride through the ghats, and total transparency.",
     initials: "AM",
   },
   {
     name: "Sarah Williams",
     location: "London",
     rating: 5,
-    text: "We used Rashe Holidays for four days across Ooty, Coonoor and Coorg. Transparent pricing, no surprises, and the driver knew every viewpoint.",
-
+    text: "We used Rashe Holidays for four days across Ooty, Pykara and Mudumalai. Honest pricing, courteous driver, and the car was always ready on time.",
     initials: "SW",
   },
   {
     name: "Karthik & Divya",
     location: "Bangalore",
     rating: 5,
-    text: "Airport pickup at Coimbatore was on time even at 5 am. The Dzire was spotless and the WhatsApp updates were really reassuring.",
+    text: "Airport pickup at Coimbatore was punctual even at 5 am. The sedan was spotless, clean driving down the ghats, and prompt WhatsApp updates throughout.",
     initials: "KD",
   },
 ];
@@ -675,32 +946,24 @@ export const faqs = [
     a: "A One Way trip drops you at your destination and the journey ends there — you pay for one direction only. A Round Trip takes you to your destination and brings you back to your pickup point, and can span multiple days with the vehicle staying with you.",
   },
   {
-    q: "How is the trip price calculated?",
-    a: "Prices are based on the vehicle category and total kilometres travelled, with a per-km rate for One Way and Round Trips and a per-day rate for Day Rentals (minimum 250 km/day). Driver allowance is added per day for multi-day trips.",
+    q: "How does the Waiting Days concept work for multi-day trips?",
+    a: "If you book a round trip for more than 2 days (for example, a 5-day holiday) but only travel on 2 days while the vehicle remains parked at your hotel/resort for 3 days, you can specify 3 waiting days. You only pay running mileage for the active travel days, plus the standard daily driver allowance.",
   },
   {
-    q: "Can I book a vehicle for multiple days?",
-    a: "Yes. Choose Round Trip and enter the number of days. The vehicle and driver stay with you for the full duration, ideal for touring Ooty, Coorg, Kerala and beyond.",
+    q: "Are toll, parking, and permit charges included?",
+    a: "No. Toll, parking, state permit and forest entry charges are NOT included in the base fare as they vary from state to state and checkpost to checkpost. These are billed at actuals during the journey.",
   },
   {
-    q: "Are toll and parking charges included?",
-    a: "Toll, parking, state permit and forest entry charges are billed at actuals and are not included in the base fare. We share an itemised estimate before your trip.",
+    q: "Can I choose a specific vehicle like Innova Crysta, Hycross, or Tavera?",
+    a: "Absolutely! You can choose your preferred model: Sedan (4 seater), Tavera (9 seater), Innova Crysta (7 seater), Innova Hycross (7 seater), Tempo Traveller (12 seater), or Urbania (16 seater).",
   },
   {
-    q: "Can I choose a specific vehicle?",
-    a: "Absolutely. Select a preferred vehicle in the booking form — for example the Innova HyCross or a specific sedan — and we'll confirm availability for your dates.",
-  },
-  {
-    q: "How many passengers can travel in each vehicle?",
-    a: "Our 4-seater cars carry 4 passengers, the Toyota Innova HyCross carries up to 8, and the Traveller / Van carries 19 passengers with luggage.",
-  },
-  {
-    q: "Can I book for sightseeing trips?",
-    a: "Yes — local Ooty and Coonoor sightseeing packages, as well as multi-destination tours, are available. Mention your sightseeing plans in the special requirements field.",
+    q: "How are destination fixed packages calculated?",
+    a: "Our destination sightseeing packages (Ooty, Coonoor, Pykara, Mudumalai) and airport transfers (Coimbatore, Bangalore, Cochin, Chennai, Calicut, Trichy) have transparent, pre-classified fixed rates depending on the car you select.",
   },
   {
     q: "How will I receive booking confirmation?",
-    a: "Once you submit a request, our travel team calls or messages you on WhatsApp within 30 minutes to confirm availability, driver details and the final price.",
+    a: "Once you submit a request, our travel desk calls or messages you on WhatsApp within 30 minutes to confirm vehicle availability, driver details, and your exact itinerary.",
   },
 ];
 
@@ -708,5 +971,5 @@ export const stats = [
   { value: "12,000+", target: 12000, suffix: "+", separator: ",", label: "Happy Customers" },
   { value: "25,000+", target: 25000, suffix: "+", separator: ",", label: "Successful Trips" },
   { value: "14+", target: 14, suffix: "+", separator: "", label: "Years Experience" },
-  { value: "3", target: 3, suffix: "", separator: "", label: "Vehicle Categories" },
+  { value: "6", target: 6, suffix: "", separator: "", label: "Fleet Vehicles" },
 ];

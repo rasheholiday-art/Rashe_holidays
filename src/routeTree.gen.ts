@@ -14,9 +14,10 @@ import { Route as AboutRouteImport } from './routes/about'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as BookingRouteImport } from './routes/booking'
 import { Route as ContactRouteImport } from './routes/contact'
-import { Route as DestinationsRouteImport } from './routes/destinations'
 import { Route as HowItWorksRouteImport } from './routes/how-it-works'
 import { Route as TripTypesRouteImport } from './routes/trip-types'
+import { Route as DestinationsIndexRouteImport } from './routes/destinations.index'
+import { Route as DestinationsSlugRouteImport } from './routes/destinations.$slug'
 import { Route as VehiclesIndexRouteImport } from './routes/vehicles.index'
 import { Route as VehiclesSlugRouteImport } from './routes/vehicles.$slug'
 
@@ -45,11 +46,6 @@ const ContactRoute = ContactRouteImport.update({
   path: '/contact',
   getParentRoute: () => rootRouteImport,
 } as any)
-const DestinationsRoute = DestinationsRouteImport.update({
-  id: '/destinations',
-  path: '/destinations',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const HowItWorksRoute = HowItWorksRouteImport.update({
   id: '/how-it-works',
   path: '/how-it-works',
@@ -58,6 +54,16 @@ const HowItWorksRoute = HowItWorksRouteImport.update({
 const TripTypesRoute = TripTypesRouteImport.update({
   id: '/trip-types',
   path: '/trip-types',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DestinationsIndexRoute = DestinationsIndexRouteImport.update({
+  id: '/destinations/',
+  path: '/destinations/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DestinationsSlugRoute = DestinationsSlugRouteImport.update({
+  id: '/destinations/$slug',
+  path: '/destinations/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
 const VehiclesIndexRoute = VehiclesIndexRouteImport.update({
@@ -77,10 +83,11 @@ export interface FileRoutesByFullPath {
   '/admin': typeof AdminRoute
   '/booking': typeof BookingRoute
   '/contact': typeof ContactRoute
-  '/destinations': typeof DestinationsRoute
   '/how-it-works': typeof HowItWorksRoute
   '/trip-types': typeof TripTypesRoute
+  '/destinations/$slug': typeof DestinationsSlugRoute
   '/vehicles/$slug': typeof VehiclesSlugRoute
+  '/destinations/': typeof DestinationsIndexRoute
   '/vehicles/': typeof VehiclesIndexRoute
 }
 export interface FileRoutesByTo {
@@ -89,10 +96,11 @@ export interface FileRoutesByTo {
   '/admin': typeof AdminRoute
   '/booking': typeof BookingRoute
   '/contact': typeof ContactRoute
-  '/destinations': typeof DestinationsRoute
   '/how-it-works': typeof HowItWorksRoute
   '/trip-types': typeof TripTypesRoute
+  '/destinations/$slug': typeof DestinationsSlugRoute
   '/vehicles/$slug': typeof VehiclesSlugRoute
+  '/destinations': typeof DestinationsIndexRoute
   '/vehicles': typeof VehiclesIndexRoute
 }
 export interface FileRoutesById {
@@ -102,10 +110,11 @@ export interface FileRoutesById {
   '/admin': typeof AdminRoute
   '/booking': typeof BookingRoute
   '/contact': typeof ContactRoute
-  '/destinations': typeof DestinationsRoute
   '/how-it-works': typeof HowItWorksRoute
   '/trip-types': typeof TripTypesRoute
+  '/destinations/$slug': typeof DestinationsSlugRoute
   '/vehicles/$slug': typeof VehiclesSlugRoute
+  '/destinations/': typeof DestinationsIndexRoute
   '/vehicles/': typeof VehiclesIndexRoute
 }
 export interface FileRouteTypes {
@@ -116,10 +125,11 @@ export interface FileRouteTypes {
     | '/admin'
     | '/booking'
     | '/contact'
-    | '/destinations'
     | '/how-it-works'
     | '/trip-types'
+    | '/destinations/$slug'
     | '/vehicles/$slug'
+    | '/destinations/'
     | '/vehicles/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -128,10 +138,11 @@ export interface FileRouteTypes {
     | '/admin'
     | '/booking'
     | '/contact'
-    | '/destinations'
     | '/how-it-works'
     | '/trip-types'
+    | '/destinations/$slug'
     | '/vehicles/$slug'
+    | '/destinations'
     | '/vehicles'
   id:
     | '__root__'
@@ -140,10 +151,11 @@ export interface FileRouteTypes {
     | '/admin'
     | '/booking'
     | '/contact'
-    | '/destinations'
     | '/how-it-works'
     | '/trip-types'
+    | '/destinations/$slug'
     | '/vehicles/$slug'
+    | '/destinations/'
     | '/vehicles/'
   fileRoutesById: FileRoutesById
 }
@@ -153,10 +165,11 @@ export interface RootRouteChildren {
   AdminRoute: typeof AdminRoute
   BookingRoute: typeof BookingRoute
   ContactRoute: typeof ContactRoute
-  DestinationsRoute: typeof DestinationsRoute
   HowItWorksRoute: typeof HowItWorksRoute
   TripTypesRoute: typeof TripTypesRoute
+  DestinationsSlugRoute: typeof DestinationsSlugRoute
   VehiclesSlugRoute: typeof VehiclesSlugRoute
+  DestinationsIndexRoute: typeof DestinationsIndexRoute
   VehiclesIndexRoute: typeof VehiclesIndexRoute
 }
 
@@ -197,13 +210,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ContactRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/destinations': {
-      id: '/destinations'
-      path: '/destinations'
-      fullPath: '/destinations'
-      preLoaderRoute: typeof DestinationsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/how-it-works': {
       id: '/how-it-works'
       path: '/how-it-works'
@@ -216,6 +222,20 @@ declare module '@tanstack/react-router' {
       path: '/trip-types'
       fullPath: '/trip-types'
       preLoaderRoute: typeof TripTypesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/destinations/': {
+      id: '/destinations/'
+      path: '/destinations'
+      fullPath: '/destinations/'
+      preLoaderRoute: typeof DestinationsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/destinations/$slug': {
+      id: '/destinations/$slug'
+      path: '/destinations/$slug'
+      fullPath: '/destinations/$slug'
+      preLoaderRoute: typeof DestinationsSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/vehicles/': {
@@ -241,10 +261,11 @@ const rootRouteChildren: RootRouteChildren = {
   AdminRoute: AdminRoute,
   BookingRoute: BookingRoute,
   ContactRoute: ContactRoute,
-  DestinationsRoute: DestinationsRoute,
   HowItWorksRoute: HowItWorksRoute,
   TripTypesRoute: TripTypesRoute,
+  DestinationsSlugRoute: DestinationsSlugRoute,
   VehiclesSlugRoute: VehiclesSlugRoute,
+  DestinationsIndexRoute: DestinationsIndexRoute,
   VehiclesIndexRoute: VehiclesIndexRoute,
 }
 export const routeTree = rootRouteImport

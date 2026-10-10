@@ -12,6 +12,7 @@ export interface AdminNotificationEmailProps {
   departureDate: string;
   returnDate?: string | null;
   numberOfDays: number;
+  waitingDays?: number | null;
   specialRequirements?: string | null;
   createdAt?: string;
   adminPortalUrl?: string;
@@ -50,7 +51,7 @@ Destination: ${props.destination}
 Departure Date: ${props.departureDate}
 Return Date: ${returnStr}
 Number of Days: ${props.numberOfDays}
-Special Requirements: ${props.specialRequirements || "None"}
+${props.waitingDays && props.waitingDays > 0 ? `Waiting Days: ${props.waitingDays} (Idle/Parked)\n` : ""}Special Requirements: ${props.specialRequirements || "None"}
 
 Admin Portal: ${props.adminPortalUrl || "Check your Supabase Admin Dashboard"}`;
 
@@ -112,6 +113,7 @@ Admin Portal: ${props.adminPortalUrl || "Check your Supabase Admin Dashboard"}`;
                   <tr><td style="padding:7px 0;font-size:14px;color:#6b7280;">Departure Date:</td><td style="padding:7px 0;font-size:14px;font-weight:600;color:#111827;">${props.departureDate}</td></tr>
                   <tr><td style="padding:7px 0;font-size:14px;color:#6b7280;">Return Date:</td><td style="padding:7px 0;font-size:14px;font-weight:600;color:#111827;">${returnStr}</td></tr>
                   <tr><td style="padding:7px 0;font-size:14px;color:#6b7280;">Number of Days:</td><td style="padding:7px 0;font-size:14px;font-weight:600;color:#111827;">${props.numberOfDays} Days</td></tr>
+                  ${props.waitingDays && props.waitingDays > 0 ? `<tr><td style="padding:7px 0;font-size:14px;color:#d97706;font-weight:600;">Waiting Days:</td><td style="padding:7px 0;font-size:14px;font-weight:700;color:#d97706;">${props.waitingDays} Days (Idle / Standby)</td></tr>` : ""}
                   <tr><td style="padding:7px 0;font-size:14px;color:#6b7280;">Special Requirements:</td><td style="padding:7px 0;font-size:14px;font-weight:600;color:#111827;">${props.specialRequirements || "None"}</td></tr>
                 </tbody>
               </table>

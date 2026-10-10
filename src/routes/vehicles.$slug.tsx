@@ -119,8 +119,10 @@ function VehicleDetail() {
                 <span className="text-base font-medium text-ink-muted"> / km round trip</span>
               </p>
               <p className="mt-1 text-sm text-ink-muted">
-                {inr(p.oneWayPerKm)}/km one way · {inr(p.perDay)} per day (min {p.minKmPerDay} km) ·
-                driver allowance {inr(p.driverAllowance)}/day
+                {inr(p.oneWayPerKm)}/km one way · {inr(p.roundTripPerKm)}/km round trip · driver allowance {inr(p.driverAllowance)}/day
+              </p>
+              <p className="mt-2 text-xs text-ink-muted/80">
+                * Tolls, state permits and parking charges are billed at actuals as rates vary state to state.
               </p>
             </div>
 

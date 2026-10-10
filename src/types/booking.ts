@@ -5,7 +5,15 @@ export type BookingInsert = Database["public"]["Tables"]["bookings"]["Insert"];
 export type BookingUpdate = Database["public"]["Tables"]["bookings"]["Update"];
 
 export type TripType = "one-way" | "round-trip";
-export type VehicleCategory = "4-seater" | "8-seater" | "19-seater";
+export type VehicleCategory =
+  | "4-seater"
+  | "7-seater"
+  | "9-seater"
+  | "12-seater"
+  | "16-seater"
+  | "8-seater"
+  | "19-seater"
+  | string;
 export type BookingStatus = "pending" | "contacted" | "confirmed" | "completed" | "cancelled";
 
 export interface Booking {
@@ -21,6 +29,7 @@ export interface Booking {
   departureDate: string;
   returnDate?: string | null;
   numberOfDays: number;
+  waitingDays?: number;
   customerName: string;
   phoneNumber: string;
   emailAddress?: string | null;
@@ -38,6 +47,7 @@ export interface CreateBookingInput {
   departureDate: string;
   returnDate?: string | null;
   numberOfDays?: number;
+  waitingDays?: number;
   customerName: string;
   phoneNumber: string;
   emailAddress?: string | null;

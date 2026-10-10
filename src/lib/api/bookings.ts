@@ -218,6 +218,7 @@ export async function createBooking(input: CreateBookingInput): Promise<ApiRespo
       departureDate: input.departureDate,
       returnDate: input.returnDate ?? null,
       numberOfDays: input.numberOfDays ?? 1,
+      waitingDays: input.waitingDays ?? 0,
       customerName: input.customerName,
       phoneNumber: input.phoneNumber,
       emailAddress: input.emailAddress ?? null,

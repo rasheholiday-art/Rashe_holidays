@@ -88,9 +88,9 @@ function Index() {
         <div className="container-x">
           <SectionHeading
             eyebrow="Our Fleet"
-            title="Three categories,"
+            title="Six vehicles,"
             accent="one standard"
-            description="From a nimble hatchback for local sightseeing to a 19-seater for the whole group — every vehicle is sanitised, insured and driven by a hill-road specialist."
+            description="From a comfortable 4-seater sedan to a 16-seater Urbania — every vehicle is sanitised, insured and driven by a Nilgiri hill specialist."
           />
           <CategoryShowcase />
         </div>
@@ -105,7 +105,7 @@ function Index() {
             eyebrow="Trip Types"
             title="Choose how you"
             accent="travel"
-            description="Two simple ways to book. Both include the driver, fuel and a fixed per-kilometre rate."
+            description="Two simple ways to book. Both include the driver, fuel and transparent per-kilometre or fixed package rates."
           />
           <div className="mt-14 grid gap-6 lg:grid-cols-2">
             <TripTypeCard type="one-way" />
@@ -121,10 +121,10 @@ function Index() {
             eyebrow="Popular Routes"
             title="Where would you like"
             accent="to go?"
-            description="Day trips, airport transfers and multi-day tours from Ooty."
+            description="Sightseeing day trips and seamless airport transfers starting from Ooty."
           />
           <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            {destinations.slice(1).map((d, i) => (
+            {destinations.slice(0, 6).map((d, i) => (
               <Reveal key={d.slug} delay={i * 60}>
                 <DestinationCard d={d} />
               </Reveal>

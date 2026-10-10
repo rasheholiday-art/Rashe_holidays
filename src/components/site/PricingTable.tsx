@@ -6,7 +6,7 @@ import { categories, inr, vehiclesByCategory, type CategoryId } from "@/data/sit
 import { cn } from "@/lib/utils";
 
 export function PricingTable() {
-  const [active, setActive] = useState<CategoryId>("8-seater");
+  const [active, setActive] = useState<CategoryId>("7-seater");
   const cat = categories.find((c) => c.id === active)!;
   const hero = vehiclesByCategory(active)[0]!;
 

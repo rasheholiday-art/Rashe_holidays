@@ -24,6 +24,7 @@ export interface Reservation {
   returnDate?: string | undefined;
   passengers: number;
   days: number;
+  waitingDays?: number;
   name: string;
   phone: string;
   email?: string | undefined;
@@ -34,6 +35,9 @@ export interface Reservation {
         high: number;
         km: number;
         days: number;
+        waitingDays?: number;
+        travelDays?: number;
+        tollNote?: string;
       }
     | null
     | undefined;
@@ -49,38 +53,40 @@ const SEED_RESERVATIONS: Reservation[] = [
     id: "NR-1048",
     createdAt: new Date(Date.now() - 1000 * 60 * 25).toISOString(), // 25 mins ago
     tripType: "round-trip",
-    category: "8-seater",
-    vehicle: "toyota-innova-hycross",
+    category: "7-seater",
+    vehicle: "crysta",
     from: "Ooty",
-    to: "Mysore",
+    to: "Coimbatore Airport",
     date: "2026-09-20",
-    returnDate: "2026-09-22",
-    passengers: 6,
-    days: 3,
+    returnDate: "2026-09-24",
+    passengers: 5,
+    days: 4,
+    waitingDays: 1,
     name: "Arunachalam K",
     phone: "+91 94432 18940",
     email: "arun.k@example.com",
     notes:
-      "Visiting Mysore Palace and Chamundi Hills. Senior citizens travelling, need gentle driving.",
-    estimate: { low: 11500, high: 13500, km: 380, days: 3 },
+      "Family vacation with 1 waiting day at resort. Senior citizens travelling, need gentle driving.",
+    estimate: { low: 9500, high: 11000, km: 380, days: 4, waitingDays: 1, travelDays: 3 },
     status: "New",
   },
   {
     id: "NR-1047",
     createdAt: new Date(Date.now() - 1000 * 60 * 180).toISOString(), // 3 hours ago
     tripType: "one-way",
-    category: "19-seater",
-    vehicle: "",
+    category: "12-seater",
+    vehicle: "tempo-traveller",
     from: "Coimbatore Airport",
     to: "Ooty",
     date: "2026-09-24",
-    passengers: 14,
+    passengers: 11,
     days: 1,
+    waitingDays: 0,
     name: "Pooja Venkatesh",
     phone: "+91 98840 55120",
     email: "pooja.v@techcorp.in",
     notes: "Corporate leadership retreat offsite. Lots of luggage bags.",
-    estimate: { low: 7800, high: 9000, km: 95, days: 1 },
+    estimate: { low: 6800, high: 7800, km: 96, days: 1, waitingDays: 0, travelDays: 1 },
     status: "Contacted",
     internalNotes: "Sent quotation on WhatsApp, awaiting flight timing confirmation.",
   },
@@ -89,7 +95,7 @@ const SEED_RESERVATIONS: Reservation[] = [
     createdAt: new Date(Date.now() - 1000 * 60 * 60 * 12).toISOString(), // 12 hours ago
     tripType: "round-trip",
     category: "4-seater",
-    vehicle: "maruti-suzuki-swift-dzire",
+    vehicle: "sedan",
     from: "Ooty",
     to: "Coonoor",
     date: "2026-09-18",
@@ -100,16 +106,16 @@ const SEED_RESERVATIONS: Reservation[] = [
     phone: "+91 97910 88231",
     email: "rohan.m@gmail.com",
     notes: "Honeymoon couple, Sim's Park, Tea Factory and Dolphin's Nose viewpoint.",
-    estimate: { low: 2200, high: 2800, km: 60, days: 1 },
+    estimate: { low: 2500, high: 2800, km: 60, days: 1 },
     status: "Confirmed",
-    internalNotes: "Assigned driver Ramesh (Swift Dzire TN 43 D 8291). Advance received.",
+    internalNotes: "Assigned driver Ramesh (Sedan TN 43 D 8291). Advance received.",
   },
   {
     id: "NR-1045",
     createdAt: new Date(Date.now() - 1000 * 60 * 60 * 36).toISOString(), // 1.5 days ago
     tripType: "one-way",
-    category: "8-seater",
-    vehicle: "toyota-innova-crysta",
+    category: "7-seater",
+    vehicle: "crysta",
     from: "Ooty",
     to: "Bangalore",
     date: "2026-09-28",
@@ -127,7 +133,7 @@ const SEED_RESERVATIONS: Reservation[] = [
     createdAt: new Date(Date.now() - 1000 * 60 * 60 * 50).toISOString(),
     tripType: "round-trip",
     category: "4-seater",
-    vehicle: "hyundai-aura",
+    vehicle: "sedan",
     from: "Ooty",
     to: "Wayanad",
     date: "2026-09-15",
@@ -204,6 +210,7 @@ export function mapSupabaseToReservation(b: SupabaseBooking): Reservation {
     returnDate: b.returnDate || undefined,
     passengers: b.passengers,
     days: b.numberOfDays,
+    waitingDays: b.waitingDays ?? 0,
     name: b.customerName,
     phone: b.phoneNumber,
     email: b.emailAddress || undefined,
@@ -249,7 +256,7 @@ export async function saveBookingAsync(
   // 1. Submit to Supabase
   const apiRes = await createSupabaseBooking({
     tripType: data.tripType,
-    vehicleCategory: (data.category as "4-seater" | "8-seater" | "19-seater") || "8-seater",
+    vehicleCategory: data.category as any,
     preferredVehicle: data.vehicle,
     passengers: data.passengers,
     pickupLocation: data.from,
@@ -257,6 +264,7 @@ export async function saveBookingAsync(
     departureDate: data.date,
     returnDate: data.returnDate,
     numberOfDays: data.days,
+    waitingDays: data.waitingDays,
     customerName: data.name,
     phoneNumber: data.phone,
     emailAddress: data.email,
@@ -401,6 +409,8 @@ export function exportBookingsCsv(bookings: Reservation[]): void {
     "Destination (To)",
     "Travel Date",
     "Return Date",
+    "Total Days",
+    "Waiting Days",
     "Passengers",
     "Est Low (INR)",
     "Est High (INR)",
@@ -422,6 +432,8 @@ export function exportBookingsCsv(bookings: Reservation[]): void {
     `"${(b.to || "").replace(/"/g, '""')}"`,
     b.date || "",
     b.returnDate || "",
+    b.days || 1,
+    b.waitingDays || 0,
     b.passengers,
     b.estimate?.low || "",
     b.estimate?.high || "",

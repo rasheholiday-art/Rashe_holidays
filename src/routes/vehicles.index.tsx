@@ -45,7 +45,7 @@ function VehiclesPage() {
         title="Pick the vehicle that"
         accent="fits your trip"
         image={vehicles[0]!.images[0]!}
-        description="Seven vehicles across three categories — every one sanitised, insured and driven by a hill-road specialist."
+        description="Six premium vehicles across five categories — every one sanitised, insured and driven by a hill-road specialist."
       />
 
       <section className="section-y">
