@@ -9,20 +9,14 @@ import { TestimonialCard } from "@/components/site/TestimonialCard";
 import { WhyChooseUs } from "@/components/site/WhyChooseUs";
 import { company, stats, testimonials } from "@/data/site";
 import CountUp from "@/components/ui/CountUp";
+import { pageHead } from "@/lib/seo";
 
-const title = "About Rashe Holidays — Ooty Travels & Transportation";
+const title = "About Rashe Holidays — Ooty Travels & Taxi Service";
 const description =
   "Fourteen years of driving the Nilgiri ghats. Meet the Ooty-based travel team behind 25,000+ safe, comfortable journeys across South India.";
 
 export const Route = createFileRoute("/about")({
-  head: () => ({
-    meta: [
-      { title },
-      { name: "description", content: description },
-      { property: "og:title", content: title },
-      { property: "og:description", content: description },
-    ],
-  }),
+  head: () => pageHead({ title, description, path: "/about" }),
   component: AboutPage,
 });
 
@@ -68,7 +62,7 @@ function AboutPage() {
             eyebrow="Our Story"
             title="From one sedan to a"
             accent="full fleet"
-            description="What started as airport runs down the Mettupalayam ghat is now a three-category fleet serving families, corporates and tour groups across Tamil Nadu, Karnataka and Kerala. The team has grown, the standards haven't moved."
+            description="What started as airport runs down the Mettupalayam ghat is now a five-category fleet serving families, corporates and tour groups across Tamil Nadu, Karnataka and Kerala. The team has grown, the standards haven't moved."
           />
           <Reveal className="grid grid-cols-2 gap-6 self-center">
             {stats.map((s) => (

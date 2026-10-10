@@ -6,20 +6,14 @@ import { SectionHeading } from "@/components/site/SectionHeading";
 import { TripTypeCard } from "@/components/site/TripTypeCard";
 import { PricingTable } from "@/components/site/PricingTable";
 import { Reveal } from "@/components/site/Reveal";
+import { pageHead } from "@/lib/seo";
 
-const title = "Trip Types — One Way & Round Trip Cabs | Rashe Holidays";
+const title = "One Way & Round Trip Taxi from Ooty | Rashe Holidays";
 const description =
   "Understand the difference between one-way and round-trip cab bookings in Ooty, how fares are calculated, and which option suits your journey.";
 
 export const Route = createFileRoute("/trip-types")({
-  head: () => ({
-    meta: [
-      { title },
-      { name: "description", content: description },
-      { property: "og:title", content: title },
-      { property: "og:description", content: description },
-    ],
-  }),
+  head: () => pageHead({ title, description, path: "/trip-types" }),
   component: TripTypes,
 });
 

@@ -15,6 +15,7 @@ import { Route as AdminRouteImport } from './routes/admin'
 import { Route as BookingRouteImport } from './routes/booking'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as HowItWorksRouteImport } from './routes/how-it-works'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as TripTypesRouteImport } from './routes/trip-types'
 import { Route as DestinationsIndexRouteImport } from './routes/destinations.index'
 import { Route as DestinationsSlugRouteImport } from './routes/destinations.$slug'
@@ -51,6 +52,11 @@ const HowItWorksRoute = HowItWorksRouteImport.update({
   path: '/how-it-works',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const TripTypesRoute = TripTypesRouteImport.update({
   id: '/trip-types',
   path: '/trip-types',
@@ -84,6 +90,7 @@ export interface FileRoutesByFullPath {
   '/booking': typeof BookingRoute
   '/contact': typeof ContactRoute
   '/how-it-works': typeof HowItWorksRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/trip-types': typeof TripTypesRoute
   '/destinations/$slug': typeof DestinationsSlugRoute
   '/vehicles/$slug': typeof VehiclesSlugRoute
@@ -97,6 +104,7 @@ export interface FileRoutesByTo {
   '/booking': typeof BookingRoute
   '/contact': typeof ContactRoute
   '/how-it-works': typeof HowItWorksRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/trip-types': typeof TripTypesRoute
   '/destinations/$slug': typeof DestinationsSlugRoute
   '/vehicles/$slug': typeof VehiclesSlugRoute
@@ -111,6 +119,7 @@ export interface FileRoutesById {
   '/booking': typeof BookingRoute
   '/contact': typeof ContactRoute
   '/how-it-works': typeof HowItWorksRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/trip-types': typeof TripTypesRoute
   '/destinations/$slug': typeof DestinationsSlugRoute
   '/vehicles/$slug': typeof VehiclesSlugRoute
@@ -126,6 +135,7 @@ export interface FileRouteTypes {
     | '/booking'
     | '/contact'
     | '/how-it-works'
+    | '/sitemap.xml'
     | '/trip-types'
     | '/destinations/$slug'
     | '/vehicles/$slug'
@@ -139,6 +149,7 @@ export interface FileRouteTypes {
     | '/booking'
     | '/contact'
     | '/how-it-works'
+    | '/sitemap.xml'
     | '/trip-types'
     | '/destinations/$slug'
     | '/vehicles/$slug'
@@ -152,6 +163,7 @@ export interface FileRouteTypes {
     | '/booking'
     | '/contact'
     | '/how-it-works'
+    | '/sitemap.xml'
     | '/trip-types'
     | '/destinations/$slug'
     | '/vehicles/$slug'
@@ -166,6 +178,7 @@ export interface RootRouteChildren {
   BookingRoute: typeof BookingRoute
   ContactRoute: typeof ContactRoute
   HowItWorksRoute: typeof HowItWorksRoute
+  SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   TripTypesRoute: typeof TripTypesRoute
   DestinationsSlugRoute: typeof DestinationsSlugRoute
   VehiclesSlugRoute: typeof VehiclesSlugRoute
@@ -217,6 +230,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof HowItWorksRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/trip-types': {
       id: '/trip-types'
       path: '/trip-types'
@@ -262,6 +282,7 @@ const rootRouteChildren: RootRouteChildren = {
   BookingRoute: BookingRoute,
   ContactRoute: ContactRoute,
   HowItWorksRoute: HowItWorksRoute,
+  SitemapDotxmlRoute: SitemapDotxmlRoute,
   TripTypesRoute: TripTypesRoute,
   DestinationsSlugRoute: DestinationsSlugRoute,
   VehiclesSlugRoute: VehiclesSlugRoute,

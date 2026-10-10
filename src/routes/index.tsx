@@ -15,19 +15,16 @@ import { PricingTable } from "@/components/site/PricingTable";
 import { FAQ } from "@/components/site/FAQ";
 import { company, destinations, stats, testimonials, whatsappUrl } from "@/data/site";
 import CountUp from "@/components/ui/CountUp";
+import { businessJsonLd, jsonLdScript, pageHead, websiteJsonLd } from "@/lib/seo";
 
-const title = "Rashe Holidays — Premium Cab & Tempo Traveller Hire in Ooty";
+const title = "Ooty Taxi, Cab & Tempo Traveller Booking | Rashe Holidays";
 const description =
-  "Book premium 4-seater cars, Toyota Innova HyCross and 19-seater Travellers in Ooty. One-way and round trips across the Nilgiris, Mysore, Kerala and Bangalore with transparent pricing.";
+  "Ooty taxi & cab service: sedan, Innova Crysta, HyCross, Tavera, Tempo Traveller and Urbania with hill-trained drivers. Nilgiris sightseeing and airport transfers.";
 
 export const Route = createFileRoute("/")({
   head: () => ({
-    meta: [
-      { title },
-      { name: "description", content: description },
-      { property: "og:title", content: title },
-      { property: "og:description", content: description },
-    ],
+    ...pageHead({ title, description, path: "/" }),
+    scripts: [jsonLdScript(businessJsonLd()), jsonLdScript(websiteJsonLd())],
   }),
   component: Index,
 });
@@ -40,6 +37,7 @@ function Index() {
         <img
           src={heroImg}
           alt="Tea gardens and winding roads of the Nilgiri hills near Ooty"
+          fetchPriority="high"
           className="absolute inset-0 size-full object-cover opacity-45"
         />
         <div className="absolute inset-0 bg-gradient-to-b from-ink/90 via-ink/70 to-ink" />

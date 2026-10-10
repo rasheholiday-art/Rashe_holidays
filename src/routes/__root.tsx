@@ -83,9 +83,12 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
+      // Fallback for routes without their own head (e.g. the 404 page); leaf routes override it.
+      { title: "Rashe Holidays — Ooty Taxi & Nilgiris Travels" },
       { name: "author", content: "Rashe Holidays" },
       { property: "og:type", content: "website" },
       { property: "og:site_name", content: "Rashe Holidays" },
+      { property: "og:locale", content: "en_IN" },
 
       { name: "twitter:card", content: "summary_large_image" },
       { name: "theme-color", content: "#1c1c1f" },

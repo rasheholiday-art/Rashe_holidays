@@ -6,20 +6,14 @@ import { SectionHeading } from "@/components/site/SectionHeading";
 import { HowItWorks as Steps } from "@/components/site/HowItWorks";
 import { FAQ } from "@/components/site/FAQ";
 import { WhyChooseUs } from "@/components/site/WhyChooseUs";
+import { pageHead } from "@/lib/seo";
 
-const title = "How It Works — Booking a Cab in Ooty | Rashe Holidays";
+const title = "How to Book a Taxi in Ooty, Step by Step | Rashe Holidays";
 const description =
-  "From choosing a vehicle to confirmation on WhatsApp — see exactly how booking a cab or Traveller with Rashe Holidays works, step by step.";
+  "From choosing a vehicle to confirmation on WhatsApp — see exactly how booking a cab or Tempo Traveller in Ooty with Rashe Holidays works, step by step.";
 
 export const Route = createFileRoute("/how-it-works")({
-  head: () => ({
-    meta: [
-      { title },
-      { name: "description", content: description },
-      { property: "og:title", content: title },
-      { property: "og:description", content: description },
-    ],
-  }),
+  head: () => pageHead({ title, description, path: "/how-it-works" }),
   component: HowItWorksPage,
 });
 

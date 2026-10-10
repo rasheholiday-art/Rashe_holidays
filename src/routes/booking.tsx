@@ -2,21 +2,15 @@ import { createFileRoute } from "@tanstack/react-router";
 import { PageHero } from "@/components/site/PageHero";
 import { BookingForm } from "@/components/site/BookingForm";
 import { bookingSearchSchema } from "@/lib/booking-search";
+import { pageHead } from "@/lib/seo";
 
-const title = "Book a Cab in Ooty — Enquiry Form | Rashe Holidays";
+const title = "Book a Taxi in Ooty — Instant Fare Estimate | Rashe Holidays";
 const description =
-  "Send a booking enquiry for a 4-seater car, Innova HyCross or 19-seater Traveller in Ooty. See an instant fare estimate and get confirmation within 30 minutes.";
+  "Book a sedan, Innova Crysta, HyCross, Tavera, Tempo Traveller or Urbania in Ooty. See an instant fare estimate and get confirmation within 30 minutes.";
 
 export const Route = createFileRoute("/booking")({
   validateSearch: bookingSearchSchema,
-  head: () => ({
-    meta: [
-      { title },
-      { name: "description", content: description },
-      { property: "og:title", content: title },
-      { property: "og:description", content: description },
-    ],
-  }),
+  head: () => pageHead({ title, description, path: "/booking" }),
   component: BookingPage,
 });
 

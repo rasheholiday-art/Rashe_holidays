@@ -5,6 +5,15 @@ import { Logo } from "./Logo";
 import { Button } from "@/components/ui/button";
 import { WhatsAppIcon } from "./WhatsAppButton";
 
+// Slugs must exist in `vehicles` (src/data/site.ts) or the link 404s.
+const fleetLinks = [
+  { slug: "crysta", label: "Innova Crysta (7 Seater)" },
+  { slug: "hycross", label: "Innova HyCross (7 Seater)" },
+  { slug: "tempo-traveller", label: "Tempo Traveller (12 Seater)" },
+  { slug: "urbania", label: "Urbania (16 Seater)" },
+  { slug: "sedan", label: "Sedan (4 Seater)" },
+];
+
 export function Footer() {
   return (
     <footer className="bg-ink text-ink-foreground">
@@ -98,33 +107,17 @@ export function Footer() {
           <div>
             <h3 className="text-xs font-bold uppercase tracking-[0.2em] text-ink-muted">Fleet</h3>
             <ul className="mt-5 space-y-3 text-sm">
-              <li>
-                <Link
-                  to="/vehicles/$slug"
-                  params={{ slug: "toyota-innova-hycross" }}
-                  className="hover:text-gold transition-colors"
-                >
-                  Toyota Innova HyCross
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/vehicles/$slug"
-                  params={{ slug: "19-seater-traveller" }}
-                  className="hover:text-gold transition-colors"
-                >
-                  19 Seater Traveller
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/vehicles"
-                  search={{ category: "4-seater" }}
-                  className="hover:text-gold transition-colors"
-                >
-                  4-Seater Cars
-                </Link>
-              </li>
+              {fleetLinks.map((l) => (
+                <li key={l.slug}>
+                  <Link
+                    to="/vehicles/$slug"
+                    params={{ slug: l.slug }}
+                    className="hover:text-gold transition-colors"
+                  >
+                    {l.label}
+                  </Link>
+                </li>
+              ))}
               <li>
                 <Link to="/booking" className="hover:text-gold transition-colors">
                   Book a Ride

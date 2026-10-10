@@ -9,6 +9,7 @@ import { AvailabilityDot } from "@/components/site/AvailabilityDot";
 import { VehicleCard } from "@/components/site/VehicleCard";
 import { company, inr, vehicleBySlug, vehicles, whatsappUrl } from "@/data/site";
 import { cn } from "@/lib/utils";
+import { fitText, pageHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/vehicles/$slug")({
   loader: ({ params }) => {
@@ -26,16 +27,19 @@ export const Route = createFileRoute("/vehicles/$slug")({
       };
     }
     const v = loaderData.vehicle;
-    const title = `${v.name} — ${v.seats} Seater Hire in Ooty | Rashe Holidays`;
-    const description = `${v.tagline}. ${v.description}`.slice(0, 155);
-    return {
-      meta: [
-        { title },
-        { name: "description", content: description },
-        { property: "og:title", content: title },
-        { property: "og:description", content: description },
-      ],
-    };
+    const title = `${v.shortName} Hire in Ooty (${v.seats} Seater) | Rashe Holidays`;
+    const facts = `${v.shortName} hire in Ooty with driver: ${v.seats} seats, ${v.luggage.toLowerCase()} luggage space. From ${inr(v.pricing.oneWayPerKm)}/km one way or ${inr(v.pricing.perDay)}/day.`;
+    const description = fitText([
+      `${facts} ${v.tagline}.`,
+      `${facts} Nilgiris sightseeing and airport transfers.`,
+      facts,
+    ]);
+    return pageHead({
+      title,
+      description,
+      path: `/vehicles/${v.slug}`,
+      image: { url: v.images[0]!, alt: v.name },
+    });
   },
   component: VehicleDetail,
 });
@@ -209,7 +213,7 @@ function VehicleDetail() {
       <section className="bg-secondary/50 py-20 sm:py-28">
         <div className="container-x">
           <SectionHeading eyebrow="Compare" title="Other vehicles you" accent="may like" />
-          <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="mt-12 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {related.map((o, i) => (
               <Reveal key={o.slug} delay={i * 60}>
                 <VehicleCard vehicle={o} />

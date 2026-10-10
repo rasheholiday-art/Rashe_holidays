@@ -9,20 +9,14 @@ import { Reveal } from "@/components/site/Reveal";
 import ootyImg from "@/assets/destinations/ooty.jpg";
 import { destinations, inr, vehicles } from "@/data/site";
 import { cn } from "@/lib/utils";
+import { pageHead } from "@/lib/seo";
 
-const title = "Tour Destinations & Airport Transfers from Ooty | Rashe Holidays";
+const title = "Ooty Sightseeing & Airport Taxi Packages | Rashe Holidays";
 const description =
-  "Explore popular Nilgiri sightseeing packages and airport / railway transfers from Ooty with fixed transparent rates for Sedan, Tavera, Crysta, Hycross, Tempo Traveller and Urbania.";
+  "Fixed taxi fares from Ooty for Coonoor, Pykara and Mudumalai sightseeing, plus Coimbatore, Bangalore, Cochin, Calicut, Chennai and Trichy airport drops.";
 
 export const Route = createFileRoute("/destinations/")({
-  head: () => ({
-    meta: [
-      { title },
-      { name: "description", content: description },
-      { property: "og:title", content: title },
-      { property: "og:description", content: description },
-    ],
-  }),
+  head: () => pageHead({ title, description, path: "/destinations" }),
   component: DestinationsPage,
 });
 

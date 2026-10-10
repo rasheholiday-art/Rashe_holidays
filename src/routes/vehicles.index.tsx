@@ -9,21 +9,15 @@ import { PricingTable } from "@/components/site/PricingTable";
 import { vehiclesSearchSchema } from "@/lib/booking-search";
 import { categories, vehicles } from "@/data/site";
 import { cn } from "@/lib/utils";
+import { pageHead } from "@/lib/seo";
 
-const title = "Our Vehicles — Cars, Innova HyCross & 19 Seater | Rashe Holidays";
+const title = "Ooty Cab & Tempo Traveller Rental — Our Fleet | Rashe Holidays";
 const description =
-  "Browse our Ooty fleet: 4-seater sedans and hatchbacks, the Toyota Innova HyCross and 19-seater Travellers. Compare seating, luggage, ratings and per-km pricing.";
+  "Compare our Ooty fleet: sedan (4), Innova Crysta and HyCross (7), Tavera (9), Tempo Traveller (12) and Urbania (16). Per-km and day-rental rates with driver.";
 
 export const Route = createFileRoute("/vehicles/")({
   validateSearch: vehiclesSearchSchema,
-  head: () => ({
-    meta: [
-      { title },
-      { name: "description", content: description },
-      { property: "og:title", content: title },
-      { property: "og:description", content: description },
-    ],
-  }),
+  head: () => pageHead({ title, description, path: "/vehicles" }),
   component: VehiclesPage,
 });
 
@@ -74,7 +68,7 @@ function VehiclesPage() {
             Showing {list.length} {list.length === 1 ? "vehicle" : "vehicles"}
           </p>
 
-          <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {list.map((v, i) => (
               <Reveal key={v.slug} delay={i * 60}>
                 <VehicleCard vehicle={v} />

@@ -111,5 +111,12 @@ export default function CountUp({
     return () => unsubscribe();
   }, [springValue, formatValue]);
 
-  return <span className={className} ref={ref} />;
+  // The animated span is empty in server HTML, so expose the final value as real text for
+  // crawlers, no-JS visitors and screen readers; the animation itself is decorative.
+  return (
+    <>
+      <span className="sr-only">{formatValue(direction === "down" ? from : to)}</span>
+      <span className={className} ref={ref} aria-hidden="true" />
+    </>
+  );
 }

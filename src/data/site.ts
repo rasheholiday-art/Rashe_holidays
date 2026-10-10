@@ -18,6 +18,8 @@ import trichyImg from "@/assets/destinations/coorg.jpg";
 
 export const company = {
   name: "Rashe Holidays",
+  // Production origin — used for canonical URLs, Open Graph, sitemap and structured data.
+  siteUrl: "https://rasheholidays.com",
   tagline: "Premium Travels & Transportation · Ooty",
   phone: "+91 97869 63659",
   phoneHref: "tel:+919786963659",
@@ -26,6 +28,14 @@ export const company = {
   whatsapp: "919786963659",
   email: "hello@rasheholidays.in",
   address: "12, Commercial Road, Near Charring Cross, Ooty, The Nilgiris, Tamil Nadu 643001",
+  // Same address as above, split for structured data. Keep both in sync.
+  postalAddress: {
+    streetAddress: "12, Commercial Road, Near Charring Cross",
+    addressLocality: "Ooty",
+    addressRegion: "Tamil Nadu",
+    postalCode: "643001",
+    addressCountry: "IN",
+  },
   mapEmbed: "https://www.google.com/maps?q=Charring+Cross,+Ooty,+Tamil+Nadu&output=embed",
   hours: "Open 24 hours · 7 days a week",
 };

@@ -13,6 +13,7 @@ export function Stars({
   return (
     <span
       className={cn("inline-flex items-center gap-0.5 text-gold", className)}
+      role="img"
       aria-label={`${rating} out of 5 stars`}
     >
       {Array.from({ length: 5 }).map((_, i) => (

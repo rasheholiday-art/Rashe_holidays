@@ -6,6 +6,7 @@ import { SectionHeading } from "@/components/site/SectionHeading";
 import { Reveal } from "@/components/site/Reveal";
 import { FAQ } from "@/components/site/FAQ";
 import { company, whatsappUrl } from "@/data/site";
+import { businessJsonLd, jsonLdScript, pageHead } from "@/lib/seo";
 
 const title = "Contact Rashe Holidays — Ooty Travels & Cab Booking";
 const description =
@@ -13,12 +14,8 @@ const description =
 
 export const Route = createFileRoute("/contact")({
   head: () => ({
-    meta: [
-      { title },
-      { name: "description", content: description },
-      { property: "og:title", content: title },
-      { property: "og:description", content: description },
-    ],
+    ...pageHead({ title, description, path: "/contact" }),
+    scripts: [jsonLdScript(businessJsonLd())],
   }),
   component: ContactPage,
 });

@@ -24,6 +24,7 @@ import {
   whatsappUrl,
 } from "@/data/site";
 import { cn } from "@/lib/utils";
+import { breadcrumbJsonLd, fitText, jsonLdScript, pageHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/destinations/$slug")({
   loader: ({ params }) => {
@@ -41,14 +42,43 @@ export const Route = createFileRoute("/destinations/$slug")({
       };
     }
     const d = loaderData.destination;
-    const title = `${d.name} (${d.typeLabel}) from Ooty — Fixed Cab Rates | Rashe Holidays`;
-    const description = `Book fixed rate taxi packages from Ooty to ${d.name}. Choose from Sedan (4s), Tavera (9s), Crysta (7s), Hycross (7s), Tempo Traveller (12s), or Urbania (16s).`;
+    const path = `/destinations/${d.slug}`;
+    const [cheapestSlug, cheapestPrice] = Object.entries(d.fixedPrices).sort(
+      (a, b) => a[1] - b[1],
+    )[0]!;
+    const cheapest = vehicles.find((v) => v.slug === cheapestSlug)?.shortName ?? "Sedan";
+    const fromPrice = `Fixed fares from ${inr(cheapestPrice)} (${cheapest})`;
+    const includesOoty = d.name.includes("Ooty");
+    const title =
+      d.type === "transfer"
+        ? `Ooty to ${d.name} Taxi — Fixed Fares | Rashe Holidays`
+        : includesOoty
+          ? `${d.name} Sightseeing Taxi & Day Tour | Rashe Holidays`
+          : `${d.name} Sightseeing Taxi from Ooty | Rashe Holidays`;
+    const description =
+      d.type === "transfer"
+        ? `Ooty to ${d.name} taxi: ${d.kmFromOoty} km, ${d.hours}. ${fromPrice} with hill-trained drivers. Tolls and permits at actuals.`
+        : fitText(
+            [3, 2, 1].map(
+              (n) =>
+                `${d.name} sightseeing by taxi${includesOoty ? "" : " from Ooty"}: ${d.highlights.slice(0, n).join(", ")}. ${fromPrice}.`,
+            ),
+          );
     return {
-      meta: [
-        { title },
-        { name: "description", content: description },
-        { property: "og:title", content: title },
-        { property: "og:description", content: description },
+      ...pageHead({
+        title,
+        description,
+        path,
+        image: { url: d.image, alt: `${d.name} — ${d.typeLabel.toLowerCase()} from Ooty` },
+      }),
+      scripts: [
+        jsonLdScript(
+          breadcrumbJsonLd([
+            { name: "Home", path: "/" },
+            { name: "Destinations", path: "/destinations" },
+            { name: d.name, path },
+          ]),
+        ),
       ],
     };
   },
