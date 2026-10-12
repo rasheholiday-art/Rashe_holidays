@@ -20,26 +20,39 @@ const LOCAL_STORAGE_KEY = "rashe_holidays_supabase_offline_bookings";
 /**
  * Formats a phone input string to always ensure it starts with "+91 "
  * and restricts the mobile number to exactly 10 numeric digits.
+ * Eliminates the bug where typing after "+91 " prepended repeated "919191".
  */
 export function formatIndianPhoneNumber(value: string): string {
   if (!value) return "";
 
-  // Extract all digits
-  let digits = value.replace(/\D/g, "");
+  // 1. If input explicitly starts with "+91", strip that prefix first so it isn't parsed as mobile digits
+  let trimmed = value.trim();
+  if (trimmed.startsWith("+91")) {
+    trimmed = trimmed.slice(3).trim();
+  }
 
-  // If user pasted or typed with leading 91, strip it to isolate the 10 mobile digits
+  // 2. Extract digits only from the remaining input
+  let digits = trimmed.replace(/\D/g, "");
+
+  // 3. If user pasted a 12-digit number starting with 91 (e.g. 919786963659) or leading 0
   if (digits.startsWith("91") && digits.length > 10) {
     digits = digits.slice(2);
   } else if (digits.startsWith("0") && digits.length > 10) {
     digits = digits.slice(1);
   }
 
-  // Strictly enforce max 10 digits
+  // 4. Cap strictly at 10 digits
   digits = digits.slice(0, 10);
 
   if (digits.length === 0) {
+    // If user cleared or backspaced, allow empty string
+    if (value.trim() === "+91" || value.trim() === "+" || value.trim() === "") {
+      return "";
+    }
     return value.startsWith("+91") ? "+91 " : "";
   }
+
+  // 5. Format cleanly as +91 XXXXX XXXXX
   if (digits.length <= 5) {
     return `+91 ${digits}`;
   }

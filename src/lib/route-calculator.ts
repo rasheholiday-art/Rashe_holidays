@@ -40,6 +40,7 @@ function getCacheKey(from: string, to: string): string {
 // Find coordinate for a place name
 async function resolveCoordinates(place: string): Promise<[number, number] | null> {
   const clean = place.trim();
+  if (clean.length < 3) return null;
   const lower = clean.toLowerCase();
 
   // Check hardcoded coordinate registry
@@ -49,7 +50,7 @@ async function resolveCoordinates(place: string): Promise<[number, number] | nul
     }
   }
 
-  // Common aliases
+  // Common aliases (require at least 3 characters)
   if (lower.includes("ooty") || lower.includes("udhagamandalam"))
     return locationCoordinates["Ooty"] ?? null;
   if (lower.includes("coonoor")) return locationCoordinates["Coonoor"] ?? null;
@@ -60,7 +61,7 @@ async function resolveCoordinates(place: string): Promise<[number, number] | nul
     return locationCoordinates["Bangalore"] ?? null;
   if (lower.includes("coimbatore")) return locationCoordinates["Coimbatore"] ?? null;
 
-  // Query Nominatim OpenStreetMap Geocoder (biasing South India)
+  // Query Nominatim OpenStreetMap Geocoder (biasing South India) - only for full place names (3+ chars)
   try {
     const searchUrl = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(
       clean + ", India",
@@ -98,7 +99,8 @@ export async function calculateRouteDistance(
   const cleanFrom = from.trim();
   const cleanTo = to.trim();
 
-  if (!cleanFrom || !cleanTo) return null;
+  // Require full place names (at least 3 characters) to avoid premature/wrong estimations on single letters
+  if (!cleanFrom || !cleanTo || cleanFrom.length < 3 || cleanTo.length < 3) return null;
 
   if (cleanFrom.toLowerCase() === cleanTo.toLowerCase()) {
     return {
@@ -120,15 +122,16 @@ export async function calculateRouteDistance(
     };
   }
 
-  // Check fuzzy aliases against distanceFromOoty
+  // Check fuzzy aliases against distanceFromOoty only when target has at least 3 characters
   const isFromOoty = cleanFrom.toLowerCase() === "ooty";
   const isToOoty = cleanTo.toLowerCase() === "ooty";
   const targetPlace = isFromOoty ? cleanTo : isToOoty ? cleanFrom : null;
 
-  if (targetPlace) {
+  if (targetPlace && targetPlace.length >= 3) {
     const lowerTarget = targetPlace.toLowerCase();
     for (const [key, km] of Object.entries(distanceFromOoty)) {
-      if (key.toLowerCase().includes(lowerTarget) || lowerTarget.includes(key.toLowerCase())) {
+      const lowerKey = key.toLowerCase();
+      if (lowerKey === lowerTarget || (lowerTarget.length >= 4 && (lowerKey.startsWith(lowerTarget) || lowerTarget.startsWith(lowerKey)))) {
         return {
           km,
           source: "local",

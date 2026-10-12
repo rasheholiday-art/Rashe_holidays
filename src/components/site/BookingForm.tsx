@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { CheckCircle2, Info, RefreshCw, Sparkles, MapPin, Tag } from "lucide-react";
+import { CheckCircle2, Info, RefreshCw, Sparkles, MapPin } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
@@ -10,7 +10,6 @@ import {
   inr,
   locations,
   vehicles,
-  vehiclesByCategory,
   type CategoryId,
 } from "@/data/site";
 import type { BookingSearch } from "@/lib/booking-search";
@@ -36,11 +35,48 @@ export function BookingForm({ initial }: { initial: BookingSearch }) {
     return `${y}-${m}-${d}`;
   }, []);
 
-  const [tripType, setTripType] = useState<TripType>(initial.tripType ?? "round-trip");
-  const [category, setCategory] = useState<CategoryId>(initial.category ?? "7-seater");
-  const [vehicle, setVehicle] = useState(initial.vehicle ?? "");
   const [from, setFrom] = useState(initial.from ?? "Ooty");
   const [to, setTo] = useState(initial.to ?? "Coonoor");
+
+  // Specific vehicle selection - default to crysta or initial vehicle/category
+  const [vehicle, setVehicle] = useState<string>(() => {
+    if (initial.vehicle && vehicles.some((v) => v.slug === initial.vehicle)) {
+      return initial.vehicle;
+    }
+    if (initial.category) {
+      const match = vehicles.find((v) => v.category === initial.category);
+      if (match) return match.slug;
+    }
+    return "crysta";
+  });
+
+  const selectedVehicle = useMemo(
+    () => vehicles.find((v) => v.slug === vehicle) ?? vehicles[0],
+    [vehicle],
+  );
+  const category = selectedVehicle.category;
+  const cat = categories.find((c) => c.id === category) ?? categories[0];
+
+  // Check if route matches a fixed package destination (e.g. Ooty -> Coonoor, Pykara, Mudumalai, Coimbatore Airport)
+  const matchedDestination = useMemo(() => {
+    const f = from.trim().toLowerCase();
+    const t = to.trim().toLowerCase();
+    if (f === "ooty") {
+      return destinations.find((d) => d.name.toLowerCase() === t);
+    }
+    if (t === "ooty") {
+      return destinations.find((d) => d.name.toLowerCase() === f);
+    }
+    return null;
+  }, [from, to]);
+
+  const isFixedDayTrip = Boolean(matchedDestination);
+
+  const [tripType, setTripType] = useState<TripType>(() => {
+    if (initial.tripType) return initial.tripType;
+    return "round-trip";
+  });
+
   const [date, setDate] = useState(() => {
     if (initial.date && initial.date >= todayStr) return initial.date;
     return "";
@@ -51,7 +87,7 @@ export function BookingForm({ initial }: { initial: BookingSearch }) {
   });
   const [passengers, setPassengers] = useState(initial.passengers ?? 4);
   const [days, setDays] = useState(() => daysBetween(initial.date, initial.returnDate) ?? 1);
-  const [waitingDays, setWaitingDays] = useState(initial.waitingDays ?? 0);
+
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
@@ -61,16 +97,14 @@ export function BookingForm({ initial }: { initial: BookingSearch }) {
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const [submitError, setSubmitError] = useState<string | null>(null);
 
-  // Check if waiting days rule applies: round trip AND days > 2
-  const isWaitingDaysApplicable = tripType === "round-trip" && days > 2;
-  const effectiveWaitingDays = isWaitingDaysApplicable
-    ? Math.min(Math.max(0, waitingDays), Math.max(0, days - 1))
-    : 0;
+  // Require full place names (minimum 3 characters each) before initiating any route calculations
+  const hasValidRoute = from.trim().length >= 3 && to.trim().length >= 3;
 
   // Dynamic route calculation state
   const [routeInfo, setRouteInfo] = useState<RouteCalculationResult | null>(() => {
     const initFrom = initial.from ?? "Ooty";
     const initTo = initial.to ?? "Coonoor";
+    if (initFrom.trim().length < 3 || initTo.trim().length < 3) return null;
     const sync = estimateDistance(initFrom, initTo);
     return sync !== null ? { km: sync, source: "local", fromName: initFrom, toName: initTo } : null;
   });
@@ -81,7 +115,8 @@ export function BookingForm({ initial }: { initial: BookingSearch }) {
     const cleanFrom = from.trim();
     const cleanTo = to.trim();
 
-    if (!cleanFrom || !cleanTo) {
+    // Do NOT calculate distance or display premature rates on single-letter entries
+    if (cleanFrom.length < 3 || cleanTo.length < 3) {
       setRouteInfo(null);
       setIsCalculatingRoute(false);
       return;
@@ -95,7 +130,7 @@ export function BookingForm({ initial }: { initial: BookingSearch }) {
       return;
     }
 
-    // 2. Debounced OSRM calculation for typed/custom places
+    // 2. Debounced OSRM calculation for typed/custom places (waits for full name to be typed)
     setIsCalculatingRoute(true);
     const timer = setTimeout(async () => {
       try {
@@ -109,7 +144,7 @@ export function BookingForm({ initial }: { initial: BookingSearch }) {
           setIsCalculatingRoute(false);
         }
       }
-    }, 450);
+    }, 700);
 
     return () => {
       isCancelled = true;
@@ -117,46 +152,38 @@ export function BookingForm({ initial }: { initial: BookingSearch }) {
     };
   }, [from, to]);
 
-  const cat = categories.find((c) => c.id === category) ?? categories[0];
-  const options = vehiclesByCategory(category);
-
-  // Check if this matches a fixed package destination from Ooty
-  const matchedDestination = useMemo(() => {
-    if (from.trim().toLowerCase() !== "ooty") return null;
-    return destinations.find((d) => d.name.toLowerCase() === to.trim().toLowerCase());
-  }, [from, to]);
-
   const activeFixedPrice = useMemo(() => {
     if (!matchedDestination) return null;
-    if (vehicle && matchedDestination.fixedPrices[vehicle]) {
-      return matchedDestination.fixedPrices[vehicle];
-    }
-    const firstOption = options[0];
-    if (firstOption && matchedDestination.fixedPrices[firstOption.slug]) {
-      return matchedDestination.fixedPrices[firstOption.slug];
+    if (matchedDestination.fixedPrices[selectedVehicle.slug]) {
+      return matchedDestination.fixedPrices[selectedVehicle.slug];
     }
     return null;
-  }, [matchedDestination, vehicle, options]);
+  }, [matchedDestination, selectedVehicle]);
 
-  const estimate = useMemo(
-    () =>
-      estimateFare({
-        category,
-        vehicle,
-        tripType,
-        from,
-        to,
-        days,
-        waitingDays: effectiveWaitingDays,
-        customKm: routeInfo?.km,
-      }),
-    [category, vehicle, tripType, from, to, days, effectiveWaitingDays, routeInfo?.km],
-  );
+  const effectiveTripType: TripType = isFixedDayTrip
+    ? (matchedDestination?.type === "sightseeing" ? "round-trip" : "one-way")
+    : tripType;
 
-  const seatWarning = passengers > cat.seats;
+  const effectiveDays = isFixedDayTrip ? 1 : days;
+
+  const estimate = useMemo(() => {
+    if (!hasValidRoute) return null;
+    return estimateFare({
+      category,
+      vehicle: selectedVehicle.slug,
+      tripType: effectiveTripType,
+      from,
+      to,
+      days: effectiveDays,
+      waitingDays: 0,
+      customKm: routeInfo?.km,
+    });
+  }, [hasValidRoute, category, selectedVehicle.slug, effectiveTripType, from, to, effectiveDays, routeInfo?.km]);
+
+  const seatWarning = passengers > selectedVehicle.seats;
 
   if (submitted) {
-    const summary = `Booking request: ${tripType === "one-way" ? "One Way" : "Round Trip"}, ${cat.label}${vehicle ? ` (${vehicles.find((v) => v.slug === vehicle)?.name})` : ""}, ${from} → ${to}, ${date || "date TBD"}${tripType === "round-trip" && returnDate ? ` to ${returnDate}` : ""} (${days} days${effectiveWaitingDays > 0 ? `, ${effectiveWaitingDays} waiting days` : ""}), ${passengers} pax. Name: ${name}, Phone: ${phone}.`;
+    const summary = `Booking request: ${isFixedDayTrip ? "Day Package" : effectiveTripType === "one-way" ? "One Way" : "Round Trip"}, ${selectedVehicle.name}, ${from} → ${to}, ${date || "date TBD"}${!isFixedDayTrip && effectiveTripType === "round-trip" && returnDate ? ` to ${returnDate}` : ""} (${effectiveDays} day${effectiveDays > 1 ? "s" : ""}), ${passengers} pax. Name: ${name}, Phone: ${phone}.`;
     return (
       <div className="rounded-[2rem] border border-border bg-card p-8 text-center shadow-card sm:p-12 animate-fade-up">
         <span className="mx-auto grid size-16 place-items-center rounded-full bg-success-soft text-success">
@@ -170,34 +197,28 @@ export function BookingForm({ initial }: { initial: BookingSearch }) {
         </p>
 
         <div className="mx-auto mt-8 max-w-md rounded-2xl bg-secondary p-5 text-left text-sm">
-          <Row k="Trip" v={`${tripType === "one-way" ? "One Way" : "Round Trip"} · ${cat.label}`} />
-          {vehicle && (
-            <Row
-              k="Vehicle"
-              v={vehicles.find((v) => v.slug === vehicle)?.name ?? vehicle}
-            />
-          )}
-          <Row k="Route" v={`${from} → ${to}${tripType === "round-trip" ? ` → ${from}` : ""}`} />
+          <Row k="Trip" v={isFixedDayTrip ? "Day Tour Package" : effectiveTripType === "one-way" ? "One Way" : "Round Trip"} />
+          <Row k="Vehicle" v={selectedVehicle.name} />
+          <Row k="Route" v={`${from} → ${to}${!isFixedDayTrip && effectiveTripType === "round-trip" ? ` → ${from}` : ""}`} />
           <Row
-            k="Dates"
-            v={`${date || "To be confirmed"}${tripType === "round-trip" && returnDate ? ` – ${returnDate}` : ""}`}
+            k={isFixedDayTrip ? "Tour Date" : "Date"}
+            v={`${date || "To be confirmed"}${!isFixedDayTrip && effectiveTripType === "round-trip" && returnDate ? ` – ${returnDate}` : ""}`}
           />
-          {tripType === "round-trip" && <Row k="Total Duration" v={`${days} day${days > 1 ? "s" : ""}`} />}
-          {effectiveWaitingDays > 0 && (
-            <Row
-              k="Waiting Days"
-              v={`${effectiveWaitingDays} day${effectiveWaitingDays > 1 ? "s" : ""} (vehicle parked)`}
-            />
+          {!isFixedDayTrip && effectiveTripType === "round-trip" && (
+            <Row k="Total Duration" v={`${effectiveDays} day${effectiveDays > 1 ? "s" : ""}`} />
           )}
           <Row k="Passengers" v={`${passengers}`} />
           {email && <Row k="Confirmation Sent To" v={email} />}
           {activeFixedPrice ? (
-            <Row k="Fixed Package" v={`${inr(activeFixedPrice)} (fixed fare)`} />
+            <Row k="Package Fare" v={`${inr(activeFixedPrice)} approx.`} />
           ) : (
-            estimate && <Row k="Estimate" v={`${inr(estimate.low)} – ${inr(estimate.high)}`} />
+            estimate && <Row k="Estimated Fare" v={`${inr(estimate.low)} – ${inr(estimate.high)} approx.`} />
           )}
           <Row k="Toll & Parking" v="At actuals (state to state)" />
         </div>
+        <p className="mt-3 text-center text-[11px] text-muted-foreground">
+          * Fares are approximate and may be lesser depending on your exact itinerary and season.
+        </p>
         <div className="mt-8 flex flex-wrap justify-center gap-3">
           <Button asChild variant="gold" size="lg">
             <a href={whatsappUrl(summary)} target="_blank" rel="noreferrer">
@@ -223,10 +244,10 @@ export function BookingForm({ initial }: { initial: BookingSearch }) {
           customerName: name,
           phoneNumber: phone,
           departureDate: date,
-          returnDate: tripType === "round-trip" ? returnDate : undefined,
+          returnDate: !isFixedDayTrip && effectiveTripType === "round-trip" ? returnDate : undefined,
           emailAddress: email || undefined,
           passengers,
-          tripType,
+          tripType: effectiveTripType,
           pickupLocation: from,
           destination: to,
         });
@@ -243,16 +264,16 @@ export function BookingForm({ initial }: { initial: BookingSearch }) {
 
         try {
           await saveBookingAsync({
-            tripType,
+            tripType: effectiveTripType,
             category,
-            vehicle: vehicle || undefined,
+            vehicle: selectedVehicle.slug,
             from,
             to,
             date,
-            returnDate: tripType === "round-trip" ? returnDate : undefined,
+            returnDate: !isFixedDayTrip && effectiveTripType === "round-trip" ? returnDate : undefined,
             passengers,
-            days,
-            waitingDays: effectiveWaitingDays,
+            days: effectiveDays,
+            waitingDays: 0,
             name,
             phone,
             email: email || undefined,
@@ -262,9 +283,9 @@ export function BookingForm({ initial }: { initial: BookingSearch }) {
                   low: activeFixedPrice,
                   high: activeFixedPrice,
                   km: routeInfo?.km ?? 0,
-                  days,
-                  waitingDays: effectiveWaitingDays,
-                  travelDays: days - effectiveWaitingDays,
+                  days: 1,
+                  waitingDays: 0,
+                  travelDays: 1,
                   tollNote: "Tolls are not included and billed at actuals as they vary state to state",
                 }
               : estimate,
@@ -289,58 +310,53 @@ export function BookingForm({ initial }: { initial: BookingSearch }) {
           </div>
         )}
 
-        <Section n="1" title="Trip details">
+        <Section n="1" title="Trip & vehicle details">
           <div className="grid gap-4 sm:grid-cols-2">
             <L label="Trip Type">
               <select
-                value={tripType}
+                value={effectiveTripType}
                 onChange={(e) => {
                   const t = e.target.value as TripType;
                   setTripType(t);
-                  if (t === "one-way") {
-                    setWaitingDays(0);
-                  }
                 }}
-                className={inputCls}
+                disabled={isFixedDayTrip}
+                className={cn(inputCls, isFixedDayTrip && "bg-secondary text-foreground cursor-default")}
               >
-                <option value="round-trip">Round Trip</option>
-                <option value="one-way">One Way</option>
-              </select>
-            </L>
-
-            <L label="Vehicle Category">
-              <select
-                value={category}
-                onChange={(e) => {
-                  setCategory(e.target.value as CategoryId);
-                  setVehicle("");
-                }}
-                className={inputCls}
-              >
-                {categories.map((c) => (
-                  <option key={c.id} value={c.id}>
-                    {c.label} ({c.seats} Seats)
+                {isFixedDayTrip ? (
+                  <option value={matchedDestination?.type === "sightseeing" ? "round-trip" : "one-way"}>
+                    {matchedDestination?.type === "sightseeing"
+                      ? "Day Sightseeing Package"
+                      : "Direct Transfer Package"}
                   </option>
-                ))}
+                ) : (
+                  <>
+                    <option value="round-trip">Round Trip</option>
+                    <option value="one-way">One Way</option>
+                  </>
+                )}
               </select>
+              {isFixedDayTrip && (
+                <p className="mt-1 text-xs text-gold font-medium">
+                  {matchedDestination?.name} is a 1-day trip package with fixed pricing.
+                </p>
+              )}
             </L>
 
-            <L label="Specific Vehicle" hint="Optional">
+            <L label="Vehicle" hint="Choose specific vehicle">
               <select
                 value={vehicle}
                 onChange={(e) => setVehicle(e.target.value)}
                 className={inputCls}
               >
-                <option value="">Any available {cat.seats}-seater</option>
-                {options.map((v) => (
+                {vehicles.map((v) => (
                   <option key={v.slug} value={v.slug}>
-                    {v.name}
+                    {v.name} · {v.seats} Seats ({v.luggage} Luggage)
                   </option>
                 ))}
               </select>
             </L>
 
-            <L label="Number of Passengers">
+            <L label="Number of Passengers" className="sm:col-span-2">
               <select
                 value={passengers}
                 onChange={(e) => setPassengers(Number(e.target.value))}
@@ -357,7 +373,7 @@ export function BookingForm({ initial }: { initial: BookingSearch }) {
               </select>
               {seatWarning && (
                 <p className="mt-1.5 text-xs text-destructive">
-                  This category seats {cat.seats}. Choose a larger vehicle or we can arrange two vehicles.
+                  {selectedVehicle.name} seats {selectedVehicle.seats} passengers. Choose a larger vehicle or we can arrange two vehicles.
                 </p>
               )}
               {fieldErrors.passengers && (
@@ -410,7 +426,11 @@ export function BookingForm({ initial }: { initial: BookingSearch }) {
               ))}
             </datalist>
 
-            <L label="Departure Date">
+            <L
+              label={isFixedDayTrip ? "Tour Date" : "Departure Date"}
+              hint={isFixedDayTrip ? "Day trip" : undefined}
+              className={isFixedDayTrip ? "sm:col-span-2" : undefined}
+            >
               <input
                 type="date"
                 min={todayStr}
@@ -436,7 +456,8 @@ export function BookingForm({ initial }: { initial: BookingSearch }) {
               )}
             </L>
 
-            {tripType === "round-trip" && (
+            {/* If NOT a fixed price day trip and trip is round trip, show return date and total trip days */}
+            {!isFixedDayTrip && effectiveTripType === "round-trip" && (
               <L label="Return Date">
                 <input
                   type="date"
@@ -456,7 +477,7 @@ export function BookingForm({ initial }: { initial: BookingSearch }) {
               </L>
             )}
 
-            {tripType === "round-trip" && (
+            {!isFixedDayTrip && effectiveTripType === "round-trip" && (
               <L label="Total Trip Days">
                 <input
                   type="number"
@@ -466,45 +487,10 @@ export function BookingForm({ initial }: { initial: BookingSearch }) {
                   onChange={(e) => {
                     const nextDays = Math.max(1, Number(e.target.value));
                     setDays(nextDays);
-                    if (waitingDays >= nextDays) {
-                      setWaitingDays(Math.max(0, nextDays - 1));
-                    }
                   }}
                   className={inputCls}
                 />
               </L>
-            )}
-
-            {/* WAITING DAYS FIELD: Only applicable for Round Trip AND when trip days > 2 */}
-            {isWaitingDaysApplicable && (
-              <div className="sm:col-span-2 rounded-2xl border border-gold/40 bg-gold-soft/40 p-4 transition-all animate-fade-up">
-                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-                  <div>
-                    <span className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-foreground">
-                      <Sparkles className="size-3.5 text-gold" /> Waiting Days (Parked / Idle at Stay)
-                    </span>
-                    <p className="mt-1 text-xs text-muted-foreground leading-relaxed">
-                      Only available for round trips above 2 days. E.g., on a 5-day tour with 2 traveling days and 3 parked days, enter 3. You only pay driver allowance & idle charges on waiting days.
-                    </p>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <input
-                      type="number"
-                      min={0}
-                      max={Math.max(0, days - 1)}
-                      value={waitingDays}
-                      onChange={(e) => {
-                        const val = Number(e.target.value);
-                        setWaitingDays(Math.min(Math.max(0, val), Math.max(0, days - 1)));
-                      }}
-                      className={cn(inputCls, "w-24 text-center font-bold text-base")}
-                    />
-                    <span className="text-xs font-semibold text-foreground whitespace-nowrap">
-                      / {days - 1} max
-                    </span>
-                  </div>
-                </div>
-              </div>
             )}
           </div>
         </Section>
@@ -541,6 +527,11 @@ export function BookingForm({ initial }: { initial: BookingSearch }) {
                 onFocus={() => {
                   if (!phone) {
                     setPhone("+91 ");
+                  }
+                }}
+                onBlur={() => {
+                  if (phone.trim() === "+91" || phone.trim() === "+") {
+                    setPhone("");
                   }
                 }}
                 className={cn(inputCls, fieldErrors.phoneNumber && "border-destructive")}
@@ -614,7 +605,7 @@ export function BookingForm({ initial }: { initial: BookingSearch }) {
       {/* Summary Sidebar */}
       <aside className="lg:sticky lg:top-24 rounded-[2rem] border border-border bg-card p-6 shadow-card">
         <div className="flex items-center justify-between">
-          <p className="eyebrow">Instant Fare</p>
+          <p className="eyebrow">Trip Fare</p>
           {matchedDestination && (
             <span className="rounded-full bg-gold/20 px-2 py-0.5 text-[10px] font-bold text-gold uppercase tracking-wider">
               {matchedDestination.typeLabel}
@@ -622,42 +613,57 @@ export function BookingForm({ initial }: { initial: BookingSearch }) {
           )}
         </div>
 
-        <h3 className="mt-3 text-2xl font-semibold tracking-tight">{cat.title}</h3>
+        <h3 className="mt-3 text-2xl font-semibold tracking-tight">{selectedVehicle.name}</h3>
         <p className="mt-1 text-sm text-muted-foreground">
           {from || "—"} → {to || "—"}
-          {tripType === "round-trip" ? ` → ${from || "—"}` : ""}
+          {!isFixedDayTrip && effectiveTripType === "round-trip" ? ` → ${from || "—"}` : ""}
         </p>
 
         <div className="mt-5 rounded-2xl bg-ink p-5 text-ink-foreground">
-          {isCalculatingRoute ? (
+          {!hasValidRoute ? (
+            <div className="py-3 text-center">
+              <MapPin className="mx-auto size-5 text-gold/80" />
+              <p className="mt-2 text-sm font-semibold text-foreground">
+                Enter pickup & drop locations
+              </p>
+              <p className="mt-1 text-xs text-ink-muted leading-relaxed">
+                Please type full place names to calculate distance and view estimated fare.
+              </p>
+            </div>
+          ) : isCalculatingRoute ? (
             <div className="py-4 text-center">
               <RefreshCw className="mx-auto size-5 animate-spin text-gold" />
               <p className="mt-2 text-xs font-semibold text-ink-muted">
-                Calculating live road distance…
+                Calculating road distance…
               </p>
             </div>
           ) : activeFixedPrice ? (
             <>
               <div className="flex items-center justify-between">
                 <p className="text-[11px] font-bold uppercase tracking-wider text-ink-muted">
-                  Fixed Package Fare
+                  Package Fare <span className="text-gold font-normal lowercase">(approx.)</span>
                 </p>
                 <span className="rounded-full bg-gold/20 px-2 py-0.5 text-[10px] font-bold text-gold">
-                  Fixed Price
+                  Day Package
                 </span>
               </div>
-              <p className="mt-1 text-3xl font-bold tracking-tight text-gold">
-                {inr(activeFixedPrice)}
-              </p>
+              <div className="mt-1 flex items-baseline gap-2 flex-wrap">
+                <p className="text-3xl font-bold tracking-tight text-gold">
+                  {inr(activeFixedPrice)}
+                </p>
+                <span className="rounded-md bg-gold/15 px-2 py-0.5 text-xs font-semibold text-gold">
+                  approx.
+                </span>
+              </div>
               <p className="mt-2 text-xs text-ink-muted">
-                Fixed package for Ooty → {matchedDestination?.name} ({options[0]?.shortName ?? "Car"})
+                Fixed package for Ooty → {matchedDestination?.name} ({selectedVehicle.name})
               </p>
             </>
           ) : estimate ? (
             <>
               <div className="flex items-center justify-between">
                 <p className="text-[11px] font-bold uppercase tracking-wider text-ink-muted">
-                  Estimated fare
+                  Estimated fare <span className="text-gold font-normal lowercase">(approx.)</span>
                 </p>
                 {routeInfo?.source === "osrm" && (
                   <span className="rounded-full bg-gold/20 px-2 py-0.5 text-[10px] font-bold text-gold">
@@ -665,34 +671,44 @@ export function BookingForm({ initial }: { initial: BookingSearch }) {
                   </span>
                 )}
               </div>
-              <p className="mt-1 text-3xl font-bold tracking-tight">
-                {inr(estimate.low)}{" "}
-                <span className="text-base font-medium text-ink-muted">– {inr(estimate.high)}</span>
-              </p>
+              <div className="mt-1 flex items-baseline gap-2 flex-wrap">
+                <p className="text-3xl font-bold tracking-tight">
+                  {inr(estimate.low)}{" "}
+                  <span className="text-base font-medium text-ink-muted">– {inr(estimate.high)}</span>
+                </p>
+                <span className="rounded-md bg-gold/15 px-2 py-0.5 text-xs font-semibold text-gold">
+                  approx.
+                </span>
+              </div>
               <p className="mt-2 text-xs text-ink-muted">
                 ≈ {estimate.km} km ·{" "}
-                {tripType === "one-way"
-                  ? `${inr(cat.pricing.oneWayPerKm)}/km`
-                  : `${inr(cat.pricing.roundTripPerKm)}/km · ${estimate.days} day${estimate.days > 1 ? "s" : ""}`}
+                {effectiveTripType === "one-way"
+                  ? `${inr(selectedVehicle.pricing.oneWayPerKm)}/km`
+                  : `${inr(selectedVehicle.pricing.roundTripPerKm)}/km · ${estimate.days} day${estimate.days > 1 ? "s" : ""}`}
               </p>
-              {effectiveWaitingDays > 0 && (
-                <p className="mt-1 text-[11px] text-gold font-medium">
-                  {days - effectiveWaitingDays} travel days + {effectiveWaitingDays} waiting days
-                </p>
-              )}
             </>
           ) : (
-            <>
+            <div className="py-2">
               <p className="text-[11px] font-bold uppercase tracking-wider text-ink-muted">
-                Estimated fare
+                Custom Route
               </p>
-              <p className="mt-1 text-lg font-semibold">Custom route</p>
-              <p className="mt-2 text-xs text-ink-muted">
-                We'll send an exact quote for this route. Rates from {inr(cat.pricing.oneWayPerKm)}
-                /km.
+              <p className="mt-1 text-base font-semibold">Custom itinerary</p>
+              <p className="mt-1 text-xs text-ink-muted">
+                Enter your pickup and destination to view live fare estimates.
               </p>
-            </>
+            </div>
           )}
+        </div>
+
+        {/* Pricing disclaimer note: Rates are not fixed and might be lesser */}
+        <div className="mt-4 rounded-xl border border-gold/30 bg-gold-soft/30 p-3 text-xs">
+          <div className="flex items-start gap-2.5">
+            <Info className="size-4 shrink-0 text-gold mt-0.5" />
+            <p className="text-[11px] leading-relaxed text-muted-foreground">
+              <strong className="text-foreground font-semibold">Fare is approximate: </strong>
+              No rate is strictly fixed — your final fare might be <span className="text-gold font-semibold">lesser than the estimated fare</span> depending on your exact itinerary, sightseeing spots, and season.
+            </p>
+          </div>
         </div>
 
         <ul className="mt-4 space-y-2.5 text-xs text-muted-foreground">
@@ -704,12 +720,10 @@ export function BookingForm({ initial }: { initial: BookingSearch }) {
             <Info className="size-3.5 shrink-0 text-gold" />
             Toll, parking & state permits are NOT included (billed at actuals as they vary state to state)
           </li>
-          {effectiveWaitingDays > 0 && (
-            <li className="flex gap-2 text-gold font-medium">
-              <CheckCircle2 className="size-3.5 shrink-0 text-gold" />
-              {effectiveWaitingDays} waiting days covered with daily driver allowance
-            </li>
-          )}
+          <li className="flex gap-2 text-foreground font-medium">
+            <CheckCircle2 className="size-3.5 shrink-0 text-gold" />
+            Final fare confirmed before trip start — no hidden charges
+          </li>
         </ul>
 
         <Button
