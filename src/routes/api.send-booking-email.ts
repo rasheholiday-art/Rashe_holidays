@@ -200,7 +200,10 @@ export const Route = createFileRoute("/api/send-booking-email")({
             results.customer = customerSend.success
               ? { status: "sent", id: customerSend.id }
               : { status: "failed", error: customerSend.error };
+            console.log(`[api/send-booking-email] Customer (${body.email_address}) result:`, customerSend);
           }
+
+          console.log("[api/send-booking-email] Summary:", results);
 
           return Response.json({
             success: true,
