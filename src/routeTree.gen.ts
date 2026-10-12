@@ -17,6 +17,7 @@ import { Route as ContactRouteImport } from './routes/contact'
 import { Route as HowItWorksRouteImport } from './routes/how-it-works'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as TripTypesRouteImport } from './routes/trip-types'
+import { Route as ApiSendBookingEmailRouteImport } from './routes/api.send-booking-email'
 import { Route as DestinationsIndexRouteImport } from './routes/destinations.index'
 import { Route as DestinationsSlugRouteImport } from './routes/destinations.$slug'
 import { Route as VehiclesIndexRouteImport } from './routes/vehicles.index'
@@ -62,6 +63,11 @@ const TripTypesRoute = TripTypesRouteImport.update({
   path: '/trip-types',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiSendBookingEmailRoute = ApiSendBookingEmailRouteImport.update({
+  id: '/api/send-booking-email',
+  path: '/api/send-booking-email',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DestinationsIndexRoute = DestinationsIndexRouteImport.update({
   id: '/destinations/',
   path: '/destinations/',
@@ -92,6 +98,7 @@ export interface FileRoutesByFullPath {
   '/how-it-works': typeof HowItWorksRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/trip-types': typeof TripTypesRoute
+  '/api/send-booking-email': typeof ApiSendBookingEmailRoute
   '/destinations/$slug': typeof DestinationsSlugRoute
   '/vehicles/$slug': typeof VehiclesSlugRoute
   '/destinations/': typeof DestinationsIndexRoute
@@ -106,6 +113,7 @@ export interface FileRoutesByTo {
   '/how-it-works': typeof HowItWorksRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/trip-types': typeof TripTypesRoute
+  '/api/send-booking-email': typeof ApiSendBookingEmailRoute
   '/destinations/$slug': typeof DestinationsSlugRoute
   '/vehicles/$slug': typeof VehiclesSlugRoute
   '/destinations': typeof DestinationsIndexRoute
@@ -121,6 +129,7 @@ export interface FileRoutesById {
   '/how-it-works': typeof HowItWorksRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/trip-types': typeof TripTypesRoute
+  '/api/send-booking-email': typeof ApiSendBookingEmailRoute
   '/destinations/$slug': typeof DestinationsSlugRoute
   '/vehicles/$slug': typeof VehiclesSlugRoute
   '/destinations/': typeof DestinationsIndexRoute
@@ -137,6 +146,7 @@ export interface FileRouteTypes {
     | '/how-it-works'
     | '/sitemap.xml'
     | '/trip-types'
+    | '/api/send-booking-email'
     | '/destinations/$slug'
     | '/vehicles/$slug'
     | '/destinations/'
@@ -151,6 +161,7 @@ export interface FileRouteTypes {
     | '/how-it-works'
     | '/sitemap.xml'
     | '/trip-types'
+    | '/api/send-booking-email'
     | '/destinations/$slug'
     | '/vehicles/$slug'
     | '/destinations'
@@ -165,6 +176,7 @@ export interface FileRouteTypes {
     | '/how-it-works'
     | '/sitemap.xml'
     | '/trip-types'
+    | '/api/send-booking-email'
     | '/destinations/$slug'
     | '/vehicles/$slug'
     | '/destinations/'
@@ -180,6 +192,7 @@ export interface RootRouteChildren {
   HowItWorksRoute: typeof HowItWorksRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   TripTypesRoute: typeof TripTypesRoute
+  ApiSendBookingEmailRoute: typeof ApiSendBookingEmailRoute
   DestinationsSlugRoute: typeof DestinationsSlugRoute
   VehiclesSlugRoute: typeof VehiclesSlugRoute
   DestinationsIndexRoute: typeof DestinationsIndexRoute
@@ -244,6 +257,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TripTypesRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/send-booking-email': {
+      id: '/api/send-booking-email'
+      path: '/api/send-booking-email'
+      fullPath: '/api/send-booking-email'
+      preLoaderRoute: typeof ApiSendBookingEmailRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/destinations/': {
       id: '/destinations/'
       path: '/destinations'
@@ -284,6 +304,7 @@ const rootRouteChildren: RootRouteChildren = {
   HowItWorksRoute: HowItWorksRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   TripTypesRoute: TripTypesRoute,
+  ApiSendBookingEmailRoute: ApiSendBookingEmailRoute,
   DestinationsSlugRoute: DestinationsSlugRoute,
   VehiclesSlugRoute: VehiclesSlugRoute,
   DestinationsIndexRoute: DestinationsIndexRoute,

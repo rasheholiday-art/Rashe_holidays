@@ -102,11 +102,11 @@ export function validateBookingInput(input: Partial<CreateBookingInput>): Bookin
     }
   }
 
-  // 5. Email format validation (optional field, but strictly formatted if given)
-  if (input.emailAddress && input.emailAddress.trim().length > 0) {
-    if (!EMAIL_REGEX.test(input.emailAddress.trim())) {
-      errors.emailAddress = "Please enter a valid email address (e.g. name@example.com).";
-    }
+  // 5. Email validation: Required to send booking confirmation & itinerary to sender
+  if (!input.emailAddress || input.emailAddress.trim().length === 0) {
+    errors.emailAddress = "Email address is required for your booking confirmation.";
+  } else if (!EMAIL_REGEX.test(input.emailAddress.trim())) {
+    errors.emailAddress = "Please enter a valid email address (e.g. name@example.com).";
   }
 
   // 6. Passengers validation
@@ -486,35 +486,94 @@ export async function getEmailLogs(bookingId: string): Promise<ApiResponse<Email
 }
 
 /**
+ * Dispatches booking notification emails to both admin (rasheholiday@gmail.com)
+ * and the customer (sender) via our server email endpoint.
+ */
+export async function dispatchBookingEmails(payload: {
+  id: string;
+  customer_name: string;
+  phone_number: string;
+  email_address?: string | null;
+  trip_type: string;
+  vehicle_category: string;
+  preferred_vehicle?: string | null;
+  passengers: number;
+  pickup_location: string;
+  destination: string;
+  departure_date: string;
+  return_date?: string | null;
+  number_of_days?: number;
+  waiting_days?: number | null;
+  special_requirements?: string | null;
+  created_at?: string;
+}): Promise<{ success: boolean; results?: any; error?: string }> {
+  try {
+    const res = await fetch("/api/send-booking-email", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+    const data = await res.json();
+    return data;
+  } catch (err: unknown) {
+    console.warn("[dispatchBookingEmails] Dispatch error:", err);
+    return {
+      success: false,
+      error: err instanceof Error ? err.message : String(err),
+    };
+  }
+}
+
+/**
  * Triggers a resend of customer confirmation, admin alert, or both via the resend-booking-email Edge Function
+ * with graceful fallback to the server API endpoint.
  */
 export async function resendBookingEmail(
   bookingId: string,
   emailType: "customer_confirmation" | "admin_notification" | "both" = "both",
+  bookingData?: Partial<Booking>,
 ): Promise<ApiResponse<unknown>> {
-  if (!isSupabaseConfigured) {
-    return {
-      success: false,
-      error: "Supabase connection is not configured in local environment.",
-    };
-  }
+  if (isSupabaseConfigured) {
+    try {
+      const { data, error } = await supabase.functions.invoke("resend-booking-email", {
+        body: { booking_id: bookingId, email_type: emailType },
+      });
 
-  try {
-    const { data, error } = await supabase.functions.invoke("resend-booking-email", {
-      body: { booking_id: bookingId, email_type: emailType },
-    });
-
-    if (error) {
-      return { success: false, error: error.message };
+      if (!error && data) {
+        return { success: true, data };
+      }
+    } catch {
+      // Continue to local server fallback below
     }
-
-    return { success: true, data };
-  } catch (err: unknown) {
-    return {
-      success: false,
-      error: err instanceof Error ? err.message : "Failed to trigger email resend.",
-    };
   }
+
+  // Fallback to server endpoint
+  if (bookingData) {
+    const res = await dispatchBookingEmails({
+      id: bookingId,
+      customer_name: bookingData.customerName || "Customer",
+      phone_number: bookingData.phoneNumber || "",
+      email_address: bookingData.emailAddress,
+      trip_type: bookingData.tripType || "round-trip",
+      vehicle_category: bookingData.vehicleCategory || "7-seater",
+      preferred_vehicle: bookingData.preferredVehicle,
+      passengers: bookingData.passengers || 4,
+      pickup_location: bookingData.pickupLocation || "Ooty",
+      destination: bookingData.destination || "Coonoor",
+      departure_date: bookingData.departureDate || new Date().toISOString().slice(0, 10),
+      return_date: bookingData.returnDate,
+      number_of_days: bookingData.numberOfDays || 1,
+      waiting_days: bookingData.waitingDays,
+      special_requirements: bookingData.specialRequirements,
+      created_at: bookingData.createdAt,
+    });
+    return { success: res.success, data: res.results, error: res.error };
+  }
+
+  return {
+    success: false,
+    error: "Failed to trigger email resend.",
+  };
 }
 
 // ---------------------------------------------------------------------------

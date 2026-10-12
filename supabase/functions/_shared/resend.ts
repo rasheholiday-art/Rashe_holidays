@@ -78,6 +78,18 @@ export async function sendEmailWithRetry(
         };
       }
 
+      // If custom domain is not yet verified on Resend, fallback to verified sender address
+      if (
+        response.status === 403 &&
+        typeof responseJson.message === "string" &&
+        responseJson.message.toLowerCase().includes("not verified") &&
+        payload.from !== "Rashe Holidays <onboarding@resend.dev>"
+      ) {
+        console.warn("[Resend] Custom domain unverified. Falling back to onboarding@resend.dev...");
+        payload.from = "Rashe Holidays <onboarding@resend.dev>";
+        continue;
+      }
+
       // Check if retryable status code (429 Rate Limit, 500, 502, 503, 504)
       const isRetryable = response.status === 429 || response.status >= 500;
       lastError =
@@ -152,10 +164,10 @@ export async function processBookingEmails(
   admin: { status: "sent" | "failed" | "skipped"; error?: string };
 }> {
   const resendApiKey = Deno.env.get("RESEND_API_KEY") || "";
-  const adminEmail = Deno.env.get("ADMIN_EMAIL") || "admin@yourdomain.com";
-  const defaultFrom = Deno.env.get("RESEND_FROM_EMAIL") || "Anand Holidays <onboarding@resend.dev>";
-  const companyName = Deno.env.get("COMPANY_NAME") || "Anand Holidays";
-  const appUrl = Deno.env.get("APP_URL") || "https://yourdomain.com";
+  const adminEmail = Deno.env.get("ADMIN_EMAIL") || "rasheholiday@gmail.com";
+  const defaultFrom = Deno.env.get("RESEND_FROM_EMAIL") || "Rashe Holidays <bookings@rasheholidays.com>";
+  const companyName = Deno.env.get("COMPANY_NAME") || "Rashe Holidays";
+  const appUrl = Deno.env.get("APP_URL") || "https://rasheholidays.com";
 
   const results: {
     customer: { status: "sent" | "failed" | "skipped"; error?: string };

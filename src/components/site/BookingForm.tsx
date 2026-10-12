@@ -166,8 +166,7 @@ export function BookingForm({ initial }: { initial: BookingSearch }) {
           Thank you, {name.split(" ")[0]}!
         </h2>
         <p className="mx-auto mt-3 max-w-md text-[15px] leading-relaxed text-muted-foreground">
-          Your travel request has been received. Our team will contact you shortly to confirm
-          availability, timings and final pricing.
+          Your travel request has been received. A confirmation email with your trip summary has been dispatched to <strong className="text-foreground">{email}</strong>. Our team will contact you shortly to confirm timings and final pricing.
         </p>
 
         <div className="mx-auto mt-8 max-w-md rounded-2xl bg-secondary p-5 text-left text-sm">
@@ -191,6 +190,7 @@ export function BookingForm({ initial }: { initial: BookingSearch }) {
             />
           )}
           <Row k="Passengers" v={`${passengers}`} />
+          {email && <Row k="Confirmation Sent To" v={email} />}
           {activeFixedPrice ? (
             <Row k="Fixed Package" v={`${inr(activeFixedPrice)} (fixed fare)`} />
           ) : (
@@ -554,20 +554,29 @@ export function BookingForm({ initial }: { initial: BookingSearch }) {
               )}
             </L>
 
-            <L label="Email Address" className="sm:col-span-2">
+            <L
+              label="Email Address *"
+              hint="Required · booking voucher & itinerary sent here"
+              className="sm:col-span-2"
+            >
               <input
                 type="email"
+                required
                 value={email}
                 onChange={(e) => {
                   setEmail(e.target.value);
                   if (fieldErrors.emailAddress) setFieldErrors((f) => ({ ...f, emailAddress: "" }));
                 }}
                 className={cn(inputCls, fieldErrors.emailAddress && "border-destructive")}
-                placeholder="you@example.com"
+                placeholder="name@example.com"
                 autoComplete="email"
               />
-              {fieldErrors.emailAddress && (
+              {fieldErrors.emailAddress ? (
                 <p className="mt-1 text-xs text-destructive">{fieldErrors.emailAddress}</p>
+              ) : (
+                <p className="mt-1 text-xs text-muted-foreground">
+                  We will send your trip confirmation and booking voucher directly to this email address.
+                </p>
               )}
             </L>
 

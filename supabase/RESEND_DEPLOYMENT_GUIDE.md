@@ -35,18 +35,19 @@ Add the following environment variables:
 
 | Secret Name | Description | Example Value |
 | :--- | :--- | :--- |
-| `RESEND_API_KEY` | Your API key from [resend.com](https://resend.com/api-keys) | `re_123456789abcdef` |
-| `ADMIN_EMAIL` | Destination email address for new booking alerts | `admin@yourdomain.com` |
-| `RESEND_FROM_EMAIL` | Sender address (use `onboarding@resend.dev` for testing) | `Anand Holidays <onboarding@resend.dev>` |
-| `COMPANY_NAME` | Brand name shown on emails and subjects | `Anand Holidays` |
-| `APP_URL` | Base URL of your deployed website | `https://your-domain.com` |
+| `RESEND_API_KEY` | Your API key from [resend.com](https://resend.com/api-keys) | `re_your_api_key_here` |
+| `ADMIN_EMAIL` | Destination email address for new booking alerts | `rasheholiday@gmail.com` |
+| `RESEND_FROM_EMAIL` | Verified sender address in Resend (e.g. from your domain) | `Rashe Holidays <bookings@rasheholidays.com>` |
+| `COMPANY_NAME` | Brand name shown on emails and subjects | `Rashe Holidays` |
+| `APP_URL` | Base URL of your deployed website | `https://rasheholidays.com` |
 
 ### Or via Supabase CLI:
 ```bash
 supabase secrets set RESEND_API_KEY="re_your_api_key_here" \
-  ADMIN_EMAIL="admin@yourdomain.com" \
-  RESEND_FROM_EMAIL="Anand Holidays <onboarding@resend.dev>" \
-  COMPANY_NAME="Anand Holidays"
+  ADMIN_EMAIL="rasheholiday@gmail.com" \
+  RESEND_FROM_EMAIL="Rashe Holidays <bookings@rasheholidays.com>" \
+  COMPANY_NAME="Rashe Holidays" \
+  APP_URL="https://rasheholidays.com"
 ```
 
 ---
@@ -77,8 +78,8 @@ supabase functions deploy resend-booking-email --no-verify-jwt
 ### B. Verify in Resend Dashboard
 1. Open [resend.com/emails](https://resend.com/emails).
 2. You will see two emails sent:
-   - **Customer Confirmation**: `Booking Request Received - Anand Holidays`
-   - **Admin Notification**: `New Travel Booking Received`
+   - **Customer Confirmation**: `Booking Request Received — Rashe Holidays (#RH-...)`
+   - **Admin Notification**: `🚨 New Booking: [Customer Name] ([Trip Type] · [Route])`
 
 ### C. Verify in Supabase
 1. In Supabase Dashboard, open **Table Editor** -> `email_logs`.

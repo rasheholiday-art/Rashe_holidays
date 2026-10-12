@@ -40,11 +40,11 @@ serve(async (req: Request) => {
     const supabaseUrl = Deno.env.get("SUPABASE_URL") ?? "";
     const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
     const resendApiKey = Deno.env.get("RESEND_API_KEY") ?? "";
-    const adminEmail = Deno.env.get("ADMIN_EMAIL") || "admin@yourdomain.com";
+    const adminEmail = Deno.env.get("ADMIN_EMAIL") || "rasheholiday@gmail.com";
     const defaultFrom =
-      Deno.env.get("RESEND_FROM_EMAIL") || "Anand Holidays <onboarding@resend.dev>";
-    const companyName = Deno.env.get("COMPANY_NAME") || "Anand Holidays";
-    const appUrl = Deno.env.get("APP_URL") || "https://yourdomain.com";
+      Deno.env.get("RESEND_FROM_EMAIL") || "Rashe Holidays <bookings@rasheholidays.com>";
+    const companyName = Deno.env.get("COMPANY_NAME") || "Rashe Holidays";
+    const appUrl = Deno.env.get("APP_URL") || "https://rasheholidays.com";
 
     if (!supabaseUrl || !supabaseServiceKey) {
       throw new Error("Missing Supabase environment variables on server.");

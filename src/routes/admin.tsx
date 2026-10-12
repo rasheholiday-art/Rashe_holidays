@@ -909,7 +909,23 @@ function ReservationModal({
   const handleResend = async (type: "customer_confirmation" | "admin_notification" | "both") => {
     setIsResending(true);
     setResendStatusMsg(null);
-    const res = await resendBookingEmail(reservation.id, type);
+    const res = await resendBookingEmail(reservation.id, type, {
+      customerName: reservation.name,
+      phoneNumber: reservation.phone,
+      emailAddress: reservation.email,
+      tripType: reservation.tripType,
+      vehicleCategory: reservation.category,
+      preferredVehicle: reservation.vehicle,
+      passengers: reservation.passengers,
+      pickupLocation: reservation.from,
+      destination: reservation.to,
+      departureDate: reservation.date,
+      returnDate: reservation.returnDate,
+      numberOfDays: reservation.days,
+      waitingDays: reservation.waitingDays,
+      specialRequirements: reservation.notes,
+      createdAt: reservation.createdAt,
+    });
     if (res.success) {
       setResendStatusMsg({ type: "success", text: "Email dispatch re-triggered successfully!" });
       const updated = await getEmailLogs(reservation.id);

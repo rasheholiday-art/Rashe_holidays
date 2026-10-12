@@ -26,7 +26,7 @@ export const company = {
   emergency: "+91 97869 63659",
   emergencyHref: "tel:+919786963659",
   whatsapp: "919786963659",
-  email: "hello@rasheholidays.in",
+  email: "rasheholiday@gmail.com",
   address: "12, Commercial Road, Near Charring Cross, Ooty, The Nilgiris, Tamil Nadu 643001",
   // Same address as above, split for structured data. Keep both in sync.
   postalAddress: {

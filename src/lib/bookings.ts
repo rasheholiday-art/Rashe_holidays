@@ -4,6 +4,7 @@ import {
   updateBookingStatus as updateSupabaseBookingStatus,
   deleteBooking as deleteSupabaseBooking,
   getBooking as getSupabaseBooking,
+  dispatchBookingEmails,
 } from "@/lib/api/bookings";
 import type {
   Booking as SupabaseBooking,
@@ -281,6 +282,28 @@ export async function saveBookingAsync(
     status: "New",
     isSyncedToSupabase: apiRes.success && !apiRes.isFallback,
   };
+
+  // Dispatch Resend emails to both admin (rasheholiday@gmail.com) and the customer (sender)
+  if (!apiRes.success || apiRes.isFallback) {
+    dispatchBookingEmails({
+      id: assignedId,
+      customer_name: data.name,
+      phone_number: data.phone,
+      email_address: data.email,
+      trip_type: data.tripType,
+      vehicle_category: data.category,
+      preferred_vehicle: data.vehicle,
+      passengers: data.passengers,
+      pickup_location: data.from,
+      destination: data.to,
+      departure_date: data.date,
+      return_date: data.returnDate,
+      number_of_days: data.days,
+      waiting_days: data.waitingDays,
+      special_requirements: data.notes,
+      created_at: newBooking.createdAt,
+    }).catch((err) => console.warn("[saveBookingAsync] Email dispatch error:", err));
+  }
 
   const updated = [newBooking, ...current.filter((b) => b.id !== assignedId)];
   if (typeof window !== "undefined") {

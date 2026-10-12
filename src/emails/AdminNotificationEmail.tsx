@@ -1,4 +1,5 @@
 import React from "react";
+import { EMAIL_THEME, EMAIL_COMPANY } from "./theme";
 
 export interface AdminNotificationEmailProps {
   bookingId: string;
@@ -14,300 +15,276 @@ export interface AdminNotificationEmailProps {
   departureDate: string;
   returnDate?: string | null;
   numberOfDays: number;
+  waitingDays?: number | null;
   specialRequirements?: string | null;
   createdAt?: string;
   adminPortalUrl?: string;
 }
 
-export function AdminNotificationEmail({
-  bookingId,
-  customerName,
-  phoneNumber,
-  emailAddress,
-  tripType,
-  vehicleCategory,
-  preferredVehicle,
-  passengers,
-  pickupLocation,
-  destination,
-  departureDate,
-  returnDate,
-  numberOfDays,
-  specialRequirements,
-  createdAt,
-  adminPortalUrl = "https://yourdomain.com/admin",
-}: AdminNotificationEmailProps) {
-  const cleanPhone = phoneNumber.replace(/[^0-9]/g, "");
-  const waUrl = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(
-    `Hi ${customerName}, thank you for your booking enquiry #${bookingId.slice(0, 8)} with us!`,
-  )}`;
+/**
+ * Generates an email HTML and Plain Text string for Admin Notification.
+ * Clean, actionable design highlighting customer contact details and quick-action buttons.
+ */
+export function renderAdminNotificationEmail(props: AdminNotificationEmailProps): {
+  html: string;
+  text: string;
+  subject: string;
+} {
+  const isRoundTrip = props.tripType === "round-trip";
+  const formattedTripType = isRoundTrip ? "Round Trip" : "One Way";
+  const returnStr = isRoundTrip && props.returnDate ? props.returnDate : "N/A";
+  const bookingShortId = props.bookingId.slice(0, 8).toUpperCase();
+  const cleanPhone = props.phoneNumber.replace(/[^0-9]/g, "");
+  const adminUrl = props.adminPortalUrl || EMAIL_COMPANY.adminUrl;
 
-  return (
-    <div
-      style={{
-        backgroundColor: "#f3f4f6",
-        fontFamily:
-          '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
-        padding: "40px 16px",
-        margin: "0",
-        color: "#1f2937",
-      }}
-    >
-      <table
-        align="center"
-        border={0}
-        cellPadding={0}
-        cellSpacing={0}
-        style={{
-          maxWidth: "600px",
-          width: "100%",
-          backgroundColor: "#ffffff",
-          borderRadius: "16px",
-          overflow: "hidden",
-          boxShadow: "0 4px 20px rgba(0, 0, 0, 0.08)",
-          border: "1px solid #e5e7eb",
-        }}
-      >
-        <tbody>
+  const waPreFilled = encodeURIComponent(
+    `Hello ${props.customerName}, this is Rashe Holidays regarding your booking request #${bookingShortId} (${props.pickupLocation} to ${props.destination}). We'd love to confirm your trip details!`
+  );
+  const waUrl = `https://wa.me/${cleanPhone}?text=${waPreFilled}`;
+
+  const subject = `🚨 New Booking: ${props.customerName} (${formattedTripType} · ${props.pickupLocation} → ${props.destination})`;
+
+  // Plain text version
+  const text = `NEW BOOKING ENQUIRY RECEIVED
+=========================================
+Booking ID: #${bookingShortId}
+Timestamp: ${props.createdAt || new Date().toLocaleString("en-IN")}
+
+CUSTOMER INFORMATION:
+- Name: ${props.customerName}
+- Phone: ${props.phoneNumber}
+- Email: ${props.emailAddress || "Not provided"}
+- Passengers: ${props.passengers} Traveler(s)
+
+TRIP & VEHICLE DETAILS:
+- Route: ${props.pickupLocation} → ${props.destination}${isRoundTrip ? ` → ${props.pickupLocation}` : ""}
+- Trip Type: ${formattedTripType}
+- Departure: ${props.departureDate}
+${isRoundTrip ? `- Return: ${returnStr}\n` : ""}- Duration: ${props.numberOfDays} Day(s)
+${props.waitingDays && props.waitingDays > 0 ? `- Waiting Days: ${props.waitingDays} Day(s) (vehicle idle/standby)\n` : ""}- Vehicle Category: ${props.vehicleCategory}
+- Preferred Vehicle: ${props.preferredVehicle || "Any available in category"}
+
+${props.specialRequirements ? `SPECIAL REQUIREMENTS:\n"${props.specialRequirements}"\n\n` : ""}QUICK ACTIONS:
+- Call Customer: tel:${props.phoneNumber.replace(/\s+/g, "")}
+- WhatsApp Chat: ${waUrl}
+- Admin Dashboard: ${adminUrl}
+`;
+
+  // HTML email template
+  const html = `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>${subject}</title>
+</head>
+<body style="margin:0;padding:0;background-color:${EMAIL_THEME.canvas};font-family:${EMAIL_THEME.fontFamily};-webkit-font-smoothing:antialiased;color:${EMAIL_THEME.textPrimary};">
+  <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color:${EMAIL_THEME.canvas};padding:32px 12px;">
+    <tr>
+      <td align="center">
+        <!-- Main Email Container -->
+        <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width:600px;background-color:${EMAIL_THEME.card};border-radius:18px;overflow:hidden;box-shadow:0 12px 35px rgba(0,0,0,0.06);border:1px solid ${EMAIL_THEME.border};">
+
+          <!-- 1. Header Banner -->
           <tr>
-            <td
-              style={{
-                backgroundColor: "#0f172a",
-                padding: "24px 32px",
-                borderBottom: "3px solid #f59e0b",
-              }}
-            >
-              <table width="100%" border={0} cellPadding={0} cellSpacing={0}>
-                <tbody>
-                  <tr>
-                    <td>
-                      <span
-                        style={{
-                          fontSize: "12px",
-                          fontWeight: "700",
-                          textTransform: "uppercase",
-                          letterSpacing: "1px",
-                          color: "#f59e0b",
-                          display: "block",
-                          marginBottom: "4px",
-                        }}
-                      >
-                        New Booking Alert
-                      </span>
-                      <h1
-                        style={{
-                          fontSize: "20px",
-                          fontWeight: "800",
-                          color: "#ffffff",
-                          margin: "0",
-                        }}
-                      >
-                        New Travel Booking Received
-                      </h1>
-                    </td>
-                    <td align="right" style={{ verticalAlign: "top" }}>
-                      <span
-                        style={{
-                          backgroundColor: "#1e293b",
-                          color: "#94a3b8",
-                          fontFamily: "monospace",
-                          fontSize: "12px",
-                          padding: "6px 12px",
-                          borderRadius: "8px",
-                          border: "1px solid #334155",
-                        }}
-                      >
-                        #{bookingId.slice(0, 8)}
-                      </span>
-                    </td>
-                  </tr>
-                </tbody>
+            <td style="background-color:${EMAIL_THEME.primary};padding:24px 32px;border-top:4px solid ${EMAIL_THEME.gold};">
+              <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
+                <tr>
+                  <td>
+                    <span style="font-size:11px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:${EMAIL_THEME.gold};display:block;margin-bottom:4px;">
+                      ✦ NEW BOOKING ALERT · RASHE HOLIDAYS
+                    </span>
+                    <h1 style="font-size:20px;font-weight:800;color:${EMAIL_THEME.textLight};margin:0;line-height:1.2;">
+                      New Travel Booking Received
+                    </h1>
+                  </td>
+                  <td align="right" style="vertical-align:middle;">
+                    <span style="background-color:#1e2329;color:${EMAIL_THEME.gold};font-family:monospace;font-size:12px;font-weight:700;padding:6px 12px;border-radius:8px;border:1px solid ${EMAIL_THEME.goldBorder};">
+                      #${bookingShortId}
+                    </span>
+                  </td>
+                </tr>
               </table>
             </td>
           </tr>
 
+          <!-- 2. Immediate Customer Action Bar (Call / WhatsApp / Email) -->
           <tr>
-            <td style={{ padding: "32px" }}>
-              <div
-                style={{
-                  backgroundColor: "#eff6ff",
-                  border: "1px solid #dbeafe",
-                  borderRadius: "12px",
-                  padding: "20px 24px",
-                  marginBottom: "24px",
-                }}
-              >
-                <div
-                  style={{
-                    fontSize: "12px",
-                    fontWeight: "700",
-                    textTransform: "uppercase",
-                    letterSpacing: "0.5px",
-                    color: "#2563eb",
-                    marginBottom: "12px",
-                  }}
-                >
-                  Customer Information
+            <td style="padding:28px 32px 20px 32px;">
+              <div style="background-color:${EMAIL_THEME.goldSoft};border:1px solid ${EMAIL_THEME.goldBorder};border-radius:14px;padding:20px 24px;">
+                <div style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:0.8px;color:${EMAIL_THEME.goldDark};margin-bottom:12px;">
+                  Customer Contact & One-Click Dispatch
                 </div>
-                <table width="100%" border={0} cellPadding={0} cellSpacing={0}>
-                  <tbody>
-                    <Row label="Customer Name" value={customerName} highlight />
-                    <Row label="Phone Number" value={phoneNumber} />
-                    <Row label="Email" value={emailAddress || "Not provided"} />
-                  </tbody>
+                <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
+                  <tr>
+                    <td style="padding:6px 0;font-size:14px;color:${EMAIL_THEME.textSecondary};width:38%;">Customer Name:</td>
+                    <td style="padding:6px 0;font-size:16px;font-weight:800;color:${EMAIL_THEME.textPrimary};">${props.customerName}</td>
+                  </tr>
+                  <tr>
+                    <td style="padding:6px 0;font-size:14px;color:${EMAIL_THEME.textSecondary};">Phone Number:</td>
+                    <td style="padding:6px 0;font-size:15px;font-weight:700;color:${EMAIL_THEME.primary};">
+                      <a href="tel:${props.phoneNumber.replace(/\\s+/g, "")}" style="color:${EMAIL_THEME.primary};text-decoration:none;">${props.phoneNumber}</a>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td style="padding:6px 0;font-size:14px;color:${EMAIL_THEME.textSecondary};">Customer Email:</td>
+                    <td style="padding:6px 0;font-size:14px;font-weight:600;color:${EMAIL_THEME.textPrimary};">
+                      ${props.emailAddress ? `<a href="mailto:${props.emailAddress}" style="color:${EMAIL_THEME.info};text-decoration:none;">${props.emailAddress}</a>` : '<span style="color:#9ca3af;">Not provided</span>'}
+                    </td>
+                  </tr>
                 </table>
 
-                <div
-                  style={{
-                    marginTop: "16px",
-                    paddingTop: "12px",
-                    borderTop: "1px dashed #bfdbfe",
-                  }}
-                >
-                  <a
-                    href={`tel:${phoneNumber.replace(/\s+/g, "")}`}
-                    style={{
-                      display: "inline-block",
-                      backgroundColor: "#2563eb",
-                      color: "#ffffff",
-                      fontSize: "13px",
-                      fontWeight: "600",
-                      padding: "8px 16px",
-                      borderRadius: "8px",
-                      textDecoration: "none",
-                      marginRight: "8px",
-                    }}
-                  >
-                    Call Customer
+                <!-- Action buttons -->
+                <div style="margin-top:16px;padding-top:14px;border-top:1px dashed ${EMAIL_THEME.goldBorder};">
+                  <a href="tel:${props.phoneNumber.replace(/\\s+/g, "")}" style="display:inline-block;background-color:${EMAIL_THEME.primary};color:#ffffff;font-size:13px;font-weight:700;padding:10px 18px;border-radius:8px;text-decoration:none;margin-right:8px;margin-bottom:6px;">
+                    📞 Call Customer
                   </a>
-                  <a
-                    href={waUrl}
-                    target="_blank"
-                    rel="noreferrer"
-                    style={{
-                      display: "inline-block",
-                      backgroundColor: "#16a34a",
-                      color: "#ffffff",
-                      fontSize: "13px",
-                      fontWeight: "600",
-                      padding: "8px 16px",
-                      borderRadius: "8px",
-                      textDecoration: "none",
-                    }}
-                  >
-                    Chat on WhatsApp
+                  <a href="${waUrl}" target="_blank" rel="noreferrer" style="display:inline-block;background-color:${EMAIL_THEME.whatsapp};color:#ffffff;font-size:13px;font-weight:700;padding:10px 18px;border-radius:8px;text-decoration:none;margin-right:8px;margin-bottom:6px;">
+                    💬 Chat on WhatsApp
                   </a>
+                  ${props.emailAddress ? `
+                  <a href="mailto:${props.emailAddress}" style="display:inline-block;background-color:#ffffff;color:${EMAIL_THEME.textPrimary};border:1px solid ${EMAIL_THEME.border};font-size:13px;font-weight:600;padding:9px 16px;border-radius:8px;text-decoration:none;margin-bottom:6px;">
+                    ✉️ Send Email
+                  </a>` : ""}
                 </div>
-              </div>
-
-              <div
-                style={{
-                  backgroundColor: "#f9fafb",
-                  border: "1px solid #e5e7eb",
-                  borderRadius: "12px",
-                  padding: "20px 24px",
-                  marginBottom: "24px",
-                }}
-              >
-                <div
-                  style={{
-                    fontSize: "12px",
-                    fontWeight: "700",
-                    textTransform: "uppercase",
-                    letterSpacing: "0.5px",
-                    color: "#6b7280",
-                    marginBottom: "12px",
-                  }}
-                >
-                  Trip & Vehicle Details
-                </div>
-                <table width="100%" border={0} cellPadding={0} cellSpacing={0}>
-                  <tbody>
-                    <Row
-                      label="Trip Type"
-                      value={tripType === "one-way" ? "One Way" : "Round Trip"}
-                    />
-                    <Row label="Vehicle Category" value={vehicleCategory} />
-                    <Row label="Preferred Vehicle" value={preferredVehicle || "Any available"} />
-                    <Row label="Passengers" value={`${passengers} Travelers`} />
-                    <Row label="Pickup Location" value={pickupLocation} />
-                    <Row label="Destination" value={destination} />
-                    <Row label="Departure Date" value={departureDate} />
-                    <Row
-                      label="Return Date"
-                      value={tripType === "round-trip" && returnDate ? returnDate : "N/A"}
-                    />
-                    <Row label="Number of Days" value={`${numberOfDays} Days`} />
-                    <Row label="Special Requirements" value={specialRequirements || "None"} />
-                  </tbody>
-                </table>
-              </div>
-
-              <div style={{ textAlign: "center", margin: "28px 0 12px 0" }}>
-                <a
-                  href={adminPortalUrl}
-                  style={{
-                    display: "inline-block",
-                    backgroundColor: "#0f172a",
-                    color: "#ffffff",
-                    fontSize: "14px",
-                    fontWeight: "600",
-                    padding: "12px 28px",
-                    borderRadius: "10px",
-                    textDecoration: "none",
-                  }}
-                >
-                  Open Booking in Admin Portal
-                </a>
               </div>
             </td>
           </tr>
 
+          <!-- 3. Trip & Vehicle Information -->
           <tr>
-            <td
-              style={{
-                backgroundColor: "#f9fafb",
-                padding: "16px 32px",
-                borderTop: "1px solid #e5e7eb",
-                textAlign: "center",
-              }}
-            >
-              <p style={{ fontSize: "12px", color: "#9ca3af", margin: "0" }}>
-                Booking ID: {bookingId} {createdAt ? `· Created: ${createdAt}` : ""}
-              </p>
+            <td style="padding:0 32px 24px 32px;">
+              <div style="border:1px solid ${EMAIL_THEME.border};border-radius:14px;overflow:hidden;background-color:#ffffff;">
+                <div style="background-color:#f9fafb;padding:12px 20px;border-bottom:1px solid ${EMAIL_THEME.border};">
+                  <span style="font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:0.8px;color:${EMAIL_THEME.textMuted};">
+                    Trip Route & Vehicle Specifications
+                  </span>
+                </div>
+                <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="padding:8px 20px;">
+                  <tr>
+                    <td style="padding:10px 0;font-size:14px;color:${EMAIL_THEME.textSecondary};width:40%;border-bottom:1px solid #f3f4f6;">Trip Type:</td>
+                    <td style="padding:10px 0;font-size:14px;font-weight:700;color:${EMAIL_THEME.textPrimary};text-align:right;border-bottom:1px solid #f3f4f6;">${formattedTripType}</td>
+                  </tr>
+                  <tr>
+                    <td style="padding:10px 0;font-size:14px;color:${EMAIL_THEME.textSecondary};border-bottom:1px solid #f3f4f6;">Pickup Location:</td>
+                    <td style="padding:10px 0;font-size:14px;font-weight:700;color:${EMAIL_THEME.textPrimary};text-align:right;border-bottom:1px solid #f3f4f6;">${props.pickupLocation}</td>
+                  </tr>
+                  <tr>
+                    <td style="padding:10px 0;font-size:14px;color:${EMAIL_THEME.textSecondary};border-bottom:1px solid #f3f4f6;">Destination:</td>
+                    <td style="padding:10px 0;font-size:14px;font-weight:700;color:${EMAIL_THEME.textPrimary};text-align:right;border-bottom:1px solid #f3f4f6;">${props.destination}</td>
+                  </tr>
+                  <tr>
+                    <td style="padding:10px 0;font-size:14px;color:${EMAIL_THEME.textSecondary};border-bottom:1px solid #f3f4f6;">Departure Date:</td>
+                    <td style="padding:10px 0;font-size:14px;font-weight:700;color:${EMAIL_THEME.textPrimary};text-align:right;border-bottom:1px solid #f3f4f6;">${props.departureDate}</td>
+                  </tr>
+                  ${
+                    isRoundTrip
+                      ? `<tr>
+                    <td style="padding:10px 0;font-size:14px;color:${EMAIL_THEME.textSecondary};border-bottom:1px solid #f3f4f6;">Return Date:</td>
+                    <td style="padding:10px 0;font-size:14px;font-weight:700;color:${EMAIL_THEME.textPrimary};text-align:right;border-bottom:1px solid #f3f4f6;">${returnStr}</td>
+                  </tr>`
+                      : ""
+                  }
+                  <tr>
+                    <td style="padding:10px 0;font-size:14px;color:${EMAIL_THEME.textSecondary};border-bottom:1px solid #f3f4f6;">Duration:</td>
+                    <td style="padding:10px 0;font-size:14px;font-weight:700;color:${EMAIL_THEME.textPrimary};text-align:right;border-bottom:1px solid #f3f4f6;">${props.numberOfDays} Day(s)</td>
+                  </tr>
+                  ${
+                    props.waitingDays && props.waitingDays > 0
+                      ? `<tr>
+                    <td style="padding:10px 0;font-size:14px;color:#d97706;border-bottom:1px solid #f3f4f6;">Waiting Days (Parked):</td>
+                    <td style="padding:10px 0;font-size:14px;font-weight:800;color:#d97706;text-align:right;border-bottom:1px solid #f3f4f6;">${props.waitingDays} Day(s) (idle / standby)</td>
+                  </tr>`
+                      : ""
+                  }
+                  <tr>
+                    <td style="padding:10px 0;font-size:14px;color:${EMAIL_THEME.textSecondary};border-bottom:1px solid #f3f4f6;">Vehicle Category:</td>
+                    <td style="padding:10px 0;font-size:14px;font-weight:700;color:${EMAIL_THEME.textPrimary};text-align:right;border-bottom:1px solid #f3f4f6;">${props.vehicleCategory}</td>
+                  </tr>
+                  <tr>
+                    <td style="padding:10px 0;font-size:14px;color:${EMAIL_THEME.textSecondary};border-bottom:1px solid #f3f4f6;">Preferred Vehicle:</td>
+                    <td style="padding:10px 0;font-size:14px;font-weight:700;color:${EMAIL_THEME.textPrimary};text-align:right;border-bottom:1px solid #f3f4f6;">${props.preferredVehicle || "Any available"}</td>
+                  </tr>
+                  <tr>
+                    <td style="padding:10px 0;font-size:14px;color:${EMAIL_THEME.textSecondary};">Passengers:</td>
+                    <td style="padding:10px 0;font-size:14px;font-weight:700;color:${EMAIL_THEME.textPrimary};text-align:right;">${props.passengers} Traveler(s)</td>
+                  </tr>
+                </table>
+              </div>
             </td>
           </tr>
-        </tbody>
-      </table>
-    </div>
-  );
-}
 
-function Row({
-  label,
-  value,
-  highlight = false,
-}: {
-  label: string;
-  value: string;
-  highlight?: boolean;
-}) {
-  return (
-    <tr>
-      <td style={{ padding: "7px 0", fontSize: "14px", color: "#6b7280", width: "40%" }}>
-        {label}:
-      </td>
-      <td
-        style={{
-          padding: "7px 0",
-          fontSize: "14px",
-          fontWeight: highlight ? "700" : "600",
-          color: highlight ? "#1e40af" : "#111827",
-          width: "60%",
-        }}
-      >
-        {value}
+          <!-- 4. Special Requirements Callout -->
+          ${
+            props.specialRequirements && props.specialRequirements.trim().length > 0
+              ? `<tr>
+            <td style="padding:0 32px 24px 32px;">
+              <div style="background-color:#fffbeb;border:1px solid #fef3c7;border-left:4px solid ${EMAIL_THEME.gold};border-radius:10px;padding:16px 20px;">
+                <div style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:0.8px;color:#92400e;margin-bottom:6px;">
+                  ⚠️ Customer Notes & Special Requests:
+                </div>
+                <div style="font-size:14px;line-height:1.5;color:#78350f;">
+                  "${props.specialRequirements.trim()}"
+                </div>
+              </div>
+            </td>
+          </tr>`
+              : ""
+          }
+
+          <!-- 5. Dispatch / Operations Checklist -->
+          <tr>
+            <td style="padding:0 32px 24px 32px;">
+              <div style="background-color:#fafafa;border:1px solid ${EMAIL_THEME.border};border-radius:12px;padding:16px 20px;">
+                <div style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:0.8px;color:${EMAIL_THEME.textMuted};margin-bottom:10px;">
+                  Dispatcher Quick Checklist
+                </div>
+                <div style="font-size:13px;color:${EMAIL_THEME.textSecondary};line-height:1.7;">
+                  ☐ Check fleet availability (Sedan / Crysta / Tempo)<br>
+                  ☐ Calculate interstate toll & border permit (if applicable)<br>
+                  ☐ Contact customer to confirm timing & advance payment
+                </div>
+              </div>
+            </td>
+          </tr>
+
+          <!-- 6. Admin Portal CTA -->
+          <tr>
+            <td style="padding:0 32px 32px 32px;text-align:center;">
+              <a href="${adminUrl}" style="display:inline-block;background-color:${EMAIL_THEME.primary};color:#ffffff;font-size:14px;font-weight:700;padding:14px 32px;border-radius:10px;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,0.15);">
+                Open Booking in Admin Portal ➔
+              </a>
+              <div style="font-size:12px;color:${EMAIL_THEME.textMuted};margin-top:12px;">
+                Booking ID: ${props.bookingId}
+              </div>
+            </td>
+          </tr>
+
+          <!-- 7. Footer -->
+          <tr>
+            <td style="background-color:#f9fafb;padding:20px 32px;border-top:1px solid ${EMAIL_THEME.border};text-align:center;">
+              <div style="font-size:12px;color:${EMAIL_THEME.textMuted};line-height:1.5;">
+                Rashe Holidays Dispatch Alert · Received at ${props.createdAt || new Date().toLocaleString("en-IN")}<br>
+                Recipient: <a href="mailto:rasheholiday@gmail.com" style="color:${EMAIL_THEME.goldDark};text-decoration:none;font-weight:600;">rasheholiday@gmail.com</a>
+              </div>
+            </td>
+          </tr>
+
+        </table>
       </td>
     </tr>
-  );
+  </table>
+</body>
+</html>`;
+
+  return { html, text, subject };
+}
+
+/**
+ * React Component for email preview / in-browser rendering
+ */
+export function AdminNotificationEmail(props: AdminNotificationEmailProps) {
+  const rendered = renderAdminNotificationEmail(props);
+  return <div dangerouslySetInnerHTML={{ __html: rendered.html }} />;
 }
