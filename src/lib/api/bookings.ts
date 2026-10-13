@@ -74,17 +74,17 @@ export function validateBookingInput(input: Partial<CreateBookingInput>): Bookin
     errors.customerName = "Customer name is required (minimum 2 characters).";
   }
 
-  // 2. Phone Number validation: Must start with +91 and contain exactly 10 digits
-  if (!input.phoneNumber || input.phoneNumber.trim().length === 0) {
-    errors.phoneNumber = "Phone number is required.";
+  // 2. Mobile Number validation: Mandatory, must start with +91 and contain exactly 10 digits
+  if (!input.phoneNumber || input.phoneNumber.trim().length === 0 || input.phoneNumber.trim() === "+91" || input.phoneNumber.trim() === "+") {
+    errors.phoneNumber = "Mobile number is mandatory (10 digits).";
   } else {
     const raw = input.phoneNumber.trim();
     if (!raw.startsWith("+91")) {
-      errors.phoneNumber = "Phone number must start with country code +91.";
+      errors.phoneNumber = "Mobile number must start with country code +91.";
     } else {
       const digitsAfter91 = raw.replace(/^\+91/, "").replace(/\D/g, "");
       if (digitsAfter91.length !== 10) {
-        errors.phoneNumber = "Phone number must contain exactly 10 digits after +91.";
+        errors.phoneNumber = "Please enter a valid 10-digit mobile number.";
       }
     }
   }

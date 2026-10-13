@@ -38,9 +38,11 @@ function Index() {
           src={heroImg}
           alt="Tea gardens and winding roads of the Nilgiri hills near Ooty"
           fetchPriority="high"
-          className="absolute inset-0 size-full object-cover opacity-45"
+          className="absolute inset-0 size-full object-cover object-[center_35%] opacity-85 sm:opacity-90 contrast-[1.05] brightness-[1.02]"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-ink/90 via-ink/70 to-ink" />
+        {/* Directional gradients: ensures text contrast on the left while revealing the bright, lush Nilgiri hills */}
+        <div className="absolute inset-0 bg-gradient-to-r from-ink/90 via-ink/60 to-ink/25" />
+        <div className="absolute inset-0 bg-gradient-to-t from-ink via-transparent to-ink/35" />
         <div className="container-x relative grid w-full items-center gap-12 py-16 lg:grid-cols-2 lg:py-24">
           <div className="min-w-0">
             <span className="eyebrow animate-fade-up">{company.tagline}</span>

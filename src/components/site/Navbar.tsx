@@ -20,7 +20,7 @@ export function Navbar() {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const pathname = useRouterState({ select: (s) => s.location.pathname });
-  const transparentStart = pathname === "/";
+  const transparentStart = !pathname.startsWith("/admin");
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);
@@ -44,7 +44,9 @@ export function Navbar() {
       <header
         className={cn(
           "fixed inset-x-0 top-0 z-50 transition-all duration-500",
-          light ? "bg-transparent" : "bg-background/85 backdrop-blur-xl border-b border-border/70",
+          light
+            ? "bg-gradient-to-b from-ink/80 via-ink/30 to-transparent"
+            : "bg-background/85 backdrop-blur-xl border-b border-border/70",
         )}
       >
         <div className="container-x flex h-[72px] items-center justify-between gap-4">

@@ -38,7 +38,6 @@ function VehiclesPage() {
         eyebrow="Our Fleet"
         title="Pick the vehicle that"
         accent="fits your trip"
-        image={vehicles[0]!.images[0]!}
         description="Six premium vehicles across five categories — every one sanitised, insured and driven by a hill-road specialist."
       />
 

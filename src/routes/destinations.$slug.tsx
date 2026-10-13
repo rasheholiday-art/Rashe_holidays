@@ -100,8 +100,16 @@ function DestinationDetail() {
   return (
     <>
       {/* Top Hero / Header */}
-      <section className="bg-ink pt-[72px] text-ink-foreground grain">
-        <div className="container-x py-10 lg:py-14">
+      <section className="relative overflow-hidden bg-ink pt-[72px] text-ink-foreground grain">
+        <img
+          src={d.image}
+          alt=""
+          className="absolute inset-0 size-full object-cover object-center opacity-50 sm:opacity-60 brightness-[1.02] contrast-[1.05]"
+        />
+        {/* Soft directional overlays to keep text and badge details high-contrast while revealing the destination scene */}
+        <div className="absolute inset-0 bg-gradient-to-r from-ink/95 via-ink/80 to-ink/50" />
+        <div className="absolute inset-0 bg-gradient-to-t from-ink via-transparent to-ink/35" />
+        <div className="container-x relative py-10 lg:py-14">
           {/* Breadcrumbs */}
           <nav className="flex items-center gap-2 text-xs text-ink-muted">
             <Link to="/" className="hover:text-gold transition-colors">

@@ -10,6 +10,7 @@ import { VehicleCard } from "@/components/site/VehicleCard";
 import { company, inr, vehicleBySlug, vehicles, whatsappUrl } from "@/data/site";
 import { cn } from "@/lib/utils";
 import { fitText, pageHead } from "@/lib/seo";
+import heroImg from "@/assets/hero-ooty.jpg";
 
 export const Route = createFileRoute("/vehicles/$slug")({
   loader: ({ params }) => {
@@ -53,8 +54,16 @@ function VehicleDetail() {
   return (
     <>
       {/* Gallery + summary */}
-      <section className="bg-ink pt-[72px] text-ink-foreground grain">
-        <div className="container-x grid gap-10 py-12 lg:grid-cols-[1.15fr_1fr] lg:py-16">
+      <section className="relative overflow-hidden bg-ink pt-[72px] text-ink-foreground grain">
+        <img
+          src={heroImg}
+          alt=""
+          className="absolute inset-0 size-full object-cover object-[center_35%] opacity-35 sm:opacity-40 brightness-[1.02] contrast-[1.05]"
+        />
+        {/* Soft directional overlays to keep vehicle gallery and specs crisp while revealing hill road backdrop */}
+        <div className="absolute inset-0 bg-gradient-to-r from-ink/95 via-ink/80 to-ink/60" />
+        <div className="absolute inset-0 bg-gradient-to-t from-ink via-transparent to-ink/35" />
+        <div className="container-x relative grid gap-10 py-12 lg:grid-cols-[1.15fr_1fr] lg:py-16">
           <div>
             <div className="overflow-hidden rounded-[2rem] border border-ink-border bg-ink-foreground/5">
               <img

@@ -210,15 +210,17 @@ export function BookingForm({ initial }: { initial: BookingSearch }) {
           <Row k="Passengers" v={`${passengers}`} />
           {email && <Row k="Confirmation Sent To" v={email} />}
           {activeFixedPrice ? (
-            <Row k="Package Fare" v={`${inr(activeFixedPrice)} approx.`} />
+            <Row k="Fixed Package" v={`${inr(activeFixedPrice)} (fixed fare)`} />
           ) : (
             estimate && <Row k="Estimated Fare" v={`${inr(estimate.low)} – ${inr(estimate.high)} approx.`} />
           )}
           <Row k="Toll & Parking" v="At actuals (state to state)" />
         </div>
-        <p className="mt-3 text-center text-[11px] text-muted-foreground">
-          * Fares are approximate and may be lesser depending on your exact itinerary and season.
-        </p>
+        {!activeFixedPrice && (
+          <p className="mt-3 text-center text-[11px] text-muted-foreground">
+            * Fares are approximate and may be lesser depending on your exact itinerary and season.
+          </p>
+        )}
         <div className="mt-8 flex flex-wrap justify-center gap-3">
           <Button asChild variant="gold" size="lg">
             <a href={whatsappUrl(summary)} target="_blank" rel="noreferrer">
@@ -497,7 +499,7 @@ export function BookingForm({ initial }: { initial: BookingSearch }) {
 
         <Section n="3" title="Your details">
           <div className="grid gap-4 sm:grid-cols-2">
-            <L label="Customer Name">
+            <L label="Customer Name *" hint="Required">
               <input
                 value={name}
                 onChange={(e) => {
@@ -514,7 +516,7 @@ export function BookingForm({ initial }: { initial: BookingSearch }) {
               )}
             </L>
 
-            <L label="Phone Number" hint="+91 · 10 digits">
+            <L label="Mobile Number *" hint="Mandatory · 10 digits">
               <input
                 type="tel"
                 inputMode="numeric"
@@ -540,8 +542,12 @@ export function BookingForm({ initial }: { initial: BookingSearch }) {
                 required
                 autoComplete="tel"
               />
-              {fieldErrors.phoneNumber && (
+              {fieldErrors.phoneNumber ? (
                 <p className="mt-1 text-xs text-destructive">{fieldErrors.phoneNumber}</p>
+              ) : (
+                <p className="mt-1 text-xs text-muted-foreground">
+                  Mandatory · Chauffeur and trip confirmation details will be sent here.
+                </p>
               )}
             </L>
 
@@ -641,20 +647,15 @@ export function BookingForm({ initial }: { initial: BookingSearch }) {
             <>
               <div className="flex items-center justify-between">
                 <p className="text-[11px] font-bold uppercase tracking-wider text-ink-muted">
-                  Package Fare <span className="text-gold font-normal lowercase">(approx.)</span>
+                  Fixed Package Fare
                 </p>
                 <span className="rounded-full bg-gold/20 px-2 py-0.5 text-[10px] font-bold text-gold">
-                  Day Package
+                  Fixed Price
                 </span>
               </div>
-              <div className="mt-1 flex items-baseline gap-2 flex-wrap">
-                <p className="text-3xl font-bold tracking-tight text-gold">
-                  {inr(activeFixedPrice)}
-                </p>
-                <span className="rounded-md bg-gold/15 px-2 py-0.5 text-xs font-semibold text-gold">
-                  approx.
-                </span>
-              </div>
+              <p className="mt-1 text-3xl font-bold tracking-tight text-gold">
+                {inr(activeFixedPrice)}
+              </p>
               <p className="mt-2 text-xs text-ink-muted">
                 Fixed package for Ooty → {matchedDestination?.name} ({selectedVehicle.name})
               </p>
@@ -700,16 +701,18 @@ export function BookingForm({ initial }: { initial: BookingSearch }) {
           )}
         </div>
 
-        {/* Pricing disclaimer note: Rates are not fixed and might be lesser */}
-        <div className="mt-4 rounded-xl border border-gold/30 bg-gold-soft/30 p-3 text-xs">
-          <div className="flex items-start gap-2.5">
-            <Info className="size-4 shrink-0 text-gold mt-0.5" />
-            <p className="text-[11px] leading-relaxed text-muted-foreground">
-              <strong className="text-foreground font-semibold">Fare is approximate: </strong>
-              No rate is strictly fixed — your final fare might be <span className="text-gold font-semibold">lesser than the estimated fare</span> depending on your exact itinerary, sightseeing spots, and season.
-            </p>
+        {/* Pricing disclaimer note: Rates are not fixed and might be lesser (only for estimated fares, not fixed rates) */}
+        {!activeFixedPrice && estimate && (
+          <div className="mt-4 rounded-xl border border-gold/30 bg-gold-soft/30 p-3 text-xs">
+            <div className="flex items-start gap-2.5">
+              <Info className="size-4 shrink-0 text-gold mt-0.5" />
+              <p className="text-[11px] leading-relaxed text-muted-foreground">
+                <strong className="text-foreground font-semibold">Fare is approximate: </strong>
+                No rate is strictly fixed — your final fare might be <span className="text-gold font-semibold">lesser than the estimated fare</span> depending on your exact itinerary, sightseeing spots, and season.
+              </p>
+            </div>
           </div>
-        </div>
+        )}
 
         <ul className="mt-4 space-y-2.5 text-xs text-muted-foreground">
           <li className="flex gap-2 text-foreground font-medium">
