@@ -237,7 +237,6 @@ export async function fetchBookingsFromSupabase(): Promise<Reservation[]> {
     if (typeof window !== "undefined") {
       try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(merged));
-        window.dispatchEvent(new Event("nilgiri_bookings_updated"));
       } catch (e) {
         console.error("Failed to cache merged bookings:", e);
       }

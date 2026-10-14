@@ -90,7 +90,7 @@ function DestinationDetail() {
   const [selectedVehicleSlug, setSelectedVehicleSlug] = useState<string>("crysta");
 
   const selectedVehicle =
-    vehicles.find((v) => v.slug === selectedVehicleSlug) ?? vehicles[0];
+    vehicles.find((v) => v.slug === selectedVehicleSlug) || vehicles[0]!;
   const price = d.fixedPrices[selectedVehicle.slug] ?? 0;
 
   const related = destinations.filter((item) => item.slug !== d.slug).slice(0, 3);

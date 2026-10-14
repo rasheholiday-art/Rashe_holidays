@@ -11,19 +11,22 @@ interface GlobalWithCloudflare {
 const cloudflareEnv = (globalThis as unknown as GlobalWithCloudflare).__CLOUDFLARE_ENV__;
 
 // Environment variable resolution for Vite, TanStack Start (SSR), and Cloudflare
+const metaEnv = typeof import.meta !== "undefined" ? (import.meta.env as Record<string, string | undefined>) : undefined;
+const procEnv = typeof process !== "undefined" ? (process.env as Record<string, string | undefined>) : undefined;
+
 const rawUrl =
-  (typeof import.meta !== "undefined" &&
-    (import.meta.env?.VITE_SUPABASE_URL || import.meta.env?.SUPABASE_URL)) ||
-  (typeof process !== "undefined" &&
-    (process.env?.VITE_SUPABASE_URL || process.env?.SUPABASE_URL)) ||
+  metaEnv?.["VITE_SUPABASE_URL"] ||
+  metaEnv?.["SUPABASE_URL"] ||
+  procEnv?.["VITE_SUPABASE_URL"] ||
+  procEnv?.["SUPABASE_URL"] ||
   cloudflareEnv?.VITE_SUPABASE_URL ||
   "";
 
 const rawKey =
-  (typeof import.meta !== "undefined" &&
-    (import.meta.env?.VITE_SUPABASE_ANON_KEY || import.meta.env?.SUPABASE_ANON_KEY)) ||
-  (typeof process !== "undefined" &&
-    (process.env?.VITE_SUPABASE_ANON_KEY || process.env?.SUPABASE_ANON_KEY)) ||
+  metaEnv?.["VITE_SUPABASE_ANON_KEY"] ||
+  metaEnv?.["SUPABASE_ANON_KEY"] ||
+  procEnv?.["VITE_SUPABASE_ANON_KEY"] ||
+  procEnv?.["SUPABASE_ANON_KEY"] ||
   cloudflareEnv?.VITE_SUPABASE_ANON_KEY ||
   "";
 

@@ -139,18 +139,18 @@ export const Route = createFileRoute("/api/send-booking-email")({
               bookingId: body.id,
               customerName: body.customer_name,
               phoneNumber: body.phone_number,
-              emailAddress: body.email_address,
+              emailAddress: body.email_address ?? null,
               tripType: body.trip_type,
               vehicleCategory: body.vehicle_category,
-              preferredVehicle: body.preferred_vehicle,
+              preferredVehicle: body.preferred_vehicle ?? null,
               passengers: body.passengers,
               pickupLocation: body.pickup_location,
               destination: body.destination,
               departureDate: body.departure_date,
-              returnDate: body.return_date,
+              returnDate: body.return_date ?? null,
               numberOfDays: body.number_of_days || 1,
               waitingDays: body.waiting_days,
-              specialRequirements: body.special_requirements,
+              specialRequirements: body.special_requirements ?? null,
               createdAt: body.created_at,
               adminPortalUrl: `${EMAIL_COMPANY.adminUrl}`,
             });
@@ -164,8 +164,8 @@ export const Route = createFileRoute("/api/send-booking-email")({
             });
 
             results.admin = adminSend.success
-              ? { status: "sent", id: adminSend.id }
-              : { status: "failed", error: adminSend.error };
+              ? { status: "sent", id: adminSend.id || undefined }
+              : { status: "failed", error: adminSend.error || undefined };
           }
 
           // 2. Dispatch Customer Confirmation Email to Sender (the user who entered their email)
@@ -177,15 +177,15 @@ export const Route = createFileRoute("/api/send-booking-email")({
               customerPhone: body.phone_number,
               tripType: body.trip_type,
               vehicleCategory: body.vehicle_category,
-              preferredVehicle: body.preferred_vehicle,
+              preferredVehicle: body.preferred_vehicle ?? null,
               passengers: body.passengers,
               pickupLocation: body.pickup_location,
               destination: body.destination,
               departureDate: body.departure_date,
-              returnDate: body.return_date,
+              returnDate: body.return_date ?? null,
               numberOfDays: body.number_of_days || 1,
               waitingDays: body.waiting_days,
-              specialRequirements: body.special_requirements,
+              specialRequirements: body.special_requirements ?? null,
               companyName,
             });
 
@@ -198,8 +198,8 @@ export const Route = createFileRoute("/api/send-booking-email")({
             });
 
             results.customer = customerSend.success
-              ? { status: "sent", id: customerSend.id }
-              : { status: "failed", error: customerSend.error };
+              ? { status: "sent", id: customerSend.id || undefined }
+              : { status: "failed", error: customerSend.error || undefined };
             console.log(`[api/send-booking-email] Customer (${body.email_address}) result:`, customerSend);
           }
 

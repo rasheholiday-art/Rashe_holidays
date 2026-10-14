@@ -6,6 +6,7 @@ import {
   CheckCircle,
   Clock,
   Download,
+  Eye,
   Lock,
   LogOut,
   Mail,
@@ -68,6 +69,43 @@ function GoogleIcon({ className }: { className?: string }) {
   );
 }
 
+function AdminErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
+  return (
+    <div className="flex min-h-[70vh] items-center justify-center bg-background px-4">
+      <div className="max-w-md w-full rounded-2xl border border-destructive/30 bg-card p-6 text-center shadow-lg">
+        <AlertCircle className="mx-auto size-10 text-destructive mb-3" />
+        <h2 className="text-lg font-bold text-foreground">Admin Portal Notice</h2>
+        <p className="mt-2 text-xs text-muted-foreground">
+          {error.message || "An unexpected error occurred while loading reservations."}
+        </p>
+        <div className="mt-6 flex flex-wrap justify-center gap-2">
+          <Button
+            size="sm"
+            variant="default"
+            onClick={() => {
+              reset();
+            }}
+          >
+            Retry Loading
+          </Button>
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={() => {
+              try {
+                localStorage.removeItem("nilgiri_rides_reservations");
+              } catch (_) {}
+              window.location.reload();
+            }}
+          >
+            Reset Local Cache & Reload
+          </Button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export const Route = createFileRoute("/admin")({
   head: () => ({
     meta: [
@@ -76,10 +114,11 @@ export const Route = createFileRoute("/admin")({
     ],
   }),
   component: AdminRouteComponent,
+  errorComponent: AdminErrorComponent,
 });
 
 function AdminRouteComponent() {
-  const [adminUser, setAdminUser] = useState<{ email?: string; id?: string } | null>(null);
+  const [adminUser, setAdminUser] = useState<{ email: string; id: string } | null>(null);
   const [checkingAuth, setCheckingAuth] = useState(true);
   const [authError, setAuthError] = useState("");
 
@@ -100,7 +139,7 @@ function AdminRouteComponent() {
           const email = (session.user.email || "").toLowerCase().trim();
           if (isAuthorizedAdminEmail(email)) {
             if (mounted) {
-              setAdminUser({ email: session.user.email, id: session.user.id });
+              setAdminUser({ email: session.user.email || "", id: session.user.id });
               setAuthError("");
             }
           } else {
@@ -132,7 +171,7 @@ function AdminRouteComponent() {
         if (session?.user) {
           const email = (session.user.email || "").toLowerCase().trim();
           if (isAuthorizedAdminEmail(email)) {
-            setAdminUser({ email: session.user.email, id: session.user.id });
+            setAdminUser({ email: session.user.email || "", id: session.user.id });
             setAuthError("");
           } else {
             await supabase.auth.signOut();
@@ -988,18 +1027,18 @@ function ReservationModal({
     const res = await resendBookingEmail(reservation.id, type, {
       customerName: reservation.name,
       phoneNumber: reservation.phone,
-      emailAddress: reservation.email,
+      emailAddress: reservation.email ?? null,
       tripType: reservation.tripType,
       vehicleCategory: reservation.category,
-      preferredVehicle: reservation.vehicle,
+      preferredVehicle: reservation.vehicle ?? null,
       passengers: reservation.passengers,
       pickupLocation: reservation.from,
       destination: reservation.to,
       departureDate: reservation.date,
-      returnDate: reservation.returnDate,
+      returnDate: reservation.returnDate ?? null,
       numberOfDays: reservation.days,
-      waitingDays: reservation.waitingDays,
-      specialRequirements: reservation.notes,
+      waitingDays: reservation.waitingDays ?? 0,
+      specialRequirements: reservation.notes ?? null,
       createdAt: reservation.createdAt,
     });
     if (res.success) {
