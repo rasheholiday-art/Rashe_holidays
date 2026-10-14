@@ -1,11 +1,13 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight, PhoneCall } from "lucide-react";
-import heroImg from "@/assets/hero-ooty.jpg";
+import { useEffect, useState } from "react";
+import hero1 from "@/assets/hero-1.jpg";
+import hero2 from "@/assets/hero-2.jpg";
+import hero3 from "@/assets/hero-3.jpg";
 import { Button } from "@/components/ui/button";
 import { SectionHeading } from "@/components/site/SectionHeading";
 import { Reveal } from "@/components/site/Reveal";
 import { CategoryShowcase } from "@/components/site/CategoryShowcase";
-import { HeroBookingForm } from "@/components/site/HeroBookingForm";
 import { TripTypeCard } from "@/components/site/TripTypeCard";
 import { DestinationCard } from "@/components/site/DestinationCard";
 import { TestimonialCard } from "@/components/site/TestimonialCard";
@@ -16,6 +18,22 @@ import { FAQ } from "@/components/site/FAQ";
 import { company, destinations, stats, testimonials, whatsappUrl } from "@/data/site";
 import CountUp from "@/components/ui/CountUp";
 import { businessJsonLd, jsonLdScript, pageHead, websiteJsonLd } from "@/lib/seo";
+import { cn } from "@/lib/utils";
+
+const heroSlides = [
+  {
+    src: hero1,
+    alt: "Nilgiri Mountain Railway toy train through misty sunrise tea hills",
+  },
+  {
+    src: hero2,
+    alt: "Scenic turquoise mountain lake in the Nilgiris under bright blue sky",
+  },
+  {
+    src: hero3,
+    alt: "Lush green valley, tea plantations and lake waters in Ooty",
+  },
+];
 
 const title = "Ooty Taxi, Cab & Tempo Traveller Booking | Rashe Holidays";
 const description =
@@ -30,42 +48,91 @@ export const Route = createFileRoute("/")({
 });
 
 function Index() {
+  const [currentSlide, setCurrentSlide] = useState(0);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % heroSlides.length);
+    }, 3000);
+    return () => clearInterval(timer);
+  }, []);
+
   return (
     <>
       {/* Hero */}
-      <section className="relative flex min-h-[88vh] items-center overflow-hidden bg-ink pt-[72px] text-ink-foreground grain">
-        <img
-          src={heroImg}
-          alt="Tea gardens and winding roads of the Nilgiri hills near Ooty"
-          fetchPriority="high"
-          className="absolute inset-0 size-full object-cover object-[center_35%] opacity-85 sm:opacity-90 contrast-[1.05] brightness-[1.02]"
-        />
-        {/* Directional gradients: ensures text contrast on the left while revealing the bright, lush Nilgiri hills */}
-        <div className="absolute inset-0 bg-gradient-to-r from-ink/90 via-ink/60 to-ink/25" />
-        <div className="absolute inset-0 bg-gradient-to-t from-ink via-transparent to-ink/35" />
-        <div className="container-x relative grid w-full items-center gap-12 py-16 lg:grid-cols-2 lg:py-24">
-          <div className="min-w-0">
+      <section className="relative flex min-h-[90vh] items-center overflow-hidden bg-ink pt-[72px] text-ink-foreground grain">
+        {/* Background Slideshow alternating every 3 seconds */}
+        {heroSlides.map((slide, idx) => (
+          <img
+            key={slide.src}
+            src={slide.src}
+            alt={slide.alt}
+            fetchPriority={idx === 0 ? "high" : "low"}
+            className={cn(
+              "absolute inset-0 size-full object-cover object-[center_35%] transition-opacity duration-1000 ease-in-out pointer-events-none",
+              currentSlide === idx ? "opacity-100 z-[1]" : "opacity-0 z-0",
+            )}
+          />
+        ))}
+
+        {/* Subtle soft directional gradient: keeps text contrast clean on the left while keeping the scenic background bright and vivid */}
+        <div className="absolute inset-0 z-[2] bg-gradient-to-r from-ink/80 via-ink/35 to-transparent pointer-events-none" />
+        <div className="absolute inset-0 z-[2] bg-gradient-to-t from-ink/75 via-transparent to-transparent pointer-events-none" />
+
+        {/* Slide Indicators */}
+        <div className="container-x absolute bottom-4 left-0 right-0 z-20 hidden sm:flex items-center justify-end gap-2 pointer-events-auto">
+          {heroSlides.map((_, i) => (
+            <button
+              key={i}
+              type="button"
+              onClick={() => setCurrentSlide(i)}
+              aria-label={`Switch to slide ${i + 1}`}
+              className={cn(
+                "h-1.5 rounded-full transition-all duration-500",
+                currentSlide === i ? "w-7 bg-gold" : "w-2 bg-white/40 hover:bg-white/70",
+              )}
+            />
+          ))}
+        </div>
+
+        <div className="container-x relative z-10 w-full py-12 sm:py-16 lg:py-20">
+          <div className="max-w-2xl lg:max-w-3xl">
+            {/* Original Eyebrow style */}
             <span className="eyebrow animate-fade-up">{company.tagline}</span>
-            <h1 className="mt-5 max-w-2xl text-[2.75rem] font-semibold leading-[1.02] sm:text-6xl lg:text-7xl animate-fade-up [animation-delay:80ms]">
-              Travel the Nilgiris in <span className="display italic text-gold">quiet comfort</span>
+
+            {/* Main Title */}
+            <h1 className="mt-5 text-[2.6rem] font-semibold leading-[1.04] tracking-tight sm:text-6xl lg:text-7xl animate-fade-up [animation-delay:80ms]">
+              Travel the Nilgiris in{" "}
+              <span className="display italic text-gold font-normal">quiet comfort</span>
             </h1>
-            <p className="mt-6 max-w-xl text-base leading-relaxed text-ink-muted sm:text-lg animate-fade-up [animation-delay:160ms]">
+
+            {/* Descriptive Subtitle */}
+            <p className="mt-5 max-w-xl text-base leading-relaxed text-ink-muted sm:text-lg animate-fade-up [animation-delay:160ms]">
               Well-kept cars, experienced hill-road drivers and clear per-kilometre pricing. Choose
               one-way or round trip, pick your vehicle, and we confirm within 30 minutes.
             </p>
-            <div className="mt-8 flex flex-wrap gap-3 animate-fade-up [animation-delay:240ms]">
-              <Button asChild variant="gold" size="lg">
-                <Link to="/vehicles">
-                  Explore Vehicles <ArrowRight />
+
+            {/* CTAs */}
+            <div className="mt-8 flex flex-wrap items-center gap-3.5 animate-fade-up [animation-delay:240ms]">
+              <Button asChild variant="gold" size="lg" className="shadow-lg shadow-gold/25 font-semibold">
+                <Link to="/booking">
+                  Book Your Ride <ArrowRight className="size-4" />
                 </Link>
               </Button>
               <Button asChild variant="outline-light" size="lg">
+                <Link to="/vehicles">
+                  Explore Vehicles
+                </Link>
+              </Button>
+              <Button asChild variant="ghost" size="lg" className="text-ink-muted hover:text-white hover:bg-white/10">
                 <a href={company.phoneHref}>
-                  <PhoneCall /> {company.phone}
+                  <PhoneCall className="size-4 text-gold" /> {company.phone}
                 </a>
               </Button>
             </div>
-            <dl className="mt-12 grid max-w-lg grid-cols-2 gap-6 sm:grid-cols-4 animate-fade-up [animation-delay:320ms]">
+
+            {/* Stats: 0 opacity background (completely transparent, floating naturally on background) */}
+            <dl className="mt-10 grid max-w-lg grid-cols-2 gap-6 sm:grid-cols-4 animate-fade-up [animation-delay:320ms]">
               {stats.map((s) => (
                 <div key={s.label}>
                   <dt className="text-2xl font-semibold text-gold sm:text-3xl">
@@ -76,9 +143,6 @@ function Index() {
                 </div>
               ))}
             </dl>
-          </div>
-          <div className="min-w-0 animate-fade-up [animation-delay:200ms]">
-            <HeroBookingForm />
           </div>
         </div>
       </section>
@@ -159,7 +223,7 @@ function Index() {
           <SectionHeading
             align="center"
             eyebrow="How It Works"
-            title="Booked in"
+            title="Book in"
             accent="four steps"
           />
           <HowItWorks />

@@ -68,6 +68,23 @@
   --font-sans: "Manrope", ui-sans-serif, system-ui, sans-serif;
   --font-display: "Instrument Serif", ui-serif, Georgia, serif;
   --font-serif: "Instrument Serif", ui-serif, Georgia, serif;
+  --font-hand: "Kalam", "Segoe Print", "Comic Sans MS", cursive;
+
+  /* Loader theme tokens */
+  --color-paper: #f5f1e6;
+  --color-leaf: #3f8f55;
+  --color-highlight: #a8d39a;
+  --color-suitcase: #d39b4a;
+  --color-headlight: #f3d98b;
+  --color-taillight: #c4553f;
+
+  --animate-car-bob: car-bob 380ms ease-in-out infinite alternate;
+
+  @keyframes car-bob {
+    to {
+      transform: translateY(-1.4px);
+    }
+  }
 
   --shadow-card: 0 1px 2px oklch(0.2 0.01 60 / 0.04), 0 8px 24px -12px oklch(0.2 0.01 60 / 0.12);
   --shadow-card-hover:
@@ -339,3 +356,13 @@
     mix-blend-mode: overlay;
   }
 }
+
+.paper-loader {
+  --ink: #22302a;
+  --ink-muted: #56645b;
+}
+
+@utility paper-grain {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='g'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .13 0 0 0 0 .19 0 0 0 0 .16 0 0 0 .09 0'/></filter><rect width='100%' height='100%' filter='url(%23g)'/></svg>");
+}
+

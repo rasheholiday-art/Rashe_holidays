@@ -16,6 +16,7 @@ import { Navbar } from "@/components/site/Navbar";
 import { Footer } from "@/components/site/Footer";
 import { WhatsAppButton } from "@/components/site/WhatsAppButton";
 import { StickyBookBar } from "@/components/site/StickyBookBar";
+import { SitePageLoader } from "@/components/site/loader/SitePageLoader";
 import { cn } from "@/lib/utils";
 
 function NotFoundComponent() {
@@ -99,7 +100,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {
         rel: "stylesheet",
-        href: "https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Instrument+Serif:ital@0;1&display=swap",
+        href: "https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Instrument+Serif:ital@0;1&family=Kalam:wght@400;700&display=swap",
       },
       { rel: "stylesheet", href: appCss },
       { rel: "icon", type: "image/png", href: "/favicon.png" },
@@ -132,6 +133,7 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
+      {!isAdmin && <SitePageLoader />}
       {!isAdmin && <Navbar />}
       <main className={cn(isAdmin ? "" : "pb-20 min-[900px]:pb-0")}>
         {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}

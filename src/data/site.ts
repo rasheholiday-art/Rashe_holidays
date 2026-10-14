@@ -6,15 +6,15 @@ import tempoImg from "@/assets/vehicles/tempo-traveller.png";
 import urbaniaImg from "@/assets/vehicles/urbania.png";
 
 import ootyImg from "@/assets/destinations/ooty.jpg";
-import coonoorImg from "@/assets/destinations/coorg.jpg";
-import pykaraImg from "@/assets/destinations/mysore.jpg";
-import mudumalaiImg from "@/assets/destinations/mysore.jpg";
-import coimbatoreImg from "@/assets/destinations/coimbatore.jpg";
+import coonoorImg from "@/assets/destinations/coonoor.jpg";
+import pykaraImg from "@/assets/destinations/pykara.jpg";
+import mudumalaiImg from "@/assets/destinations/mudumalai.png";
+import ootyCoonoorImg from "@/assets/destinations/ooty-coonoor.jpg";
+import coimbatoreImg from "@/assets/destinations/coimbatore.png";
 import bangaloreImg from "@/assets/destinations/bangalore.jpg";
-import cochinImg from "@/assets/destinations/kerala.jpg";
-import chennaiImg from "@/assets/destinations/chennai.jpg";
-import calicutImg from "@/assets/destinations/kerala.jpg";
-import trichyImg from "@/assets/destinations/coorg.jpg";
+import cochinImg from "@/assets/destinations/cochin.png";
+import calicutImg from "@/assets/destinations/calicut.jpg";
+import trichyImg from "@/assets/destinations/trichy.jpg";
 
 export const company = {
   name: "Rashe Holidays",
@@ -83,82 +83,82 @@ export const categories: {
   blurb: string;
   pricing: Pricing;
 }[] = [
-  {
-    id: "4-seater",
-    label: "4 Seater Sedan",
-    title: "Sedan (4 Seater)",
-    seats: 4,
-    blurb:
-      "Comfortable and nimble sedan, perfect for couples, solo travelers, small families, and airport transfers.",
-    pricing: {
-      oneWayPerKm: 14,
-      roundTripPerKm: 12,
-      perDay: 3000,
-      minKmPerDay: 250,
-      driverAllowance: 700,
+    {
+      id: "4-seater",
+      label: "4 Seater Sedan",
+      title: "Sedan (4 Seater)",
+      seats: 4,
+      blurb:
+        "Comfortable and nimble sedan, perfect for couples, solo travelers, small families, and airport transfers.",
+      pricing: {
+        oneWayPerKm: 14,
+        roundTripPerKm: 12,
+        perDay: 3000,
+        minKmPerDay: 250,
+        driverAllowance: 700,
+      },
     },
-  },
-  {
-    id: "7-seater",
-    label: "7 Seater (Crysta / HyCross)",
-    title: "7 Seater Premium MPV",
-    seats: 7,
-    blurb:
-      "Supreme comfort and space with Toyota Innova Crysta & Innova HyCross for family vacations and long ghat journeys.",
-    pricing: {
-      oneWayPerKm: 22,
-      roundTripPerKm: 19,
-      perDay: 5000,
-      minKmPerDay: 250,
-      driverAllowance: 1000,
+    {
+      id: "7-seater",
+      label: "7 Seater (Crysta / HyCross)",
+      title: "7 Seater Premium MPV",
+      seats: 7,
+      blurb:
+        "Supreme comfort and space with Toyota Innova Crysta & Innova HyCross for family vacations and long ghat journeys.",
+      pricing: {
+        oneWayPerKm: 22,
+        roundTripPerKm: 19,
+        perDay: 5000,
+        minKmPerDay: 250,
+        driverAllowance: 1000,
+      },
     },
-  },
-  {
-    id: "9-seater",
-    label: "9 Seater Tavera",
-    title: "Tavera (9 Seater)",
-    seats: 9,
-    blurb:
-      "The proven hill warrior with generous room for 9 passengers, high ground clearance, and luggage space.",
-    pricing: {
-      oneWayPerKm: 24,
-      roundTripPerKm: 20,
-      perDay: 5000,
-      minKmPerDay: 250,
-      driverAllowance: 800,
+    {
+      id: "9-seater",
+      label: "9 Seater Tavera",
+      title: "Tavera (9 Seater)",
+      seats: 9,
+      blurb:
+        "The proven hill warrior with generous room for 9 passengers, high ground clearance, and luggage space.",
+      pricing: {
+        oneWayPerKm: 24,
+        roundTripPerKm: 20,
+        perDay: 5000,
+        minKmPerDay: 250,
+        driverAllowance: 800,
+      },
     },
-  },
-  {
-    id: "12-seater",
-    label: "12 Seater Tempo Traveller",
-    title: "Tempo Traveller (12 Seater)",
-    seats: 12,
-    blurb:
-      "High-roof comfort with push-back seats and dedicated luggage carrier for extended group outings.",
-    pricing: {
-      oneWayPerKm: 32,
-      roundTripPerKm: 27,
-      perDay: 7000,
-      minKmPerDay: 250,
-      driverAllowance: 1000,
+    {
+      id: "12-seater",
+      label: "12 Seater Tempo Traveller",
+      title: "Tempo Traveller (12 Seater)",
+      seats: 12,
+      blurb:
+        "High-roof comfort with push-back seats and dedicated luggage carrier for extended group outings.",
+      pricing: {
+        oneWayPerKm: 32,
+        roundTripPerKm: 27,
+        perDay: 7000,
+        minKmPerDay: 250,
+        driverAllowance: 1000,
+      },
     },
-  },
-  {
-    id: "16-seater",
-    label: "16 Seater Urbania",
-    title: "Urbania (16 Seater)",
-    seats: 16,
-    blurb:
-      "Next-generation luxury group travel with panoramic windows, individual AC vents, and plush reclining seats.",
-    pricing: {
-      oneWayPerKm: 48,
-      roundTripPerKm: 40,
-      perDay: 10000,
-      minKmPerDay: 250,
-      driverAllowance: 1000,
+    {
+      id: "16-seater",
+      label: "16 Seater Urbania",
+      title: "Urbania (16 Seater)",
+      seats: 16,
+      blurb:
+        "Next-generation luxury group travel with panoramic windows, individual AC vents, and plush reclining seats.",
+      pricing: {
+        oneWayPerKm: 48,
+        roundTripPerKm: 40,
+        perDay: 10000,
+        minKmPerDay: 250,
+        driverAllowance: 1000,
+      },
     },
-  },
-];
+  ];
 
 export const categoryById = (id: CategoryId) =>
   categories.find((c) => c.id === id) ?? categories[0];
@@ -434,10 +434,10 @@ export const destinations: Destination[] = [
     fixedPrices: {
       sedan: 2000,
       tavera: 2500,
-      crysta: 4500,
+      crysta: 4000,
       hycross: 5000,
       "tempo-traveller": 4000,
-      urbania: 6500,
+      urbania: 7000,
     },
   },
   {
@@ -464,7 +464,7 @@ export const destinations: Destination[] = [
       crysta: 4500,
       hycross: 5500,
       "tempo-traveller": 5000,
-      urbania: 7000,
+      urbania: 8500,
     },
   },
   {
@@ -477,9 +477,9 @@ export const destinations: Destination[] = [
     kmFromOoty: 23,
     hours: "Half / Full Day",
     blurb:
-      "Pykara Lake speed boating, majestic Pykara Waterfalls, Pine Forest, and the picturesque 9th Mile shooting meadows.",
+      "Pykara Lake boating, majestic Pykara Waterfalls, Pine Forest, and the picturesque 9th Mile shooting meadows.",
     highlights: [
-      "Pykara Lake Speed Boat Cruises",
+      "Pykara Lake Boating",
       "Pykara Cascading Waterfalls",
       "Wenlock Downs (9th Mile)",
       "Dense Pine Forest Strolls",
@@ -491,12 +491,12 @@ export const destinations: Destination[] = [
       crysta: 4500,
       hycross: 5500,
       "tempo-traveller": 5000,
-      urbania: 7000,
+      urbania: 8500,
     },
   },
   {
     slug: "mudumalai",
-    name: "Mudumalai",
+    name: "Pykara & Mudumalai",
     type: "sightseeing",
     typeLabel: "Sightseeing",
     startPlace: "Ooty",
@@ -513,12 +513,12 @@ export const destinations: Destination[] = [
       "Spotted Deer, Gaur & Wild Elephant Spotting",
     ],
     fixedPrices: {
-      sedan: 3000,
+      sedan: 3500,
       tavera: 4500,
       crysta: 6000,
       hycross: 7000,
-      "tempo-traveller": 7000,
-      urbania: 9000,
+      "tempo-traveller": 7500,
+      urbania: 10000,
     },
   },
   {
@@ -527,7 +527,7 @@ export const destinations: Destination[] = [
     type: "sightseeing",
     typeLabel: "Sightseeing",
     startPlace: "Ooty",
-    image: ootyImg,
+    image: ootyCoonoorImg,
     kmFromOoty: 35,
     hours: "Combined Full Day",
     blurb:
@@ -545,7 +545,7 @@ export const destinations: Destination[] = [
       crysta: 5000,
       hycross: 6000,
       "tempo-traveller": 7500,
-      urbania: 8500,
+      urbania: 9500,
     },
   },
 
@@ -571,9 +571,9 @@ export const destinations: Destination[] = [
       sedan: 3000,
       tavera: 4500,
       crysta: 6500,
-      hycross: 7500,
-      "tempo-traveller": 9000,
-      urbania: 12500,
+      hycross: 7000,
+      "tempo-traveller": 8000,
+      urbania: 14000,
     },
   },
   {
@@ -594,11 +594,11 @@ export const destinations: Destination[] = [
       "Comfortable Highway Rest Stops",
     ],
     fixedPrices: {
-      sedan: 9500,
+      sedan: 10000,
       tavera: 15000,
-      crysta: 20000,
-      hycross: 24000,
-      "tempo-traveller": 26000,
+      crysta: 17000,
+      hycross: 18000,
+      "tempo-traveller": 24000,
       urbania: 35000,
     },
   },
@@ -621,37 +621,11 @@ export const destinations: Destination[] = [
     ],
     fixedPrices: {
       sedan: 9500,
-      tavera: 15000,
-      crysta: 20000,
-      hycross: 24000,
-      "tempo-traveller": 26000,
-      urbania: 35000,
-    },
-  },
-  {
-    slug: "chennai-airport",
-    name: "Chennai Airport",
-    type: "transfer",
-    typeLabel: "Airport / Railway Transfer",
-    startPlace: "Ooty",
-    image: chennaiImg,
-    kmFromOoty: 550,
-    hours: "9.5 – 10.5 hrs",
-    blurb:
-      "Long-distance expressway transit to Chennai International Airport (MAA) via Salem and Ulundurpet.",
-    highlights: [
-      "Smooth Multi-Lane Expressway",
-      "Experienced Long-Haul Drivers",
-      "Maximum Luggage Capacity",
-      "Continuous AC Comfort",
-    ],
-    fixedPrices: {
-      sedan: 17000,
-      tavera: 26000,
-      crysta: 35000,
-      hycross: 40000,
-      "tempo-traveller": 45000,
-      urbania: 58000,
+      tavera: 13000,
+      crysta: 13000,
+      hycross: 15000,
+      "tempo-traveller": 22000,
+      urbania: 20000,
     },
   },
   {
@@ -672,12 +646,12 @@ export const destinations: Destination[] = [
       "Door-to-Terminal Drop",
     ],
     fixedPrices: {
-      sedan: 6000,
-      tavera: 8500,
-      crysta: 12000,
-      hycross: 14000,
-      "tempo-traveller": 16000,
-      urbania: 22000,
+      sedan: 5500,
+      tavera: 8000,
+      crysta: 9000,
+      hycross: 10000,
+      "tempo-traveller": 12000,
+      urbania: 16000,
     },
   },
   {
@@ -699,11 +673,11 @@ export const destinations: Destination[] = [
     ],
     fixedPrices: {
       sedan: 9500,
-      tavera: 15000,
-      crysta: 20000,
-      hycross: 24000,
-      "tempo-traveller": 26000,
-      urbania: 35000,
+      tavera: 13000,
+      crysta: 13000,
+      hycross: 15000,
+      "tempo-traveller": 22000,
+      urbania: 20000,
     },
   },
 ];
@@ -719,7 +693,6 @@ export const popularLocations = [
   "Coimbatore Airport",
   "Bangalore Airport",
   "Cochin Airport",
-  "Chennai Airport",
   "Calicut Airport",
   "Trichy Airport",
   "Coimbatore",
@@ -743,7 +716,6 @@ export const locations = [
   "Coimbatore Airport",
   "Bangalore Airport",
   "Cochin Airport",
-  "Chennai Airport",
   "Calicut Airport",
   "Trichy Airport",
 
@@ -814,7 +786,6 @@ export const distanceFromOoty: Record<string, number> = {
   "Cochin Airport": 250,
   "Trichy Airport": 290,
   "Bangalore Airport": 310,
-  "Chennai Airport": 550,
 
   // Cities
   Coimbatore: 86,
@@ -843,7 +814,6 @@ export const locationCoordinates: Record<string, [number, number]> = {
   "Coimbatore Airport": [77.0434, 11.03],
   "Bangalore Airport": [77.7066, 13.1986],
   "Cochin Airport": [76.4019, 10.1518],
-  "Chennai Airport": [80.1709, 12.9941],
   "Calicut Airport": [75.9553, 11.1369],
   "Trichy Airport": [78.7107, 10.7654],
   Coimbatore: [76.9558, 11.0168],
@@ -956,20 +926,12 @@ export const faqs = [
     a: "A One Way trip drops you at your destination and the journey ends there — you pay for one direction only. A Round Trip takes you to your destination and brings you back to your pickup point, and can span multiple days with the vehicle staying with you.",
   },
   {
-    q: "How does the Waiting Days concept work for multi-day trips?",
-    a: "If you book a round trip for more than 2 days (for example, a 5-day holiday) but only travel on 2 days while the vehicle remains parked at your hotel/resort for 3 days, you can specify 3 waiting days. You only pay running mileage for the active travel days, plus the standard daily driver allowance.",
-  },
-  {
     q: "Are toll, parking, and permit charges included?",
     a: "No. Toll, parking, state permit and forest entry charges are NOT included in the base fare as they vary from state to state and checkpost to checkpost. These are billed at actuals during the journey.",
   },
   {
-    q: "Can I choose a specific vehicle like Innova Crysta, Hycross, or Tavera?",
-    a: "Absolutely! You can choose your preferred model: Sedan (4 seater), Tavera (9 seater), Innova Crysta (7 seater), Innova Hycross (7 seater), Tempo Traveller (12 seater), or Urbania (16 seater).",
-  },
-  {
-    q: "How are destination fixed packages calculated?",
-    a: "Our destination sightseeing packages (Ooty, Coonoor, Pykara, Mudumalai) and airport transfers (Coimbatore, Bangalore, Cochin, Chennai, Calicut, Trichy) have transparent, pre-classified fixed rates depending on the car you select.",
+    q: "How are destinations other than the fixed packages calculated?",
+    a: "For custom trips and destinations outside our fixed sightseeing and airport packages, fares are calculated on a transparent per-kilometre basis according to your chosen vehicle. One-way trips are billed on actual distance, while round trips and multi-day outstation tours are calculated on total running distance plus daily driver allowance. Tolls and state permits are billed at actuals.",
   },
   {
     q: "How will I receive booking confirmation?",

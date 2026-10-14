@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { company } from "@/data/site";
-import { Logo } from "./Logo";
+import headerLogo from "@/assets/header-logo.png";
 
 const links = [
   { to: "/", label: "Home" },
@@ -18,16 +18,7 @@ const links = [
 
 export function Navbar() {
   const [open, setOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
   const pathname = useRouterState({ select: (s) => s.location.pathname });
-  const transparentStart = !pathname.startsWith("/admin");
-
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 24);
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
 
   useEffect(() => setOpen(false), [pathname]);
   useEffect(() => {
@@ -37,21 +28,21 @@ export function Navbar() {
     };
   }, [open]);
 
-  const light = transparentStart && !scrolled && !open;
-
   return (
     <>
       <header
         className={cn(
-          "fixed inset-x-0 top-0 z-50 transition-all duration-500",
-          light
-            ? "bg-gradient-to-b from-ink/80 via-ink/30 to-transparent"
-            : "bg-background/85 backdrop-blur-xl border-b border-border/70",
+          "fixed inset-x-0 top-0 z-50 transition-all duration-300",
+          "bg-background/95 backdrop-blur-xl border-b border-border/70 shadow-sm",
         )}
       >
         <div className="container-x flex h-[72px] items-center justify-between gap-4">
-          <Link to="/" aria-label={`${company.name} home`} className="shrink-0">
-            <Logo light={light} />
+          <Link to="/" aria-label={`${company.name} home`} className="shrink-0 flex items-center">
+            <img
+              src={headerLogo}
+              alt={company.name}
+              className="h-10 sm:h-11 w-auto object-contain transition-all duration-300"
+            />
           </Link>
 
           <nav className="hidden min-[900px]:flex items-center gap-0.5" aria-label="Main">
@@ -60,17 +51,9 @@ export function Navbar() {
                 key={l.to}
                 to={l.to}
                 activeOptions={{ exact: l.to === "/" }}
-                className={cn(
-                  "relative px-3.5 py-2 text-[13.5px] font-medium rounded-full transition-colors",
-                  light
-                    ? "text-ink-foreground/80 hover:text-ink-foreground"
-                    : "text-muted-foreground hover:text-foreground",
-                )}
+                className="relative px-3.5 py-2 text-[13.5px] font-medium rounded-full transition-colors text-muted-foreground hover:text-foreground"
                 activeProps={{
-                  className: cn(
-                    "!font-semibold",
-                    light ? "!text-ink-foreground" : "!text-foreground",
-                  ),
+                  className: "!font-semibold !text-foreground",
                 }}
               >
                 {l.label}
@@ -81,10 +64,7 @@ export function Navbar() {
           <div className="flex items-center gap-2">
             <a
               href={company.phoneHref}
-              className={cn(
-                "hidden xl:inline-flex items-center gap-2 text-[13.5px] font-medium mr-2",
-                light ? "text-ink-foreground/85" : "text-foreground",
-              )}
+              className="hidden xl:inline-flex items-center gap-2 text-[13.5px] font-medium mr-2 text-foreground hover:text-gold transition-colors"
             >
               <Phone className="size-4 text-gold" /> {company.phone}
             </a>
@@ -96,12 +76,7 @@ export function Navbar() {
               onClick={() => setOpen((o) => !o)}
               aria-label={open ? "Close menu" : "Open menu"}
               aria-expanded={open}
-              className={cn(
-                "min-[900px]:hidden inline-flex size-11 items-center justify-center rounded-full border transition-colors",
-                light
-                  ? "border-ink-foreground/25 text-ink-foreground"
-                  : "border-border text-foreground bg-card",
-              )}
+              className="min-[900px]:hidden inline-flex size-11 items-center justify-center rounded-full border transition-colors border-border text-foreground bg-card hover:bg-muted"
             >
               {open ? <X className="size-5" /> : <Menu className="size-5" />}
             </button>

@@ -61,13 +61,77 @@ export function BookingForm({ initial }: { initial: BookingSearch }) {
   const matchedDestination = useMemo(() => {
     const f = from.trim().toLowerCase();
     const t = to.trim().toLowerCase();
-    if (f === "ooty") {
-      return destinations.find((d) => d.name.toLowerCase() === t);
-    }
-    if (t === "ooty") {
-      return destinations.find((d) => d.name.toLowerCase() === f);
-    }
-    return null;
+    const isFromOoty = f === "ooty";
+    const isToOoty = t === "ooty";
+    if (!isFromOoty && !isToOoty) return null;
+    const other = isFromOoty ? t : f;
+
+    // Chennai is strictly excluded from fixed package rates
+    if (other.includes("chennai")) return null;
+
+    return (
+      destinations.find((d) => {
+        const dName = d.name.toLowerCase();
+        if (dName === other) return true;
+        if (
+          d.slug === "coimbatore-airport" &&
+          (other === "coimbatore" || other === "coimbatore airport" || other === "cbe")
+        )
+          return true;
+        if (
+          d.slug === "bangalore-airport" &&
+          (other === "bangalore" ||
+            other === "bengaluru" ||
+            other === "bangalore airport" ||
+            other === "bang" ||
+            other === "blr")
+        )
+          return true;
+        if (
+          d.slug === "cochin-airport" &&
+          (other === "cochin" ||
+            other === "kochi" ||
+            other === "cochin airport" ||
+            other === "kochin" ||
+            other === "cok")
+        )
+          return true;
+        if (
+          d.slug === "calicut-airport" &&
+          (other === "calicut" ||
+            other === "kozhikode" ||
+            other === "calicut airport" ||
+            other === "ccj")
+        )
+          return true;
+        if (
+          d.slug === "trichy-airport" &&
+          (other === "trichy" ||
+            other === "tiruchirappalli" ||
+            other === "trichy airport" ||
+            other === "trz")
+        )
+          return true;
+        if (
+          d.slug === "mudumalai" &&
+          (other === "mudumalai" ||
+            other === "pykara & mudumalai" ||
+            other === "pykara and mudumalai" ||
+            other === "pykara&mudumalai")
+        )
+          return true;
+        if (
+          d.slug === "ooty-coonoor" &&
+          (other === "ooty & coonoor" ||
+            other === "ooty and coonoor" ||
+            other === "ooty coonoor")
+        )
+          return true;
+        if (d.slug === "coonoor" && (other === "coonoor" || other === "cnr")) return true;
+        if (d.slug === "pykara" && (other === "pykara" || other === "pykara lake")) return true;
+        return false;
+      }) ?? null
+    );
   }, [from, to]);
 
   const isFixedDayTrip = Boolean(matchedDestination);

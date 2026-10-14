@@ -1,9 +1,9 @@
 import { Link } from "@tanstack/react-router";
 import { Mail, MapPin, Phone } from "lucide-react";
 import { company, whatsappUrl } from "@/data/site";
-import { Logo } from "./Logo";
 import { Button } from "@/components/ui/button";
 import { WhatsAppIcon } from "./WhatsAppButton";
+import footerLogo from "@/assets/footer-logo.png";
 
 // Slugs must exist in `vehicles` (src/data/site.ts) or the link 404s.
 const fleetLinks = [
@@ -56,10 +56,15 @@ export function Footer() {
             </div>
           </div>
         </div>
-
         <div className="grid gap-12 pb-14 md:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr_1.2fr]">
           <div>
-            <Logo light />
+            <Link to="/" aria-label={`${company.name} home`} className="inline-block">
+              <img
+                src={footerLogo}
+                alt={company.name}
+                className="h-20 sm:h-24 w-auto object-contain rounded-2xl bg-white p-2.5 shadow-md"
+              />
+            </Link>
             <p className="mt-5 max-w-sm text-sm leading-relaxed text-ink-muted">
               Premium travels and transportation from Ooty, Tamil Nadu. One-way trips, round trips
               and day rentals across South India with a fleet you can trust.
