@@ -77,11 +77,11 @@ export default function PageLoader({ progress, visible = true, onDismiss }: Page
       <WobbleFilter id={filterId} animate={!reduceMotion} />
 
       <div className="w-full max-w-[22rem] sm:max-w-[26rem]">
-        <div className="flex justify-center pb-2">
+        <div className="flex justify-center pb-3 sm:pb-4">
           <img
             src={headerLogo}
             alt={company.name}
-            className="h-11 sm:h-14 w-auto object-contain"
+            className="h-16 sm:h-20 w-auto object-contain"
           />
         </div>
 
