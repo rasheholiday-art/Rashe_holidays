@@ -157,9 +157,9 @@ export function Footer() {
               href="https://isoform.in"
               target="_blank"
               rel="noopener noreferrer"
-              className="font-semibold text-foreground underline underline-offset-2 hover:text-gold transition-colors"
+              className="font-bold text-yellow-400 underline underline-offset-2 hover:text-yellow-300 transition-colors"
             >
-              isoform
+              ISOFORM
             </a>
             .
           </p>

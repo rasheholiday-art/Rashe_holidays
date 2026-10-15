@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button";
 import { PageHero } from "@/components/site/PageHero";
 import { SectionHeading } from "@/components/site/SectionHeading";
 import { TripTypeCard } from "@/components/site/TripTypeCard";
-import { PricingTable } from "@/components/site/PricingTable";
 import { Reveal } from "@/components/site/Reveal";
 import { pageHead } from "@/lib/seo";
 
@@ -82,17 +81,6 @@ function TripTypes() {
         </div>
       </section>
 
-      <section className="bg-secondary/50 py-20 sm:py-28">
-        <div className="container-x">
-          <SectionHeading
-            align="center"
-            eyebrow="Rates"
-            title="Fares for every"
-            accent="category"
-          />
-          <PricingTable />
-        </div>
-      </section>
     </>
   );
 }

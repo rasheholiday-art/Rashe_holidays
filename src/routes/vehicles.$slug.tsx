@@ -29,7 +29,7 @@ export const Route = createFileRoute("/vehicles/$slug")({
     }
     const v = loaderData.vehicle;
     const title = `${v.shortName} Hire in Ooty (${v.seats} Seater) | Rashe Holidays`;
-    const facts = `${v.shortName} hire in Ooty with driver: ${v.seats} seats, ${v.luggage.toLowerCase()} luggage space. From ${inr(v.pricing.oneWayPerKm)}/km one way or ${inr(v.pricing.perDay)}/day.`;
+    const facts = `${v.shortName} hire in Ooty with driver: ${v.seats} seats, ${v.luggage.toLowerCase()} luggage space. Starts from ${inr(v.pricing.roundTripPerKm)}/km.`;
     const description = fitText([
       `${facts} ${v.tagline}.`,
       `${facts} Nilgiris sightseeing and airport transfers.`,

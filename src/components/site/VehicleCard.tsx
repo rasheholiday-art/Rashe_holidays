@@ -67,25 +67,14 @@ export function VehicleCard({ vehicle, className }: { vehicle: Vehicle; classNam
           </li>
         </ul>
 
-        <div className="mt-5 flex items-end justify-between border-t border-border pt-4">
-          <div>
-            <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
-              One way from
-            </p>
-            <p className="text-2xl font-bold tracking-tight">
-              {inr(v.pricing.oneWayPerKm)}
-              <span className="text-sm font-medium text-muted-foreground"> / km</span>
-            </p>
-          </div>
-          <div className="text-right">
-            <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
-              Day rental
-            </p>
-            <p className="text-base font-semibold">
-              {inr(v.pricing.perDay)}
-              <span className="text-xs font-medium text-muted-foreground"> / day</span>
-            </p>
-          </div>
+        <div className="mt-5 border-t border-border pt-4">
+          <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+            Starts from
+          </p>
+          <p className="mt-1 text-2xl font-bold tracking-tight text-foreground">
+            {inr(v.pricing.roundTripPerKm)}
+            <span className="text-sm font-medium text-muted-foreground"> / km</span>
+          </p>
         </div>
 
         <div className="mt-5 grid grid-cols-2 gap-2.5 transition-transform duration-500 group-hover:translate-y-0">

@@ -13,7 +13,6 @@ import { DestinationCard } from "@/components/site/DestinationCard";
 import { TestimonialCard } from "@/components/site/TestimonialCard";
 import { WhyChooseUs } from "@/components/site/WhyChooseUs";
 import { HowItWorks } from "@/components/site/HowItWorks";
-import { PricingTable } from "@/components/site/PricingTable";
 import { FAQ } from "@/components/site/FAQ";
 import { company, destinations, stats, testimonials, whatsappUrl } from "@/data/site";
 import CountUp from "@/components/ui/CountUp";
@@ -230,19 +229,6 @@ function Index() {
         </div>
       </section>
 
-      {/* Pricing */}
-      <section className="bg-secondary/50 py-20 sm:py-28">
-        <div className="container-x">
-          <SectionHeading
-            align="center"
-            eyebrow="Transparent Pricing"
-            title="Know the fare"
-            accent="before you go"
-            description="Clear per-km and per-day rates. Tolls, parking and permits at actuals."
-          />
-          <PricingTable />
-        </div>
-      </section>
 
       {/* Testimonials */}
       <section className="section-y">
