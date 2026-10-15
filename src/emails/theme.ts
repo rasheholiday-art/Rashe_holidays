@@ -55,7 +55,7 @@ export const EMAIL_COMPANY = {
   cleanPhone: "919786963659",
   email: "rasheholiday@gmail.com",
   contactEmail: "hello@rasheholidays.in",
-  address: "12, Commercial Road, Near Charring Cross, Ooty, The Nilgiris, Tamil Nadu 643001",
+  address: "Backside to eye foundation Southwick Ooty. 643001 Tamil Nādu India",
   siteUrl: "https://rasheholidays.com",
   adminUrl: "https://rasheholidays.com/admin",
 };

@@ -22,8 +22,8 @@ export function HeroBookingForm() {
 
   const [tripType, setTripType] = useState<"one-way" | "round-trip">("round-trip");
   const [category, setCategory] = useState<CategoryId>("7-seater");
-  const [from, setFrom] = useState("Ooty");
-  const [to, setTo] = useState("Coonoor");
+  const [from, setFrom] = useState("");
+  const [to, setTo] = useState("");
   const [date, setDate] = useState("");
   const [returnDate, setReturnDate] = useState("");
   const [passengers, setPassengers] = useState(4);

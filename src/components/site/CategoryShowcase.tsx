@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { ArrowRight, Check, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { categories, inr, vehiclesByCategory, type CategoryId } from "@/data/site";
+import { categories, vehiclesByCategory, type CategoryId } from "@/data/site";
 import { cn } from "@/lib/utils";
 import { Reveal } from "./Reveal";
 import { AvailabilityDot } from "./AvailabilityDot";
@@ -97,21 +97,6 @@ export function CategoryShowcase() {
                   ))}
                 </ul>
 
-                <div className="mt-8 grid grid-cols-3 divide-x divide-border rounded-2xl border border-border bg-background">
-                  {[
-                    { l: "One Way Trip", v: `${inr(cat.pricing.oneWayPerKm)} / KM` },
-                    { l: "Round Trip", v: `${inr(cat.pricing.roundTripPerKm)} / KM` },
-                    { l: "Day Rental", v: `${inr(cat.pricing.perDay)} / Day` },
-                  ].map((p) => (
-                    <div key={p.l} className="px-3 py-4 text-center sm:px-4">
-                      <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
-                        {p.l}
-                      </p>
-                      <p className="mt-1 text-sm sm:text-base font-bold">{p.v}</p>
-                      <p className="text-[10px] text-muted-foreground">starting from</p>
-                    </div>
-                  ))}
-                </div>
 
                 <div className="mt-8 flex flex-wrap gap-3">
                   <Button asChild variant="outline" size="lg">

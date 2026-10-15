@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { CheckCircle2, Info, RefreshCw, Sparkles, MapPin } from "lucide-react";
+import { CheckCircle2, Info, RefreshCw, Sparkles, MapPin, Car } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
@@ -35,10 +35,10 @@ export function BookingForm({ initial }: { initial: BookingSearch }) {
     return `${y}-${m}-${d}`;
   }, []);
 
-  const [from, setFrom] = useState(initial.from ?? "Ooty");
-  const [to, setTo] = useState(initial.to ?? "Coonoor");
+  const [from, setFrom] = useState(initial.from ?? "");
+  const [to, setTo] = useState(initial.to ?? "");
 
-  // Specific vehicle selection - default to crysta or initial vehicle/category
+  // Specific vehicle selection - blank by default unless pre-filled from search or destination
   const [vehicle, setVehicle] = useState<string>(() => {
     if (initial.vehicle && vehicles.some((v) => v.slug === initial.vehicle)) {
       return initial.vehicle;
@@ -47,15 +47,15 @@ export function BookingForm({ initial }: { initial: BookingSearch }) {
       const match = vehicles.find((v) => v.category === initial.category);
       if (match) return match.slug;
     }
-    return "crysta";
+    return "";
   });
 
   const selectedVehicle = useMemo(
-    () => vehicles.find((v) => v.slug === vehicle) ?? vehicles[0],
+    () => (vehicle ? vehicles.find((v) => v.slug === vehicle) ?? null : null),
     [vehicle],
   );
-  const category = selectedVehicle.category;
-  const cat = categories.find((c) => c.id === category) ?? categories[0];
+  const category = selectedVehicle?.category;
+  const cat = category ? categories.find((c) => c.id === category) ?? null : null;
 
   // Check if route matches a fixed package destination (e.g. Ooty -> Coonoor, Pykara, Mudumalai, Coimbatore Airport)
   const matchedDestination = useMemo(() => {
@@ -150,7 +150,6 @@ export function BookingForm({ initial }: { initial: BookingSearch }) {
     return "";
   });
   const [passengers, setPassengers] = useState(initial.passengers ?? 4);
-  const [days, setDays] = useState(() => daysBetween(initial.date, initial.returnDate) ?? 1);
 
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
@@ -164,10 +163,10 @@ export function BookingForm({ initial }: { initial: BookingSearch }) {
   // Require full place names (minimum 3 characters each) before initiating any route calculations
   const hasValidRoute = from.trim().length >= 3 && to.trim().length >= 3;
 
-  // Dynamic route calculation state
+  // Dynamic route calculation state - blank by default unless pre-filled from search or destination
   const [routeInfo, setRouteInfo] = useState<RouteCalculationResult | null>(() => {
-    const initFrom = initial.from ?? "Ooty";
-    const initTo = initial.to ?? "Coonoor";
+    const initFrom = initial.from ?? "";
+    const initTo = initial.to ?? "";
     if (initFrom.trim().length < 3 || initTo.trim().length < 3) return null;
     const sync = estimateDistance(initFrom, initTo);
     return sync !== null ? { km: sync, source: "local", fromName: initFrom, toName: initTo } : null;
@@ -217,7 +216,7 @@ export function BookingForm({ initial }: { initial: BookingSearch }) {
   }, [from, to]);
 
   const activeFixedPrice = useMemo(() => {
-    if (!matchedDestination) return null;
+    if (!matchedDestination || !selectedVehicle) return null;
     if (matchedDestination.fixedPrices[selectedVehicle.slug]) {
       return matchedDestination.fixedPrices[selectedVehicle.slug];
     }
@@ -228,10 +227,18 @@ export function BookingForm({ initial }: { initial: BookingSearch }) {
     ? (matchedDestination?.type === "sightseeing" ? "round-trip" : "one-way")
     : tripType;
 
-  const effectiveDays = isFixedDayTrip ? 1 : days;
+  // Auto-calculated days strictly from departure and return dates
+  const calculatedDays = useMemo(() => {
+    if (!date || !returnDate || effectiveTripType !== "round-trip" || isFixedDayTrip) {
+      return 1;
+    }
+    return daysBetween(date, returnDate) ?? 1;
+  }, [date, returnDate, effectiveTripType, isFixedDayTrip]);
+
+  const effectiveDays = isFixedDayTrip ? 1 : calculatedDays;
 
   const estimate = useMemo(() => {
-    if (!hasValidRoute) return null;
+    if (!hasValidRoute || !selectedVehicle || !category) return null;
     return estimateFare({
       category,
       vehicle: selectedVehicle.slug,
@@ -242,12 +249,12 @@ export function BookingForm({ initial }: { initial: BookingSearch }) {
       waitingDays: 0,
       customKm: routeInfo?.km,
     });
-  }, [hasValidRoute, category, selectedVehicle.slug, effectiveTripType, from, to, effectiveDays, routeInfo?.km]);
+  }, [hasValidRoute, category, selectedVehicle, effectiveTripType, from, to, effectiveDays, routeInfo?.km]);
 
-  const seatWarning = passengers > selectedVehicle.seats;
+  const seatWarning = selectedVehicle ? passengers > selectedVehicle.seats : false;
 
   if (submitted) {
-    const summary = `Booking request: ${isFixedDayTrip ? "Day Package" : effectiveTripType === "one-way" ? "One Way" : "Round Trip"}, ${selectedVehicle.name}, ${from} → ${to}, ${date || "date TBD"}${!isFixedDayTrip && effectiveTripType === "round-trip" && returnDate ? ` to ${returnDate}` : ""} (${effectiveDays} day${effectiveDays > 1 ? "s" : ""}), ${passengers} pax. Name: ${name}, Phone: ${phone}.`;
+    const summary = `Booking request: ${isFixedDayTrip ? "Day Package" : effectiveTripType === "one-way" ? "One Way" : "Round Trip"}, ${selectedVehicle?.name ?? ""}, ${from} → ${to}, ${date || "date TBD"}${!isFixedDayTrip && effectiveTripType === "round-trip" && returnDate ? ` to ${returnDate}` : ""} (${effectiveDays} day${effectiveDays > 1 ? "s" : ""}), ${passengers} pax. Name: ${name}, Phone: ${phone}.`;
     return (
       <div className="rounded-[2rem] border border-border bg-card p-8 text-center shadow-card sm:p-12 animate-fade-up">
         <span className="mx-auto grid size-16 place-items-center rounded-full bg-success-soft text-success">
@@ -262,7 +269,7 @@ export function BookingForm({ initial }: { initial: BookingSearch }) {
 
         <div className="mx-auto mt-8 max-w-md rounded-2xl bg-secondary p-5 text-left text-sm">
           <Row k="Trip" v={isFixedDayTrip ? "Day Tour Package" : effectiveTripType === "one-way" ? "One Way" : "Round Trip"} />
-          <Row k="Vehicle" v={selectedVehicle.name} />
+          <Row k="Vehicle" v={selectedVehicle?.name ?? ""} />
           <Row k="Route" v={`${from} → ${to}${!isFixedDayTrip && effectiveTripType === "round-trip" ? ` → ${from}` : ""}`} />
           <Row
             k={isFixedDayTrip ? "Tour Date" : "Date"}
@@ -325,6 +332,13 @@ export function BookingForm({ initial }: { initial: BookingSearch }) {
           return;
         }
 
+        // Check if vehicle is selected
+        if (!selectedVehicle || !category) {
+          setFieldErrors((f) => ({ ...f, vehicle: "Please select a vehicle." }));
+          setSubmitError("Please select a vehicle to complete your reservation.");
+          return;
+        }
+
         setFieldErrors({});
         setIsSubmitting(true);
 
@@ -376,80 +390,7 @@ export function BookingForm({ initial }: { initial: BookingSearch }) {
           </div>
         )}
 
-        <Section n="1" title="Trip & vehicle details">
-          <div className="grid gap-4 sm:grid-cols-2">
-            <L label="Trip Type">
-              <select
-                value={effectiveTripType}
-                onChange={(e) => {
-                  const t = e.target.value as TripType;
-                  setTripType(t);
-                }}
-                disabled={isFixedDayTrip}
-                className={cn(inputCls, isFixedDayTrip && "bg-secondary text-foreground cursor-default")}
-              >
-                {isFixedDayTrip ? (
-                  <option value={matchedDestination?.type === "sightseeing" ? "round-trip" : "one-way"}>
-                    {matchedDestination?.type === "sightseeing"
-                      ? "Day Sightseeing Package"
-                      : "Direct Transfer Package"}
-                  </option>
-                ) : (
-                  <>
-                    <option value="round-trip">Round Trip</option>
-                    <option value="one-way">One Way</option>
-                  </>
-                )}
-              </select>
-              {isFixedDayTrip && (
-                <p className="mt-1 text-xs text-gold font-medium">
-                  {matchedDestination?.name} is a 1-day trip package with fixed pricing.
-                </p>
-              )}
-            </L>
-
-            <L label="Vehicle" hint="Choose specific vehicle">
-              <select
-                value={vehicle}
-                onChange={(e) => setVehicle(e.target.value)}
-                className={inputCls}
-              >
-                {vehicles.map((v) => (
-                  <option key={v.slug} value={v.slug}>
-                    {v.name} · {v.seats} Seats ({v.luggage} Luggage)
-                  </option>
-                ))}
-              </select>
-            </L>
-
-            <L label="Number of Passengers" className="sm:col-span-2">
-              <select
-                value={passengers}
-                onChange={(e) => setPassengers(Number(e.target.value))}
-                className={cn(
-                  inputCls,
-                  (seatWarning || fieldErrors.passengers) && "border-destructive",
-                )}
-              >
-                {Array.from({ length: 16 }, (_, i) => i + 1).map((n) => (
-                  <option key={n} value={n}>
-                    {n} passenger{n > 1 ? "s" : ""}
-                  </option>
-                ))}
-              </select>
-              {seatWarning && (
-                <p className="mt-1.5 text-xs text-destructive">
-                  {selectedVehicle.name} seats {selectedVehicle.seats} passengers. Choose a larger vehicle or we can arrange two vehicles.
-                </p>
-              )}
-              {fieldErrors.passengers && (
-                <p className="mt-1 text-xs text-destructive">{fieldErrors.passengers}</p>
-              )}
-            </L>
-          </div>
-        </Section>
-
-        <Section n="2" title="Route & dates">
+        <Section n="1" title="Route & dates">
           <div className="grid gap-4 sm:grid-cols-2">
             <L label="Pickup Location">
               <input
@@ -508,10 +449,6 @@ export function BookingForm({ initial }: { initial: BookingSearch }) {
                     setFieldErrors((f) => ({ ...f, departureDate: "" }));
                   if (returnDate && returnDate < nextDate) {
                     setReturnDate(nextDate);
-                    setDays(1);
-                  } else {
-                    const d = daysBetween(nextDate, returnDate);
-                    if (d) setDays(d);
                   }
                 }}
                 className={cn(inputCls, fieldErrors.departureDate && "border-destructive")}
@@ -532,8 +469,6 @@ export function BookingForm({ initial }: { initial: BookingSearch }) {
                   onChange={(e) => {
                     setReturnDate(e.target.value);
                     if (fieldErrors.returnDate) setFieldErrors((f) => ({ ...f, returnDate: "" }));
-                    const d = daysBetween(date, e.target.value);
-                    if (d) setDays(d);
                   }}
                   className={cn(inputCls, fieldErrors.returnDate && "border-destructive")}
                 />
@@ -544,20 +479,97 @@ export function BookingForm({ initial }: { initial: BookingSearch }) {
             )}
 
             {!isFixedDayTrip && effectiveTripType === "round-trip" && (
-              <L label="Total Trip Days">
-                <input
-                  type="number"
-                  min={1}
-                  max={30}
-                  value={days}
-                  onChange={(e) => {
-                    const nextDays = Math.max(1, Number(e.target.value));
-                    setDays(nextDays);
-                  }}
-                  className={inputCls}
-                />
-              </L>
+              <div className="flex flex-col justify-end">
+                <label className="mb-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                  Total Trip Duration
+                </label>
+                <div className={cn(inputCls, "flex items-center justify-between bg-secondary/50 font-semibold cursor-not-allowed text-foreground")}>
+                  <span>{calculatedDays} Day{calculatedDays > 1 ? "s" : ""}</span>
+                  <span className="text-xs font-normal text-muted-foreground">Auto-calculated</span>
+                </div>
+              </div>
             )}
+          </div>
+        </Section>
+
+        <Section n="2" title="Trip & vehicle details">
+          <div className="grid gap-4 sm:grid-cols-2">
+            <L label="Trip Type">
+              <select
+                value={effectiveTripType}
+                onChange={(e) => {
+                  const t = e.target.value as TripType;
+                  setTripType(t);
+                }}
+                disabled={isFixedDayTrip}
+                className={cn(inputCls, isFixedDayTrip && "bg-secondary text-foreground cursor-default")}
+              >
+                {isFixedDayTrip ? (
+                  <option value={matchedDestination?.type === "sightseeing" ? "round-trip" : "one-way"}>
+                    {matchedDestination?.type === "sightseeing"
+                      ? "Day Sightseeing Package"
+                      : "Direct Transfer Package"}
+                  </option>
+                ) : (
+                  <>
+                    <option value="round-trip">Round Trip</option>
+                    <option value="one-way">One Way</option>
+                  </>
+                )}
+              </select>
+              {isFixedDayTrip && (
+                <p className="mt-1 text-xs text-gold font-medium">
+                  {matchedDestination?.name} is a 1-day trip package with fixed pricing.
+                </p>
+              )}
+            </L>
+
+            <L label="Vehicle" hint="Choose specific vehicle">
+              <select
+                value={vehicle}
+                onChange={(e) => {
+                  setVehicle(e.target.value);
+                  if (fieldErrors.vehicle) setFieldErrors((f) => ({ ...f, vehicle: "" }));
+                }}
+                className={cn(inputCls, fieldErrors.vehicle && "border-destructive")}
+                required
+              >
+                <option value="" disabled>Select a vehicle</option>
+                {vehicles.map((v) => (
+                  <option key={v.slug} value={v.slug}>
+                    {v.name} · {v.seats} Seats ({v.luggage} Luggage)
+                  </option>
+                ))}
+              </select>
+              {fieldErrors.vehicle && (
+                <p className="mt-1 text-xs text-destructive">{fieldErrors.vehicle}</p>
+              )}
+            </L>
+
+            <L label="Number of Passengers" className="sm:col-span-2">
+              <select
+                value={passengers}
+                onChange={(e) => setPassengers(Number(e.target.value))}
+                className={cn(
+                  inputCls,
+                  (seatWarning || fieldErrors.passengers) && "border-destructive",
+                )}
+              >
+                {Array.from({ length: 16 }, (_, i) => i + 1).map((n) => (
+                  <option key={n} value={n}>
+                    {n} passenger{n > 1 ? "s" : ""}
+                  </option>
+                ))}
+              </select>
+              {seatWarning && selectedVehicle && (
+                <p className="mt-1.5 text-xs text-destructive">
+                  {selectedVehicle.name} seats {selectedVehicle.seats} passengers. Choose a larger vehicle or we can arrange two vehicles.
+                </p>
+              )}
+              {fieldErrors.passengers && (
+                <p className="mt-1 text-xs text-destructive">{fieldErrors.passengers}</p>
+              )}
+            </L>
           </div>
         </Section>
 
@@ -683,7 +695,7 @@ export function BookingForm({ initial }: { initial: BookingSearch }) {
           )}
         </div>
 
-        <h3 className="mt-3 text-2xl font-semibold tracking-tight">{selectedVehicle.name}</h3>
+        <h3 className="mt-3 text-2xl font-semibold tracking-tight">{selectedVehicle?.name ?? "Select a vehicle"}</h3>
         <p className="mt-1 text-sm text-muted-foreground">
           {from || "—"} → {to || "—"}
           {!isFixedDayTrip && effectiveTripType === "round-trip" ? ` → ${from || "—"}` : ""}
@@ -698,6 +710,16 @@ export function BookingForm({ initial }: { initial: BookingSearch }) {
               </p>
               <p className="mt-1 text-xs text-ink-muted leading-relaxed">
                 Please type full place names to calculate distance and view estimated fare.
+              </p>
+            </div>
+          ) : !selectedVehicle ? (
+            <div className="py-3 text-center">
+              <Car className="mx-auto size-5 text-gold/80" />
+              <p className="mt-2 text-sm font-semibold text-foreground">
+                Select a vehicle
+              </p>
+              <p className="mt-1 text-xs text-ink-muted leading-relaxed">
+                Choose your preferred vehicle in the form to view fare estimate.
               </p>
             </div>
           ) : isCalculatingRoute ? (

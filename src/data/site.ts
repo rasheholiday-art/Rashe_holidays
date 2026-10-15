@@ -27,16 +27,16 @@ export const company = {
   emergencyHref: "tel:+919786963659",
   whatsapp: "919786963659",
   email: "rasheholiday@gmail.com",
-  address: "12, Commercial Road, Near Charring Cross, Ooty, The Nilgiris, Tamil Nadu 643001",
+  address: "Backside to eye foundation Southwick Ooty. 643001 Tamil Nādu India",
   // Same address as above, split for structured data. Keep both in sync.
   postalAddress: {
-    streetAddress: "12, Commercial Road, Near Charring Cross",
+    streetAddress: "Backside to eye foundation Southwick",
     addressLocality: "Ooty",
     addressRegion: "Tamil Nadu",
     postalCode: "643001",
     addressCountry: "IN",
   },
-  mapEmbed: "https://www.google.com/maps?q=Charring+Cross,+Ooty,+Tamil+Nadu&output=embed",
+  mapEmbed: "https://www.google.com/maps?q=The+Eye+Foundation+Southwick+Ooty+Tamil+Nadu&output=embed",
   hours: "Open 24 hours · 7 days a week",
 };
 
@@ -859,11 +859,13 @@ export function estimateFare(opts: {
   const travelDays = Math.max(1, totalDays - waitingDays);
 
   if (opts.tripType === "one-way") {
-    const km = Math.max(dist, 100);
+    // One-way estimation matches round-trip base (without the 1,000/day round-trip surcharge)
+    const km = Math.max(dist * 2, p.minKmPerDay);
+    const base = km * p.roundTripPerKm + p.driverAllowance;
     return {
       km,
-      low: km * p.oneWayPerKm,
-      high: km * p.oneWayPerKm + p.driverAllowance,
+      low: base,
+      high: Math.round(base * 1.15),
       days: 1,
       waitingDays: 0,
       travelDays: 1,
@@ -871,15 +873,15 @@ export function estimateFare(opts: {
     };
   }
 
-  // Round trip calculation
+  // Round trip calculation: base fare plus ₹1,000 extra per day starting from day 1
   const km = Math.max(dist * 2, p.minKmPerDay * travelDays);
-  // Fuel running cost for active travel days + daily driver allowance for entire tour (travel + waiting)
   const base = km * p.roundTripPerKm + p.driverAllowance * totalDays;
+  const surcharge = 1000 * totalDays;
 
   return {
     km,
-    low: base,
-    high: Math.round(base * 1.15),
+    low: base + surcharge,
+    high: Math.round(base * 1.15) + surcharge,
     days: totalDays,
     waitingDays,
     travelDays,
@@ -940,8 +942,8 @@ export const faqs = [
 ];
 
 export const stats = [
-  { value: "12,000+", target: 12000, suffix: "+", separator: ",", label: "Happy Customers" },
-  { value: "25,000+", target: 25000, suffix: "+", separator: ",", label: "Successful Trips" },
+  { value: "6,000+", target: 6000, suffix: "+", separator: ",", label: "Happy Customers" },
+  { value: "12,000+", target: 12000, suffix: "+", separator: ",", label: "Successful Trips" },
   { value: "14+", target: 14, suffix: "+", separator: "", label: "Years Experience" },
   { value: "6", target: 6, suffix: "", separator: "", label: "Fleet Vehicles" },
 ];

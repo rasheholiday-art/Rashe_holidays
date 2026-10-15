@@ -49,118 +49,21 @@ export interface Reservation {
 
 const STORAGE_KEY = "nilgiri_rides_reservations";
 
-const SEED_RESERVATIONS: Reservation[] = [
-  {
-    id: "NR-1048",
-    createdAt: new Date(Date.now() - 1000 * 60 * 25).toISOString(), // 25 mins ago
-    tripType: "round-trip",
-    category: "7-seater",
-    vehicle: "crysta",
-    from: "Ooty",
-    to: "Coimbatore Airport",
-    date: "2026-09-20",
-    returnDate: "2026-09-24",
-    passengers: 5,
-    days: 4,
-    waitingDays: 1,
-    name: "Arunachalam K",
-    phone: "+91 94432 18940",
-    email: "arun.k@example.com",
-    notes:
-      "Family vacation with 1 waiting day at resort. Senior citizens travelling, need gentle driving.",
-    estimate: { low: 9500, high: 11000, km: 380, days: 4, waitingDays: 1, travelDays: 3 },
-    status: "New",
-  },
-  {
-    id: "NR-1047",
-    createdAt: new Date(Date.now() - 1000 * 60 * 180).toISOString(), // 3 hours ago
-    tripType: "one-way",
-    category: "12-seater",
-    vehicle: "tempo-traveller",
-    from: "Coimbatore Airport",
-    to: "Ooty",
-    date: "2026-09-24",
-    passengers: 11,
-    days: 1,
-    waitingDays: 0,
-    name: "Pooja Venkatesh",
-    phone: "+91 98840 55120",
-    email: "pooja.v@techcorp.in",
-    notes: "Corporate leadership retreat offsite. Lots of luggage bags.",
-    estimate: { low: 6800, high: 7800, km: 96, days: 1, waitingDays: 0, travelDays: 1 },
-    status: "Contacted",
-    internalNotes: "Sent quotation on WhatsApp, awaiting flight timing confirmation.",
-  },
-  {
-    id: "NR-1046",
-    createdAt: new Date(Date.now() - 1000 * 60 * 60 * 12).toISOString(), // 12 hours ago
-    tripType: "round-trip",
-    category: "4-seater",
-    vehicle: "sedan",
-    from: "Ooty",
-    to: "Coonoor",
-    date: "2026-09-18",
-    returnDate: "2026-09-18",
-    passengers: 2,
-    days: 1,
-    name: "Rohan & Meera",
-    phone: "+91 97910 88231",
-    email: "rohan.m@gmail.com",
-    notes: "Honeymoon couple, Sim's Park, Tea Factory and Dolphin's Nose viewpoint.",
-    estimate: { low: 2500, high: 2800, km: 60, days: 1 },
-    status: "Confirmed",
-    internalNotes: "Assigned driver Ramesh (Sedan TN 43 D 8291). Advance received.",
-  },
-  {
-    id: "NR-1045",
-    createdAt: new Date(Date.now() - 1000 * 60 * 60 * 36).toISOString(), // 1.5 days ago
-    tripType: "one-way",
-    category: "7-seater",
-    vehicle: "crysta",
-    from: "Ooty",
-    to: "Bangalore",
-    date: "2026-09-28",
-    passengers: 5,
-    days: 1,
-    name: "Dr. Siddharth Rao",
-    phone: "+91 98450 11923",
-    email: "dr.siddharth@apollo.org",
-    notes: "Drop to Indiranagar, Bangalore via Gundlupet and Mysore highway.",
-    estimate: { low: 8800, high: 10200, km: 290, days: 1 },
-    status: "Confirmed",
-  },
-  {
-    id: "NR-1044",
-    createdAt: new Date(Date.now() - 1000 * 60 * 60 * 50).toISOString(),
-    tripType: "round-trip",
-    category: "4-seater",
-    vehicle: "sedan",
-    from: "Ooty",
-    to: "Wayanad",
-    date: "2026-09-15",
-    returnDate: "2026-09-17",
-    passengers: 3,
-    days: 2,
-    name: "Kavita Nair",
-    phone: "+91 94470 33819",
-    notes: "Route changed by customer to Coorg instead.",
-    estimate: { low: 6400, high: 7500, km: 240, days: 2 },
-    status: "Cancelled",
-  },
-];
+const SEED_RESERVATIONS: Reservation[] = [];
 
 export function getBookings(): Reservation[] {
-  if (typeof window === "undefined") return SEED_RESERVATIONS;
+  if (typeof window === "undefined") return [];
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(SEED_RESERVATIONS));
-      return SEED_RESERVATIONS;
+      return [];
     }
-    return JSON.parse(raw) as Reservation[];
+    const parsed = JSON.parse(raw) as Reservation[];
+    // Filter out any legacy sample demo records so only real live bookings appear
+    return parsed.filter((b) => !["NR-1048", "NR-1047", "NR-1046", "NR-1045", "NR-1044"].includes(b.id));
   } catch (err) {
     console.error("Failed to parse stored bookings:", err);
-    return SEED_RESERVATIONS;
+    return [];
   }
 }
 
@@ -409,10 +312,10 @@ export function deleteBooking(id: string): Reservation[] {
 
 export function resetToDemoBookings(): Reservation[] {
   if (typeof window !== "undefined") {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(SEED_RESERVATIONS));
+    localStorage.removeItem(STORAGE_KEY);
     window.dispatchEvent(new Event("nilgiri_bookings_updated"));
   }
-  return SEED_RESERVATIONS;
+  return [];
 }
 
 export function exportBookingsCsv(bookings: Reservation[]): void {

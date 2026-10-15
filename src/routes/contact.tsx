@@ -10,7 +10,7 @@ import { businessJsonLd, jsonLdScript, pageHead } from "@/lib/seo";
 
 const title = "Contact Rashe Holidays — Ooty Travels & Cab Booking";
 const description =
-  "Call, WhatsApp or visit Rashe Holidays at Commercial Road, Ooty. Open 24 hours for cab bookings, airport transfers and tour planning across the Nilgiris.";
+  "Call, WhatsApp or visit Rashe Holidays at Southwick, Ooty. Open 24 hours for cab bookings, airport transfers and tour planning across the Nilgiris.";
 
 export const Route = createFileRoute("/contact")({
   head: () => ({

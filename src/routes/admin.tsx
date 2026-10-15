@@ -31,7 +31,6 @@ import {
   updateBookingStatus,
   updateBooking,
   deleteBooking,
-  resetToDemoBookings,
   exportBookingsCsv,
   type BookingStatus,
   type Reservation,
@@ -45,6 +44,7 @@ import {
 } from "@/lib/admin-auth";
 import { inr, whatsappUrl, vehicles } from "@/data/site";
 import { cn } from "@/lib/utils";
+import headerLogo from "@/assets/header-logo.png";
 
 function GoogleIcon({ className }: { className?: string }) {
   return (
@@ -440,12 +440,6 @@ function AdminDashboard({
     }
   };
 
-  const handleResetDemo = () => {
-    if (confirm("Reset bookings back to the original demo sample requests?")) {
-      resetToDemoBookings();
-      refreshBookings();
-    }
-  };
 
   return (
     <div className="min-h-screen bg-background pb-20">
@@ -453,18 +447,15 @@ function AdminDashboard({
       <header className="sticky top-0 z-30 border-b border-border bg-card/95 backdrop-blur-md">
         <div className="container-x flex h-16 items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <Link to="/" className="flex items-center gap-2 text-foreground hover:opacity-80">
-              <div className="grid size-9 place-items-center rounded-xl bg-gold text-ink font-bold text-base shadow">
-                RH
-              </div>
-              <div>
-                <span className="text-sm font-bold tracking-tight text-foreground block leading-tight">
-                  Rashe Holidays
-                </span>
-                <span className="text-[10px] font-semibold text-gold uppercase tracking-wider block leading-none">
-                  Owner Admin
-                </span>
-              </div>
+            <Link to="/" className="flex items-center gap-2.5 text-foreground hover:opacity-85 transition-opacity">
+              <img
+                src={headerLogo}
+                alt="Rashe Holidays"
+                className="h-9 sm:h-10 w-auto object-contain"
+              />
+              <span className="rounded-full bg-gold/15 px-2 py-0.5 text-[10px] font-bold text-gold uppercase tracking-wider hidden sm:inline-block">
+                Admin
+              </span>
             </Link>
 
             <span className="hidden sm:inline-flex items-center gap-1.5 rounded-full bg-emerald-500/10 px-2.5 py-1 text-[11px] font-semibold text-emerald-600 dark:text-emerald-400">
@@ -725,20 +716,12 @@ function AdminDashboard({
           </div>
         </div>
 
-        {/* Results Counter & Actions */}
+        {/* Results Counter */}
         <div className="mt-6 flex items-center justify-between px-1">
           <p className="text-xs font-medium text-muted-foreground">
             Showing <strong className="text-foreground">{filtered.length}</strong> of{" "}
             {bookings.length} reservations
           </p>
-
-          <button
-            type="button"
-            onClick={handleResetDemo}
-            className="text-xs text-muted-foreground hover:text-foreground flex items-center gap-1"
-          >
-            <RefreshCw className="size-3" /> Reset Demo Bookings
-          </button>
         </div>
 
         {/* Bookings List / Table */}

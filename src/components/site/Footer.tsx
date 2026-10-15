@@ -152,10 +152,16 @@ export function Footer() {
 
         <div className="flex flex-col gap-3 border-t border-ink-border py-6 text-xs text-ink-muted sm:flex-row sm:items-center sm:justify-between">
           <p>
-            © {new Date().getFullYear()} {company.name}. All rights reserved.
-          </p>
-          <p>
-            Vehicle photographs are real, courtesy of Wikimedia Commons contributors (CC BY-SA).
+            © {new Date().getFullYear()} {company.name}. All rights reserved to{" "}
+            <a
+              href="https://isoform.in"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-semibold text-foreground underline underline-offset-2 hover:text-gold transition-colors"
+            >
+              isoform
+            </a>
+            .
           </p>
         </div>
       </div>
