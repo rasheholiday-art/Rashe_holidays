@@ -1,3 +1,5 @@
+import { escapeHtml, escapeHtmlProps } from "./escape.ts";
+
 export interface AdminNotificationEmailProps {
   bookingId: string;
   customerName: string;
@@ -48,7 +50,7 @@ export function renderAdminNotificationEmail(props: AdminNotificationEmailProps)
   const isRoundTrip = props.tripType === "round-trip";
   const formattedTripType = isRoundTrip ? "Round Trip" : "One Way";
   const returnStr = isRoundTrip && props.returnDate ? props.returnDate : "N/A";
-  const bookingShortId = props.bookingId.slice(0, 8).toUpperCase();
+  const bookingShortId = props.bookingId.slice(0, 8).toUpperCase().replace(/[^A-Z0-9-]/g, "");
   const cleanPhone = props.phoneNumber.replace(/[^0-9]/g, "");
   const adminUrl = props.adminPortalUrl || "https://rasheholidays.com/admin";
 
@@ -84,12 +86,14 @@ ${props.specialRequirements ? `SPECIAL REQUIREMENTS:\n"${props.specialRequiremen
 - Admin Dashboard: ${adminUrl}
 `;
 
+  const h = escapeHtmlProps(props);
+
   const html = `<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>${subject}</title>
+  <title>${escapeHtml(subject)}</title>
 </head>
 <body style="margin:0;padding:0;background-color:${THEME.canvas};font-family:${THEME.fontFamily};-webkit-font-smoothing:antialiased;color:${THEME.textPrimary};">
   <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color:${THEME.canvas};padding:32px 12px;">
@@ -128,31 +132,31 @@ ${props.specialRequirements ? `SPECIAL REQUIREMENTS:\n"${props.specialRequiremen
                 <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
                   <tr>
                     <td style="padding:6px 0;font-size:14px;color:${THEME.textSecondary};width:38%;">Customer Name:</td>
-                    <td style="padding:6px 0;font-size:16px;font-weight:800;color:${THEME.textPrimary};">${props.customerName}</td>
+                    <td style="padding:6px 0;font-size:16px;font-weight:800;color:${THEME.textPrimary};">${h.customerName}</td>
                   </tr>
                   <tr>
                     <td style="padding:6px 0;font-size:14px;color:${THEME.textSecondary};">Phone Number:</td>
                     <td style="padding:6px 0;font-size:15px;font-weight:700;color:${THEME.primary};">
-                      <a href="tel:${props.phoneNumber.replace(/\\s+/g, "")}" style="color:${THEME.primary};text-decoration:none;">${props.phoneNumber}</a>
+                      <a href="tel:${h.phoneNumber.replace(/\\s+/g, "")}" style="color:${THEME.primary};text-decoration:none;">${h.phoneNumber}</a>
                     </td>
                   </tr>
                   <tr>
                     <td style="padding:6px 0;font-size:14px;color:${THEME.textSecondary};">Customer Email:</td>
                     <td style="padding:6px 0;font-size:14px;font-weight:600;color:${THEME.textPrimary};">
-                      ${props.emailAddress ? `<a href="mailto:${props.emailAddress}" style="color:${THEME.info};text-decoration:none;">${props.emailAddress}</a>` : '<span style="color:#9ca3af;">Not provided</span>'}
+                      ${h.emailAddress ? `<a href="mailto:${h.emailAddress}" style="color:${THEME.info};text-decoration:none;">${h.emailAddress}</a>` : '<span style="color:#9ca3af;">Not provided</span>'}
                     </td>
                   </tr>
                 </table>
 
                 <div style="margin-top:16px;padding-top:14px;border-top:1px dashed ${THEME.goldBorder};">
-                  <a href="tel:${props.phoneNumber.replace(/\\s+/g, "")}" style="display:inline-block;background-color:${THEME.primary};color:#ffffff;font-size:13px;font-weight:700;padding:10px 18px;border-radius:8px;text-decoration:none;margin-right:8px;margin-bottom:6px;">
+                  <a href="tel:${h.phoneNumber.replace(/\\s+/g, "")}" style="display:inline-block;background-color:${THEME.primary};color:#ffffff;font-size:13px;font-weight:700;padding:10px 18px;border-radius:8px;text-decoration:none;margin-right:8px;margin-bottom:6px;">
                     📞 Call Customer
                   </a>
                   <a href="${waUrl}" target="_blank" rel="noreferrer" style="display:inline-block;background-color:${THEME.whatsapp};color:#ffffff;font-size:13px;font-weight:700;padding:10px 18px;border-radius:8px;text-decoration:none;margin-right:8px;margin-bottom:6px;">
                     💬 Chat on WhatsApp
                   </a>
-                  ${props.emailAddress ? `
-                  <a href="mailto:${props.emailAddress}" style="display:inline-block;background-color:#ffffff;color:${THEME.textPrimary};border:1px solid ${THEME.border};font-size:13px;font-weight:600;padding:9px 16px;border-radius:8px;text-decoration:none;margin-bottom:6px;">
+                  ${h.emailAddress ? `
+                  <a href="mailto:${h.emailAddress}" style="display:inline-block;background-color:#ffffff;color:${THEME.textPrimary};border:1px solid ${THEME.border};font-size:13px;font-weight:600;padding:9px 16px;border-radius:8px;text-decoration:none;margin-bottom:6px;">
                     ✉️ Send Email
                   </a>` : ""}
                 </div>
@@ -175,47 +179,47 @@ ${props.specialRequirements ? `SPECIAL REQUIREMENTS:\n"${props.specialRequiremen
                   </tr>
                   <tr>
                     <td style="padding:10px 0;font-size:14px;color:${THEME.textSecondary};border-bottom:1px solid #f3f4f6;">Pickup Location:</td>
-                    <td style="padding:10px 0;font-size:14px;font-weight:700;color:${THEME.textPrimary};text-align:right;border-bottom:1px solid #f3f4f6;">${props.pickupLocation}</td>
+                    <td style="padding:10px 0;font-size:14px;font-weight:700;color:${THEME.textPrimary};text-align:right;border-bottom:1px solid #f3f4f6;">${h.pickupLocation}</td>
                   </tr>
                   <tr>
                     <td style="padding:10px 0;font-size:14px;color:${THEME.textSecondary};border-bottom:1px solid #f3f4f6;">Destination:</td>
-                    <td style="padding:10px 0;font-size:14px;font-weight:700;color:${THEME.textPrimary};text-align:right;border-bottom:1px solid #f3f4f6;">${props.destination}</td>
+                    <td style="padding:10px 0;font-size:14px;font-weight:700;color:${THEME.textPrimary};text-align:right;border-bottom:1px solid #f3f4f6;">${h.destination}</td>
                   </tr>
                   <tr>
                     <td style="padding:10px 0;font-size:14px;color:${THEME.textSecondary};border-bottom:1px solid #f3f4f6;">Departure Date:</td>
-                    <td style="padding:10px 0;font-size:14px;font-weight:700;color:${THEME.textPrimary};text-align:right;border-bottom:1px solid #f3f4f6;">${props.departureDate}</td>
+                    <td style="padding:10px 0;font-size:14px;font-weight:700;color:${THEME.textPrimary};text-align:right;border-bottom:1px solid #f3f4f6;">${h.departureDate}</td>
                   </tr>
                   ${
                     isRoundTrip
                       ? `<tr>
                     <td style="padding:10px 0;font-size:14px;color:${THEME.textSecondary};border-bottom:1px solid #f3f4f6;">Return Date:</td>
-                    <td style="padding:10px 0;font-size:14px;font-weight:700;color:${THEME.textPrimary};text-align:right;border-bottom:1px solid #f3f4f6;">${returnStr}</td>
+                    <td style="padding:10px 0;font-size:14px;font-weight:700;color:${THEME.textPrimary};text-align:right;border-bottom:1px solid #f3f4f6;">${escapeHtml(returnStr)}</td>
                   </tr>`
                       : ""
                   }
                   <tr>
                     <td style="padding:10px 0;font-size:14px;color:${THEME.textSecondary};border-bottom:1px solid #f3f4f6;">Duration:</td>
-                    <td style="padding:10px 0;font-size:14px;font-weight:700;color:${THEME.textPrimary};text-align:right;border-bottom:1px solid #f3f4f6;">${props.numberOfDays} Day(s)</td>
+                    <td style="padding:10px 0;font-size:14px;font-weight:700;color:${THEME.textPrimary};text-align:right;border-bottom:1px solid #f3f4f6;">${h.numberOfDays} Day(s)</td>
                   </tr>
                   ${
-                    props.waitingDays && props.waitingDays > 0
+                    h.waitingDays && h.waitingDays > 0
                       ? `<tr>
                     <td style="padding:10px 0;font-size:14px;color:#d97706;border-bottom:1px solid #f3f4f6;">Waiting Days (Parked):</td>
-                    <td style="padding:10px 0;font-size:14px;font-weight:800;color:#d97706;text-align:right;border-bottom:1px solid #f3f4f6;">${props.waitingDays} Day(s) (idle / standby)</td>
+                    <td style="padding:10px 0;font-size:14px;font-weight:800;color:#d97706;text-align:right;border-bottom:1px solid #f3f4f6;">${h.waitingDays} Day(s) (idle / standby)</td>
                   </tr>`
                       : ""
                   }
                   <tr>
                     <td style="padding:10px 0;font-size:14px;color:${THEME.textSecondary};border-bottom:1px solid #f3f4f6;">Vehicle Category:</td>
-                    <td style="padding:10px 0;font-size:14px;font-weight:700;color:${THEME.textPrimary};text-align:right;border-bottom:1px solid #f3f4f6;">${props.vehicleCategory}</td>
+                    <td style="padding:10px 0;font-size:14px;font-weight:700;color:${THEME.textPrimary};text-align:right;border-bottom:1px solid #f3f4f6;">${h.vehicleCategory}</td>
                   </tr>
                   <tr>
                     <td style="padding:10px 0;font-size:14px;color:${THEME.textSecondary};border-bottom:1px solid #f3f4f6;">Preferred Vehicle:</td>
-                    <td style="padding:10px 0;font-size:14px;font-weight:700;color:${THEME.textPrimary};text-align:right;border-bottom:1px solid #f3f4f6;">${props.preferredVehicle || "Any available"}</td>
+                    <td style="padding:10px 0;font-size:14px;font-weight:700;color:${THEME.textPrimary};text-align:right;border-bottom:1px solid #f3f4f6;">${h.preferredVehicle || "Any available"}</td>
                   </tr>
                   <tr>
                     <td style="padding:10px 0;font-size:14px;color:${THEME.textSecondary};">Passengers:</td>
-                    <td style="padding:10px 0;font-size:14px;font-weight:700;color:${EMAIL_THEME.textPrimary};text-align:right;">${props.passengers} Traveler(s)</td>
+                    <td style="padding:10px 0;font-size:14px;font-weight:700;color:${THEME.textPrimary};text-align:right;">${h.passengers} Traveler(s)</td>
                   </tr>
                 </table>
               </div>
@@ -223,7 +227,7 @@ ${props.specialRequirements ? `SPECIAL REQUIREMENTS:\n"${props.specialRequiremen
           </tr>
 
           ${
-            props.specialRequirements && props.specialRequirements.trim().length > 0
+            h.specialRequirements && h.specialRequirements.trim().length > 0
               ? `<tr>
             <td style="padding:0 32px 24px 32px;">
               <div style="background-color:#fffbeb;border:1px solid #fef3c7;border-left:4px solid ${THEME.gold};border-radius:10px;padding:16px 20px;">
@@ -231,7 +235,7 @@ ${props.specialRequirements ? `SPECIAL REQUIREMENTS:\n"${props.specialRequiremen
                   ⚠️ Customer Notes & Special Requests:
                 </div>
                 <div style="font-size:14px;line-height:1.5;color:#78350f;">
-                  "${props.specialRequirements.trim()}"
+                  "${h.specialRequirements.trim()}"
                 </div>
               </div>
             </td>
@@ -245,7 +249,7 @@ ${props.specialRequirements ? `SPECIAL REQUIREMENTS:\n"${props.specialRequiremen
                 Open Booking in Admin Portal ➔
               </a>
               <div style="font-size:12px;color:${THEME.textMuted};margin-top:12px;">
-                Booking ID: ${props.bookingId}
+                Booking ID: ${h.bookingId}
               </div>
             </td>
           </tr>
@@ -253,7 +257,7 @@ ${props.specialRequirements ? `SPECIAL REQUIREMENTS:\n"${props.specialRequiremen
           <tr>
             <td style="background-color:#f9fafb;padding:20px 32px;border-top:1px solid ${THEME.border};text-align:center;">
               <div style="font-size:12px;color:${THEME.textMuted};line-height:1.5;">
-                Rashe Holidays Dispatch Alert · Received at ${props.createdAt || new Date().toLocaleString("en-IN")}<br>
+                Rashe Holidays Dispatch Alert · Received at ${h.createdAt || new Date().toLocaleString("en-IN")}<br>
                 Recipient: <a href="mailto:rasheholiday@gmail.com" style="color:${THEME.goldDark};text-decoration:none;font-weight:600;">rasheholiday@gmail.com</a>
               </div>
             </td>

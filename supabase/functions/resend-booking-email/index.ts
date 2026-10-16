@@ -60,24 +60,41 @@ serve(async (req: Request) => {
       );
     }
 
-    const supabase = createClient(supabaseUrl, supabaseServiceKey);
+    // Only a signed-in caller whose own session can read this booking (i.e. the owner/admin,
+    // enforced by Row-Level Security) may trigger a resend. The public anon key is not enough.
+    const accessToken = (req.headers.get("Authorization") || "").replace(/^Bearer\s+/i, "");
+    const anonKey = Deno.env.get("SUPABASE_ANON_KEY") ?? "";
+    const callerClient = createClient(supabaseUrl, anonKey, {
+      global: { headers: { Authorization: `Bearer ${accessToken}` } },
+      auth: { persistSession: false, autoRefreshToken: false },
+    });
+    const { data: userData } = accessToken
+      ? await callerClient.auth.getUser(accessToken)
+      : { data: { user: null } };
 
-    // Fetch the booking record
-    const { data: booking, error: fetchErr } = await supabase
+    if (!userData?.user) {
+      return new Response(JSON.stringify({ success: false, error: "Unauthorized." }), {
+        status: 401,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    // Fetch the booking record with the caller's permissions (RLS)
+    const { data: booking, error: fetchErr } = await callerClient
       .from("bookings")
       .select("*")
       .eq("id", booking_id)
-      .single();
+      .maybeSingle();
 
     if (fetchErr || !booking) {
       return new Response(
-        JSON.stringify({
-          success: false,
-          error: `Booking not found: ${fetchErr?.message || "No record matching ID"}`,
-        }),
+        JSON.stringify({ success: false, error: "Booking not found." }),
         { status: 404, headers: { ...corsHeaders, "Content-Type": "application/json" } },
       );
     }
+
+    // Service-role client is only used for writing email_logs
+    const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
     const bookingData: BookingEmailData = booking;
     const results: Record<string, { status: "sent" | "failed" | "skipped"; error?: string }> = {};
@@ -185,7 +202,7 @@ serve(async (req: Request) => {
       { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } },
     );
   } catch (err: unknown) {
-    const message = err instanceof Error ? err.message : "Internal server error";
+    const message = "Internal server error";
     console.error("Resend edge function error:", err);
     return new Response(JSON.stringify({ success: false, error: message }), {
       status: 500,

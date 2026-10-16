@@ -272,10 +272,13 @@ export async function createBooking(input: CreateBookingInput): Promise<ApiRespo
     const { data, error } = await supabase.from("bookings").insert([payload]).select().single();
 
     if (error) {
-      console.error("[Supabase API] Failed to create booking:", error);
+      console.error("[Supabase API] Failed to create booking:", error.code);
+      // P0001 = booking rate limit trigger, 23514 = CHECK constraint (invalid data)
+      const rejected = error.code === "P0001" || error.code === "23514";
       return {
         success: false,
-        error: error.message || "Failed to create booking in database.",
+        error: rejected ? error.message : "Failed to create booking in database.",
+        rejected,
       };
     }
 
@@ -381,7 +384,8 @@ export async function getAllBookings(
     }
 
     if (searchQuery.trim()) {
-      const q = searchQuery.trim();
+      // Strip PostgREST filter syntax characters so the search text can't alter the filter
+      const q = searchQuery.trim().replace(/[,()*%\\:"']/g, " ").slice(0, 100);
       query = query.or(
         `customer_name.ilike.%${q}%,phone_number.ilike.%${q}%,pickup_location.ilike.%${q}%,destination.ilike.%${q}%`,
       );
@@ -519,11 +523,21 @@ export async function dispatchBookingEmails(payload: {
   waiting_days?: number | null;
   special_requirements?: string | null;
   created_at?: string;
+  email_type?: "customer_confirmation" | "admin_notification" | "both";
 }): Promise<{ success: boolean; results?: any; error?: string }> {
   try {
+    // Signed-in owner requests carry the session token so the server can load the booking
+    // from the database (under RLS) instead of trusting this payload.
+    const headers: Record<string, string> = { "Content-Type": "application/json" };
+    if (isSupabaseConfigured) {
+      const { data } = await supabase.auth.getSession();
+      if (data.session?.access_token) {
+        headers["Authorization"] = `Bearer ${data.session.access_token}`;
+      }
+    }
     const res = await fetch("/api/send-booking-email", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers,
       body: JSON.stringify(payload),
     });
     const data = await res.json();
@@ -579,6 +593,7 @@ export async function resendBookingEmail(
       waiting_days: bookingData.waitingDays,
       special_requirements: bookingData.specialRequirements,
       created_at: bookingData.createdAt,
+      email_type: emailType,
     });
     return { success: res.success, data: res.results, error: res.error };
   }

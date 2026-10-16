@@ -1,3 +1,5 @@
+import { escapeHtml, escapeHtmlProps } from "./escape.ts";
+
 export interface CustomerConfirmationEmailProps {
   customerName: string;
   tripType: string;
@@ -59,7 +61,7 @@ export function renderCustomerConfirmationEmail(props: CustomerConfirmationEmail
   const formattedTripType = isRoundTrip ? "Round Trip" : "One Way";
   const returnStr = isRoundTrip && props.returnDate ? props.returnDate : "N/A";
   const daysStr = props.numberOfDays && props.numberOfDays > 1 ? `${props.numberOfDays} Days` : "1 Day";
-  const bookingRef = props.bookingId ? props.bookingId.slice(0, 8).toUpperCase() : "PENDING";
+  const bookingRef = props.bookingId ? props.bookingId.slice(0, 8).toUpperCase().replace(/[^A-Z0-9-]/g, "") : "PENDING";
   const cleanPhone = COMPANY.cleanPhone;
   const waPreFilled = encodeURIComponent(
     `Hi ${company}, I recently submitted booking enquiry #${bookingRef} for ${props.pickupLocation} to ${props.destination}. Please confirm availability.`
@@ -99,12 +101,14 @@ ${company} Team
 ${COMPANY.siteUrl}
 `;
 
+  const h = escapeHtmlProps(props);
+
   const html = `<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>${subject}</title>
+  <title>${escapeHtml(subject)}</title>
 </head>
 <body style="margin:0;padding:0;background-color:${THEME.canvas};font-family:${THEME.fontFamily};-webkit-font-smoothing:antialiased;color:${THEME.textPrimary};">
   <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color:${THEME.canvas};padding:32px 12px;">
@@ -118,7 +122,7 @@ ${COMPANY.siteUrl}
                 <tr>
                   <td>
                     <div style="font-size:22px;font-weight:800;color:${THEME.textLight};letter-spacing:-0.5px;line-height:1.2;">
-                      <span style="color:${THEME.gold};font-size:24px;vertical-align:middle;margin-right:6px;">✦</span>${company}
+                      <span style="color:${THEME.gold};font-size:24px;vertical-align:middle;margin-right:6px;">✦</span>${escapeHtml(company)}
                     </div>
                     <div style="font-size:12px;color:#9ca3af;margin-top:4px;letter-spacing:0.5px;text-transform:uppercase;">
                       ${COMPANY.tagline}
@@ -140,10 +144,10 @@ ${COMPANY.siteUrl}
                 <tr>
                   <td>
                     <h1 style="margin:0 0 10px 0;font-size:22px;font-weight:800;color:${THEME.textPrimary};line-height:1.3;">
-                      Hello ${props.customerName},
+                      Hello ${h.customerName},
                     </h1>
                     <p style="margin:0 0 16px 0;font-size:15px;line-height:1.6;color:${THEME.textSecondary};">
-                      Thank you for choosing <strong>${company}</strong>. We have received your travel enquiry and our Nilgiris tour planning team is currently checking cab availability and route timing.
+                      Thank you for choosing <strong>${escapeHtml(company)}</strong>. We have received your travel enquiry and our Nilgiris tour planning team is currently checking cab availability and route timing.
                     </p>
                     <div style="display:inline-block;background-color:${THEME.goldSoft};border:1px solid ${THEME.goldBorder};border-radius:8px;padding:6px 14px;font-size:12px;font-weight:700;color:${THEME.goldDark};letter-spacing:0.5px;">
                       BOOKING REFERENCE: #${bookingRef}
@@ -163,7 +167,7 @@ ${COMPANY.siteUrl}
                       <tr>
                         <td style="width:42%;vertical-align:middle;">
                           <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:${THEME.gold};">Pickup</div>
-                          <div style="font-size:16px;font-weight:700;color:#ffffff;margin-top:2px;">${props.pickupLocation}</div>
+                          <div style="font-size:16px;font-weight:700;color:#ffffff;margin-top:2px;">${h.pickupLocation}</div>
                         </td>
                         <td align="center" style="width:16%;vertical-align:middle;text-align:center;">
                           <div style="font-size:20px;color:${THEME.gold};line-height:1;">➔</div>
@@ -171,7 +175,7 @@ ${COMPANY.siteUrl}
                         </td>
                         <td align="right" style="width:42%;vertical-align:middle;text-align:right;">
                           <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:${THEME.gold};">Destination</div>
-                          <div style="font-size:16px;font-weight:700;color:#ffffff;margin-top:2px;">${props.destination}</div>
+                          <div style="font-size:16px;font-weight:700;color:#ffffff;margin-top:2px;">${h.destination}</div>
                         </td>
                       </tr>
                     </table>
@@ -196,39 +200,39 @@ ${COMPANY.siteUrl}
                   </tr>
                   <tr>
                     <td style="padding:10px 0;font-size:14px;color:${THEME.textSecondary};border-bottom:1px solid #f3f4f6;">Departure Date:</td>
-                    <td style="padding:10px 0;font-size:14px;font-weight:700;color:${THEME.textPrimary};text-align:right;border-bottom:1px solid #f3f4f6;">${props.departureDate}</td>
+                    <td style="padding:10px 0;font-size:14px;font-weight:700;color:${THEME.textPrimary};text-align:right;border-bottom:1px solid #f3f4f6;">${h.departureDate}</td>
                   </tr>
                   ${
                     isRoundTrip
                       ? `<tr>
                     <td style="padding:10px 0;font-size:14px;color:${THEME.textSecondary};border-bottom:1px solid #f3f4f6;">Return Date:</td>
-                    <td style="padding:10px 0;font-size:14px;font-weight:700;color:${THEME.textPrimary};text-align:right;border-bottom:1px solid #f3f4f6;">${returnStr}</td>
+                    <td style="padding:10px 0;font-size:14px;font-weight:700;color:${THEME.textPrimary};text-align:right;border-bottom:1px solid #f3f4f6;">${escapeHtml(returnStr)}</td>
                   </tr>`
                       : ""
                   }
                   <tr>
                     <td style="padding:10px 0;font-size:14px;color:${THEME.textSecondary};border-bottom:1px solid #f3f4f6;">Total Duration:</td>
-                    <td style="padding:10px 0;font-size:14px;font-weight:700;color:${THEME.textPrimary};text-align:right;border-bottom:1px solid #f3f4f6;">${daysStr}</td>
+                    <td style="padding:10px 0;font-size:14px;font-weight:700;color:${THEME.textPrimary};text-align:right;border-bottom:1px solid #f3f4f6;">${escapeHtml(daysStr)}</td>
                   </tr>
                   ${
-                    props.waitingDays && props.waitingDays > 0
+                    h.waitingDays && h.waitingDays > 0
                       ? `<tr>
                     <td style="padding:10px 0;font-size:14px;color:#d97706;border-bottom:1px solid #f3f4f6;">Waiting Days (Parked):</td>
-                    <td style="padding:10px 0;font-size:14px;font-weight:700;color:#d97706;text-align:right;border-bottom:1px solid #f3f4f6;">${props.waitingDays} Day(s) (idle / standby)</td>
+                    <td style="padding:10px 0;font-size:14px;font-weight:700;color:#d97706;text-align:right;border-bottom:1px solid #f3f4f6;">${h.waitingDays} Day(s) (idle / standby)</td>
                   </tr>`
                       : ""
                   }
                   <tr>
                     <td style="padding:10px 0;font-size:14px;color:${THEME.textSecondary};border-bottom:1px solid #f3f4f6;">Vehicle Category:</td>
-                    <td style="padding:10px 0;font-size:14px;font-weight:700;color:${THEME.textPrimary};text-align:right;border-bottom:1px solid #f3f4f6;">${props.vehicleCategory}</td>
+                    <td style="padding:10px 0;font-size:14px;font-weight:700;color:${THEME.textPrimary};text-align:right;border-bottom:1px solid #f3f4f6;">${h.vehicleCategory}</td>
                   </tr>
                   <tr>
                     <td style="padding:10px 0;font-size:14px;color:${THEME.textSecondary};border-bottom:1px solid #f3f4f6;">Preferred Vehicle:</td>
-                    <td style="padding:10px 0;font-size:14px;font-weight:700;color:${THEME.textPrimary};text-align:right;border-bottom:1px solid #f3f4f6;">${props.preferredVehicle || "Any available"}</td>
+                    <td style="padding:10px 0;font-size:14px;font-weight:700;color:${THEME.textPrimary};text-align:right;border-bottom:1px solid #f3f4f6;">${h.preferredVehicle || "Any available"}</td>
                   </tr>
                   <tr>
                     <td style="padding:10px 0;font-size:14px;color:${THEME.textSecondary};">Passengers:</td>
-                    <td style="padding:10px 0;font-size:14px;font-weight:700;color:${THEME.textPrimary};text-align:right;">${props.passengers} Traveler(s)</td>
+                    <td style="padding:10px 0;font-size:14px;font-weight:700;color:${THEME.textPrimary};text-align:right;">${h.passengers} Traveler(s)</td>
                   </tr>
                 </table>
               </div>
@@ -236,7 +240,7 @@ ${COMPANY.siteUrl}
           </tr>
 
           ${
-            props.specialRequirements && props.specialRequirements.trim().length > 0
+            h.specialRequirements && h.specialRequirements.trim().length > 0
               ? `<tr>
             <td style="padding:0 32px 24px 32px;">
               <div style="background-color:${THEME.goldSoft};border:1px solid ${THEME.goldBorder};border-radius:12px;padding:16px 20px;">
@@ -244,7 +248,7 @@ ${COMPANY.siteUrl}
                   Your Special Requests & Notes:
                 </div>
                 <div style="font-size:14px;color:${THEME.textPrimary};line-height:1.5;font-style:italic;">
-                  "${props.specialRequirements.trim()}"
+                  "${h.specialRequirements.trim()}"
                 </div>
               </div>
             </td>
@@ -311,7 +315,7 @@ ${COMPANY.siteUrl}
           <tr>
             <td style="background-color:#f9fafb;padding:26px 32px;border-top:1px solid ${THEME.border};text-align:center;">
               <div style="font-size:13px;font-weight:700;color:${THEME.textPrimary};margin-bottom:4px;">
-                ${company}
+                ${escapeHtml(company)}
               </div>
               <div style="font-size:12px;color:${THEME.textMuted};line-height:1.5;">
                 ${COMPANY.address}<br>

@@ -44,18 +44,48 @@ function isH3SwallowedErrorBody(body: string): boolean {
   }
 }
 
+// Production hostnames. Anti-framing and HSTS are only sent here so the Lovable
+// editor preview (which embeds the app in an iframe) keeps working.
+const PRODUCTION_HOSTS = new Set(["rasheholidays.com", "www.rasheholidays.com"]);
+
+function withSecurityHeaders(request: Request, response: Response): Response {
+  const secured = new Response(response.body, response);
+  const headers = secured.headers;
+  const isProduction = PRODUCTION_HOSTS.has(new URL(request.url).hostname);
+
+  headers.set("X-Content-Type-Options", "nosniff");
+  headers.set("Referrer-Policy", "strict-origin-when-cross-origin");
+  headers.set(
+    "Permissions-Policy",
+    "camera=(), microphone=(), geolocation=(), payment=(), usb=(), interest-cohort=()",
+  );
+  headers.set("Cross-Origin-Opener-Policy", "same-origin-allow-popups");
+
+  const csp = ["base-uri 'self'", "object-src 'none'", "form-action 'self'"];
+  if (isProduction) {
+    csp.push("frame-ancestors 'none'", "upgrade-insecure-requests");
+    headers.set("X-Frame-Options", "DENY");
+    headers.set("Strict-Transport-Security", "max-age=31536000");
+  }
+  headers.set("Content-Security-Policy", csp.join("; "));
+  return secured;
+}
+
 export default {
   async fetch(request: Request, env: unknown, ctx: unknown) {
     try {
       const handler = await getServerEntry();
       const response = await handler.fetch(request, env, ctx);
-      return await normalizeCatastrophicSsrResponse(response);
+      return withSecurityHeaders(request, await normalizeCatastrophicSsrResponse(response));
     } catch (error) {
       console.error(error);
-      return new Response(renderErrorPage(), {
-        status: 500,
-        headers: { "content-type": "text/html; charset=utf-8" },
-      });
+      return withSecurityHeaders(
+        request,
+        new Response(renderErrorPage(), {
+          status: 500,
+          headers: { "content-type": "text/html; charset=utf-8" },
+        }),
+      );
     }
   },
 };

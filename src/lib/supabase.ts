@@ -42,8 +42,8 @@ export const isSupabaseConfigured = Boolean(
   rawUrl.startsWith("http"),
 );
 
-const supabaseUrl = isSupabaseConfigured ? rawUrl : FALLBACK_URL;
-const supabaseAnonKey = isSupabaseConfigured ? rawKey : FALLBACK_KEY;
+export const supabaseUrl = isSupabaseConfigured ? rawUrl : FALLBACK_URL;
+export const supabaseAnonKey = isSupabaseConfigured ? rawKey : FALLBACK_KEY;
 
 export const supabase = createClient<Database>(supabaseUrl, supabaseAnonKey, {
   auth: {

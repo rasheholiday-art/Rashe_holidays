@@ -73,6 +73,8 @@ export interface ApiResponse<T> {
   error?: string;
   validationErrors?: Record<string, string>;
   isFallback?: boolean;
+  /** True when the server deliberately refused the request (validation or rate limit). */
+  rejected?: boolean;
 }
 
 export interface BookingValidationResult {

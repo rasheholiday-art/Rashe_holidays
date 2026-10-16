@@ -186,7 +186,8 @@ export async function saveBookingAsync(
   };
 
   // Dispatch Resend emails to both admin (rasheholiday@gmail.com) and the customer (sender)
-  if (!apiRes.success || apiRes.isFallback) {
+  // (skipped when the server deliberately rejected the booking, e.g. invalid data or rate limit)
+  if ((!apiRes.success && !apiRes.validationErrors && !apiRes.rejected) || apiRes.isFallback) {
     dispatchBookingEmails({
       id: assignedId,
       customer_name: data.name,

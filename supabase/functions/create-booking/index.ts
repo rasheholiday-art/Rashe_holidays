@@ -84,8 +84,25 @@ function validatePayload(body: Partial<CreateBookingPayload>): {
   }
 
   // 7. Passengers validation
-  if (!body.passengers || body.passengers < 1) {
-    errors.push("Passengers must be at least 1.");
+  if (!body.passengers || body.passengers < 1 || body.passengers > 30) {
+    errors.push("Passengers must be between 1 and 30.");
+  }
+
+  // Length caps on free-text fields (these end up in emails and the admin panel)
+  const maxLengths: Array<[keyof CreateBookingPayload, number]> = [
+    ["customer_name", 100],
+    ["phone_number", 20],
+    ["email_address", 254],
+    ["preferred_vehicle", 100],
+    ["pickup_location", 200],
+    ["destination", 200],
+    ["special_requirements", 1000],
+  ];
+  for (const [field, max] of maxLengths) {
+    const value = body[field];
+    if (value !== undefined && value !== null && (typeof value !== "string" || value.length > max)) {
+      errors.push(`${field.replace(/_/g, " ")} is too long (max ${max} characters).`);
+    }
   }
 
   // 8. Locations validation
@@ -156,11 +173,19 @@ serve(async (req: Request) => {
     const { data, error } = await supabase.from("bookings").insert([insertData]).select().single();
 
     if (error) {
-      console.error("Database insert error:", error);
-      return new Response(JSON.stringify({ success: false, error: error.message }), {
-        status: 500,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+      console.error("Database insert error:", error.code, error.message);
+      // P0001 = booking rate-limit trigger; its message is written for customers
+      const isRateLimited = error.code === "P0001";
+      return new Response(
+        JSON.stringify({
+          success: false,
+          error: isRateLimited ? error.message : "Could not save your booking. Please try again.",
+        }),
+        {
+          status: isRateLimited ? 429 : 500,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        },
+      );
     }
 
     // Step 2 & 3: Process Customer Confirmation and Admin Notification Emails via Resend
@@ -186,7 +211,7 @@ serve(async (req: Request) => {
       { status: 201, headers: { ...corsHeaders, "Content-Type": "application/json" } },
     );
   } catch (err: unknown) {
-    const message = err instanceof Error ? err.message : "Internal server error";
+    const message = "Internal server error";
     console.error("Edge Function error:", err);
     return new Response(JSON.stringify({ success: false, error: message }), {
       status: 500,
