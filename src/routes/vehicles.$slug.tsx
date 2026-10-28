@@ -54,15 +54,15 @@ function VehicleDetail() {
   return (
     <>
       {/* Gallery + summary */}
-      <section className="relative overflow-hidden bg-ink pt-[72px] text-ink-foreground grain">
+      <section className="relative overflow-hidden bg-shade pt-[72px] text-ink-foreground grain">
         <img
           src={heroImg}
           alt=""
           className="absolute inset-0 size-full object-cover object-[center_35%] opacity-35 sm:opacity-40 brightness-[1.02] contrast-[1.05]"
         />
         {/* Soft directional overlays to keep vehicle gallery and specs crisp while revealing hill road backdrop */}
-        <div className="absolute inset-0 bg-gradient-to-r from-ink/95 via-ink/80 to-ink/60" />
-        <div className="absolute inset-0 bg-gradient-to-t from-ink via-transparent to-ink/35" />
+        <div className="absolute inset-0 bg-gradient-to-r from-shade/95 via-shade/80 to-shade/60" />
+        <div className="absolute inset-0 bg-gradient-to-t from-shade via-transparent to-shade/35" />
         <div className="container-x relative grid gap-10 py-12 lg:grid-cols-[1.15fr_1fr] lg:py-16">
           <div>
             <div className="overflow-hidden rounded-[2rem] border border-ink-border bg-ink-foreground/5">

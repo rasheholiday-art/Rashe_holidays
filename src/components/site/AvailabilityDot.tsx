@@ -14,7 +14,7 @@ export function AvailabilityDot({
       className={cn(
         "inline-flex items-center gap-2 rounded-full px-3 py-1 text-[11px] font-bold backdrop-blur",
         onDark
-          ? "bg-ink/60 text-ink-foreground"
+          ? "bg-shade/60 text-ink-foreground"
           : available
             ? "bg-success-soft text-success"
             : "bg-secondary text-muted-foreground",

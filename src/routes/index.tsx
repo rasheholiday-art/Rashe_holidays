@@ -59,7 +59,7 @@ function Index() {
   return (
     <>
       {/* Hero */}
-      <section className="relative flex min-h-[90vh] items-center overflow-hidden bg-ink pt-[72px] text-ink-foreground grain">
+      <section className="relative flex min-h-[90vh] items-center overflow-hidden bg-shade pt-[72px] text-ink-foreground grain">
         {/* Background Slideshow alternating every 3 seconds */}
         {heroSlides.map((slide, idx) => (
           <img
@@ -75,8 +75,8 @@ function Index() {
         ))}
 
         {/* Subtle soft directional gradient: keeps text contrast clean on the left while keeping the scenic background bright and vivid */}
-        <div className="absolute inset-0 z-[2] bg-gradient-to-r from-ink/80 via-ink/35 to-transparent pointer-events-none" />
-        <div className="absolute inset-0 z-[2] bg-gradient-to-t from-ink/75 via-transparent to-transparent pointer-events-none" />
+        <div className="absolute inset-0 z-[2] bg-gradient-to-r from-shade/80 via-shade/35 to-transparent pointer-events-none" />
+        <div className="absolute inset-0 z-[2] bg-gradient-to-t from-shade/75 via-transparent to-transparent pointer-events-none" />
 
         {/* Slide Indicators */}
         <div className="container-x absolute bottom-4 left-0 right-0 z-20 hidden sm:flex items-center justify-end gap-2 pointer-events-auto">

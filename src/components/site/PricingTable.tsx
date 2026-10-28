@@ -46,7 +46,7 @@ export function PricingTable() {
             className="absolute inset-0 size-full object-cover"
             loading="lazy"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-ink/80 via-ink/10 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-shade/80 via-shade/10 to-transparent" />
           <div className="absolute bottom-5 left-5 text-ink-foreground">
             <p className="text-[11px] font-bold uppercase tracking-[0.18em] opacity-75">
               Vehicle type

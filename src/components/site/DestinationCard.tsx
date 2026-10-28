@@ -9,7 +9,7 @@ export function DestinationCard({ d, className }: { d: Destination; className?: 
       to="/destinations/$slug"
       params={{ slug: d.slug }}
       className={cn(
-        "group img-zoom relative block aspect-[3/4] overflow-hidden rounded-3xl bg-ink text-ink-foreground shadow-card transition-all duration-500 hover:-translate-y-1 hover:shadow-card-hover",
+        "group img-zoom relative block aspect-[3/4] overflow-hidden rounded-3xl bg-shade text-ink-foreground shadow-card transition-all duration-500 hover:-translate-y-1 hover:shadow-card-hover",
         className,
       )}
       aria-label={`View fixed package rates and details for ${d.name}`}
@@ -20,7 +20,7 @@ export function DestinationCard({ d, className }: { d: Destination; className?: 
         loading="lazy"
         className="absolute inset-0 size-full object-cover"
       />
-      <div className="absolute inset-0 bg-gradient-to-t from-ink/90 via-ink/20 to-transparent" />
+      <div className="absolute inset-0 bg-gradient-to-t from-shade/90 via-shade/20 to-transparent" />
       <div className="absolute inset-x-0 top-0 flex items-center justify-between p-4">
         <span
           className={cn(
@@ -33,12 +33,12 @@ export function DestinationCard({ d, className }: { d: Destination; className?: 
           {d.typeLabel}
         </span>
         {d.kmFromOoty > 0 ? (
-          <span className="inline-flex items-center gap-1 rounded-full bg-ink/70 px-2.5 py-1 text-[10px] font-bold backdrop-blur">
+          <span className="inline-flex items-center gap-1 rounded-full bg-shade/70 px-2.5 py-1 text-[10px] font-bold backdrop-blur">
             <Clock className="size-3 text-gold" />
             {d.hours}
           </span>
         ) : (
-          <span className="inline-flex items-center gap-1 rounded-full bg-ink/70 px-2.5 py-1 text-[10px] font-bold backdrop-blur text-gold">
+          <span className="inline-flex items-center gap-1 rounded-full bg-shade/70 px-2.5 py-1 text-[10px] font-bold backdrop-blur text-gold">
             <MapPin className="size-3" />
             Local Tour
           </span>

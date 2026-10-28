@@ -100,15 +100,15 @@ function DestinationDetail() {
   return (
     <>
       {/* Top Hero / Header */}
-      <section className="relative overflow-hidden bg-ink pt-[72px] text-ink-foreground grain">
+      <section className="relative overflow-hidden bg-shade pt-[72px] text-ink-foreground grain">
         <img
           src={d.image}
           alt=""
           className="absolute inset-0 size-full object-cover object-center opacity-50 sm:opacity-60 brightness-[1.02] contrast-[1.05]"
         />
         {/* Soft directional overlays to keep text and badge details high-contrast while revealing the destination scene */}
-        <div className="absolute inset-0 bg-gradient-to-r from-ink/95 via-ink/80 to-ink/50" />
-        <div className="absolute inset-0 bg-gradient-to-t from-ink via-transparent to-ink/35" />
+        <div className="absolute inset-0 bg-gradient-to-r from-shade/95 via-shade/80 to-shade/50" />
+        <div className="absolute inset-0 bg-gradient-to-t from-shade via-transparent to-shade/35" />
         <div className="container-x relative py-10 lg:py-14">
           {/* Breadcrumbs */}
           <nav className="flex items-center gap-2 text-xs text-ink-muted">
@@ -186,7 +186,7 @@ function DestinationDetail() {
                 alt={`${d.name} from Ooty`}
                 className="aspect-[4/3] w-full object-cover"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-ink/90 via-ink/20 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-shade/90 via-shade/20 to-transparent" />
               <div className="absolute bottom-5 left-5 right-5 flex items-center justify-between text-ink-foreground">
                 <div>
                   <p className="text-[11px] font-bold uppercase tracking-widest text-gold">

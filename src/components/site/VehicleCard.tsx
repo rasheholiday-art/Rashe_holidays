@@ -24,7 +24,7 @@ export function VehicleCard({ vehicle, className }: { vehicle: Vehicle; classNam
         <img src={v.images[0]} alt={v.name} loading="lazy" className="size-full object-cover" />
         <div className="absolute inset-x-0 top-0 flex items-start justify-between p-4">
           <div className="flex gap-2">
-            <span className="rounded-full bg-ink/80 px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-ink-foreground backdrop-blur">
+            <span className="rounded-full bg-shade/80 px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-ink-foreground backdrop-blur">
               {v.categoryLabel}
             </span>
           </div>
@@ -32,7 +32,7 @@ export function VehicleCard({ vehicle, className }: { vehicle: Vehicle; classNam
             <Users className="size-3.5 text-gold" /> {v.seats} Seats
           </span>
         </div>
-        <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-ink/60 to-transparent" />
+        <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-shade/60 to-transparent" />
         <div className="absolute bottom-4 left-4">
           <AvailabilityDot available={v.available} onDark />
         </div>

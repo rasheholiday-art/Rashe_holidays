@@ -39,7 +39,7 @@ export function CategoryShowcase() {
                           loading="lazy"
                           className="size-full object-contain"
                         />
-                        <span className="absolute bottom-3 left-3 rounded-full bg-ink/75 px-2.5 py-1 text-[11px] font-bold text-ink-foreground backdrop-blur">
+                        <span className="absolute bottom-3 left-3 rounded-full bg-shade/75 px-2.5 py-1 text-[11px] font-bold text-ink-foreground backdrop-blur">
                           {v.name}
                         </span>
                       </Link>
@@ -56,7 +56,7 @@ export function CategoryShowcase() {
                   </div>
                 )}
                 <div className="pointer-events-none absolute inset-x-0 top-0 flex justify-between p-5">
-                  <span className="rounded-full bg-ink/80 px-3.5 py-1.5 text-[11px] font-bold uppercase tracking-[0.15em] text-ink-foreground backdrop-blur">
+                  <span className="rounded-full bg-shade/80 px-3.5 py-1.5 text-[11px] font-bold uppercase tracking-[0.15em] text-ink-foreground backdrop-blur">
                     {cat.label}
                   </span>
                   <span className="inline-flex items-center gap-1.5 rounded-full bg-card/90 px-3 py-1.5 text-xs font-bold backdrop-blur">

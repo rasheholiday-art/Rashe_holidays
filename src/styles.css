@@ -6,8 +6,8 @@
 
 /*
  * Rashe Holidays design system.
- * Charcoal ink + warm off-white + golden amber accent.
- * All colors in oklch. Fonts loaded via <link> in __root.tsx.
+ * Royal Blue (#1b298b) + Leaf Green (#5bb332) on white, taken from the logo.
+ * Fonts loaded via <link> in __root.tsx.
  */
 
 @theme inline {
@@ -57,6 +57,7 @@
   --color-ink-foreground: var(--ink-foreground);
   --color-ink-muted: var(--ink-muted);
   --color-ink-border: var(--ink-border);
+  --color-shade: var(--shade);
   --color-gold: var(--gold);
   --color-gold-foreground: var(--gold-foreground);
   --color-gold-soft: var(--gold-soft);
@@ -90,7 +91,7 @@
   --shadow-card-hover:
     0 2px 4px oklch(0.2 0.01 60 / 0.06), 0 24px 48px -16px oklch(0.2 0.01 60 / 0.24);
   --shadow-float: 0 30px 60px -20px oklch(0.15 0.01 60 / 0.35);
-  --shadow-gold: 0 10px 30px -10px oklch(0.78 0.16 70 / 0.55);
+  --shadow-gold: 0 10px 30px -10px rgb(91 179 50 / 0.5);
 
   --animate-fade-up: fade-up 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
   --animate-dash: dash 3s linear infinite;
@@ -163,47 +164,60 @@
 }
 
 :root {
+  /* Brand palette, sampled from the Rashe Holidays colour sheet */
+  --brand-blue: #1b298b; /* Royal Blue: the Blue Mountains */
+  --brand-blue-deep: #17227b;
+  --brand-blue-bright: #304cb9;
+  --brand-green: #5bb332; /* Leaf Green: the tea estates */
+  --brand-green-deep: #479f24;
+  --brand-green-bright: #7bcb4b;
+  --brand-white: #ffffff;
+  --brand-mist: #f0f4f9; /* page background from the colour sheet */
+
   --radius: 1rem;
-  --background: oklch(0.977 0.006 85);
+  --background: var(--brand-mist);
   --foreground: oklch(0.18 0.006 260);
-  --card: oklch(1 0 0);
+  --card: var(--brand-white);
   --card-foreground: oklch(0.18 0.006 260);
-  --popover: oklch(1 0 0);
+  --popover: var(--brand-white);
   --popover-foreground: oklch(0.18 0.006 260);
-  --primary: oklch(0.2 0.006 260);
-  --primary-foreground: oklch(0.977 0.006 85);
-  --secondary: oklch(0.945 0.008 85);
-  --secondary-foreground: oklch(0.2 0.006 260);
-  --muted: oklch(0.945 0.008 85);
+  --primary: var(--brand-blue);
+  --primary-foreground: var(--brand-white);
+  --secondary: oklch(0.94 0.012 255);
+  --secondary-foreground: var(--brand-blue);
+  --muted: oklch(0.94 0.012 255);
   --muted-foreground: oklch(0.5 0.01 260);
-  --accent: oklch(0.78 0.16 70);
-  --accent-foreground: oklch(0.18 0.02 70);
+  --accent: var(--brand-green);
+  --accent-foreground: var(--brand-white);
   --destructive: oklch(0.577 0.245 27.325);
   --destructive-foreground: oklch(0.984 0.003 247.858);
-  --border: oklch(0.905 0.008 85);
-  --input: oklch(0.885 0.008 85);
-  --ring: oklch(0.78 0.16 70);
-  --chart-1: oklch(0.78 0.16 70);
-  --chart-2: oklch(0.2 0.006 260);
-  --chart-3: oklch(0.6 0.12 150);
-  --chart-4: oklch(0.7 0.05 260);
-  --chart-5: oklch(0.85 0.1 70);
-  --sidebar: oklch(0.977 0.006 85);
+  --border: oklch(0.9 0.014 255);
+  --input: oklch(0.88 0.014 255);
+  --ring: var(--brand-blue);
+  --chart-1: var(--brand-blue);
+  --chart-2: var(--brand-green);
+  --chart-3: var(--brand-blue-bright);
+  --chart-4: var(--brand-green-bright);
+  --chart-5: var(--brand-blue-deep);
+  --sidebar: var(--brand-mist);
   --sidebar-foreground: oklch(0.18 0.006 260);
-  --sidebar-primary: oklch(0.2 0.006 260);
-  --sidebar-primary-foreground: oklch(0.977 0.006 85);
-  --sidebar-accent: oklch(0.945 0.008 85);
-  --sidebar-accent-foreground: oklch(0.2 0.006 260);
-  --sidebar-border: oklch(0.905 0.008 85);
-  --sidebar-ring: oklch(0.78 0.16 70);
+  --sidebar-primary: var(--brand-blue);
+  --sidebar-primary-foreground: var(--brand-white);
+  --sidebar-accent: oklch(0.94 0.012 255);
+  --sidebar-accent-foreground: var(--brand-blue);
+  --sidebar-border: oklch(0.9 0.014 255);
+  --sidebar-ring: var(--brand-blue);
 
-  --ink: oklch(0.17 0.006 260);
-  --ink-foreground: oklch(0.977 0.006 85);
-  --ink-muted: oklch(0.7 0.01 260);
-  --ink-border: oklch(1 0 0 / 10%);
-  --gold: oklch(0.78 0.16 70);
-  --gold-foreground: oklch(0.18 0.02 70);
-  --gold-soft: oklch(0.95 0.05 80);
+  /* "ink" = dark brand surfaces (now Royal Blue), "gold" = brand accent (now Leaf Green) */
+  --ink: var(--brand-blue-deep);
+  --ink-foreground: var(--brand-white);
+  --ink-muted: oklch(0.83 0.04 270);
+  --ink-border: oklch(1 0 0 / 14%);
+  /* neutral charcoal for overlays on photos, so images keep their natural colours */
+  --shade: oklch(0.17 0.006 260);
+  --gold: var(--brand-green);
+  --gold-foreground: var(--brand-white);
+  --gold-soft: #e6f4de;
   --success: oklch(0.62 0.15 150);
   --success-foreground: oklch(0.98 0.01 150);
   --success-soft: oklch(0.94 0.05 150);
@@ -223,26 +237,26 @@
   --secondary-foreground: oklch(0.977 0.006 85);
   --muted: oklch(0.27 0.006 260);
   --muted-foreground: oklch(0.7 0.01 260);
-  --accent: oklch(0.78 0.16 70);
-  --accent-foreground: oklch(0.18 0.02 70);
+  --accent: var(--brand-green);
+  --accent-foreground: var(--brand-white);
   --destructive: oklch(0.704 0.191 22.216);
   --destructive-foreground: oklch(0.984 0.003 247.858);
   --border: oklch(1 0 0 / 10%);
   --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.78 0.16 70);
-  --chart-1: oklch(0.78 0.16 70);
-  --chart-2: oklch(0.9 0.006 85);
-  --chart-3: oklch(0.6 0.12 150);
+  --ring: var(--brand-green);
+  --chart-1: var(--brand-green);
+  --chart-2: var(--brand-blue-bright);
+  --chart-3: var(--brand-green-bright);
   --chart-4: oklch(0.7 0.05 260);
-  --chart-5: oklch(0.85 0.1 70);
+  --chart-5: var(--brand-white);
   --sidebar: oklch(0.22 0.006 260);
   --sidebar-foreground: oklch(0.977 0.006 85);
-  --sidebar-primary: oklch(0.78 0.16 70);
-  --sidebar-primary-foreground: oklch(0.18 0.02 70);
+  --sidebar-primary: var(--brand-green);
+  --sidebar-primary-foreground: var(--brand-white);
   --sidebar-accent: oklch(0.27 0.006 260);
   --sidebar-accent-foreground: oklch(0.977 0.006 85);
   --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.78 0.16 70);
+  --sidebar-ring: var(--brand-green);
 }
 
 @layer base {

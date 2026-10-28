@@ -27,7 +27,7 @@ export function PageHero({
   return (
     <section
       className={cn(
-        "relative overflow-hidden bg-ink pt-[72px] text-ink-foreground grain",
+        "relative overflow-hidden bg-shade pt-[72px] text-ink-foreground grain",
         className,
       )}
     >
@@ -38,8 +38,8 @@ export function PageHero({
         className="absolute inset-0 size-full object-cover object-[center_35%] opacity-80 sm:opacity-85 brightness-[1.02] contrast-[1.05]"
       />
       {/* Directional gradients so text on left is crisp and high-contrast, while landscape is vividly visible */}
-      <div className="absolute inset-0 bg-gradient-to-r from-ink/90 via-ink/60 to-ink/25" />
-      <div className="absolute inset-0 bg-gradient-to-t from-ink via-transparent to-ink/35" />
+      <div className="absolute inset-0 bg-gradient-to-r from-shade/90 via-shade/60 to-shade/25" />
+      <div className="absolute inset-0 bg-gradient-to-t from-shade via-transparent to-shade/35" />
       <div className="container-x relative py-16 sm:py-20 lg:py-24">
         <span className="eyebrow animate-fade-up">{eyebrow}</span>
         <h1 className="mt-4 max-w-3xl text-4xl font-semibold leading-[1.02] sm:text-5xl lg:text-6xl animate-fade-up [animation-delay:80ms]">

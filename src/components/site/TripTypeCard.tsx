@@ -110,7 +110,7 @@ export function TripTypeCard({ type, className }: Props) {
 
 /** Animated route line: dashed path with a travelling vehicle. */
 export function RouteGraphic({ type, light }: { type: "one-way" | "round-trip"; light?: boolean }) {
-  const stroke = light ? "currentColor" : "oklch(0.977 0.006 85 / 0.35)";
+  const stroke = light ? "currentColor" : "rgb(255 255 255 / 0.35)";
   const isRound = type === "round-trip";
   const path = isRound
     ? "M20 40 C 90 0, 210 0, 280 40 C 210 80, 90 80, 20 40 Z"
@@ -139,21 +139,21 @@ export function RouteGraphic({ type, light }: { type: "one-way" | "round-trip"; 
         />
 
         {/* Station Markers with Pulsing Radiance */}
-        <circle cx="20" cy="40" r="11" fill="oklch(0.78 0.16 70 / 0.2)" className="animate-pulse" />
-        <circle cx="20" cy="40" r="6" fill="oklch(0.78 0.16 70)" />
+        <circle cx="20" cy="40" r="11" fill="rgb(91 179 50 / 0.2)" className="animate-pulse" />
+        <circle cx="20" cy="40" r="6" fill="var(--gold)" />
 
         <circle
           cx="280"
           cy="40"
           r="11"
-          fill={isRound ? "oklch(0.78 0.16 70 / 0.2)" : "oklch(0.62 0.15 150 / 0.2)"}
+          fill={isRound ? "rgb(91 179 50 / 0.2)" : "oklch(0.62 0.15 150 / 0.2)"}
           className="animate-pulse"
         />
         <circle
           cx="280"
           cy="40"
           r="6"
-          fill={isRound ? "oklch(0.78 0.16 70)" : "oklch(0.62 0.15 150)"}
+          fill={isRound ? "var(--gold)" : "oklch(0.62 0.15 150)"}
         />
 
         {/* Moving GPS Vehicle (Scaled 2x for high definition and clear car silhouette) */}
@@ -195,14 +195,14 @@ export function RouteGraphic({ type, light }: { type: "one-way" | "round-trip"; 
             <rect x="-7.5" y="-6.2" width="4" height="1.6" rx="0.8" fill="#18181b" />
             <rect x="-7.5" y="4.6" width="4" height="1.6" rx="0.8" fill="#18181b" />
 
-            {/* Main Car Body (Theme Gold Cab) */}
+            {/* Main Car Body (Theme Green Cab) */}
             <rect
               x="-9"
               y="-5"
               width="18"
               height="10"
               rx="3"
-              fill="oklch(0.78 0.16 70)"
+              fill="var(--gold)"
               stroke="#1c1c1f"
               strokeWidth="0.6"
             />
@@ -220,8 +220,8 @@ export function RouteGraphic({ type, light }: { type: "one-way" | "round-trip"; 
             <path d="M -5 -3.6 L -6.5 -2.5 L -6.5 2.5 L -5 3.6 Z" fill="#18181b" />
 
             {/* Side Mirrors */}
-            <rect x="1.5" y="-6.2" width="1.8" height="1.4" rx="0.5" fill="oklch(0.78 0.16 70)" />
-            <rect x="1.5" y="4.8" width="1.8" height="1.4" rx="0.5" fill="oklch(0.78 0.16 70)" />
+            <rect x="1.5" y="-6.2" width="1.8" height="1.4" rx="0.5" fill="var(--gold)" />
+            <rect x="1.5" y="4.8" width="1.8" height="1.4" rx="0.5" fill="var(--gold)" />
 
             {/* Headlights (bright glow at front bumper) */}
             <circle cx="8.5" cy="-3.5" r="1.1" fill="#fffbeb" />
