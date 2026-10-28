@@ -53,6 +53,7 @@ export const EMAIL_COMPANY = {
   tagline: "Premium Travels & Transportation · Ooty",
   phone: "+91 97869 63659",
   cleanPhone: "919786963659",
+  phone2: "+91 91598 07168",
   email: "rasheholiday@gmail.com",
   contactEmail: "hello@rasheholidays.in",
   address: "Backside to eye foundation Southwick Ooty. 643001 Tamil Nādu India",

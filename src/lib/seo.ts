@@ -82,7 +82,7 @@ export function businessJsonLd() {
     name: company.name,
     url: `${company.siteUrl}/`,
     description:
-      "Ooty-based taxi, cab and tempo traveller service for Nilgiris sightseeing, airport transfers and outstation trips across South India.",
+      "Ooty-based taxi, cab and traveller service for Nilgiris sightseeing, airport transfers and outstation trips across South India.",
     image: absoluteUrl(defaultOgImage.url),
     telephone: company.phoneHref.replace("tel:", ""),
     address: { "@type": "PostalAddress", ...company.postalAddress },

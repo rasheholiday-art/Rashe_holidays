@@ -10,7 +10,6 @@ export const bookingSearchSchema = z.object({
   returnDate: z.string().optional(),
   passengers: z.coerce.number().int().min(1).max(20).optional(),
   waitingDays: z.coerce.number().int().min(0).max(30).optional(),
-  fixedPrice: z.coerce.number().optional(),
   destinationSlug: z.string().optional(),
 });
 

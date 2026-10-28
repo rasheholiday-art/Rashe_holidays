@@ -23,7 +23,7 @@ const steps = [
   {
     n: "04",
     title: "Confirm Your Booking",
-    text: "Submit your request and our travel team will contact you to confirm availability and final pricing.",
+    text: "Submit your request and our travel team will contact you to confirm availability and trip details.",
     icon: CheckCircle2,
   },
 ];
@@ -45,7 +45,7 @@ export function HowItWorks() {
                   x2="100%"
                   y1="0.5"
                   y2="0.5"
-                  stroke="oklch(0.78 0.16 70)"
+                  stroke="var(--gold)"
                   strokeWidth="1.5"
                   strokeDasharray="6 6"
                   className="animate-dash"

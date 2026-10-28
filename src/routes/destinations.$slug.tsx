@@ -1,26 +1,20 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { useState } from "react";
 import {
   ArrowRight,
   Check,
   Clock,
   Compass,
-  Info,
   MapPin,
   Plane,
   ShieldCheck,
-  Sparkles,
   Users,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { DestinationCard } from "@/components/site/DestinationCard";
 import { WhatsAppIcon } from "@/components/site/WhatsAppButton";
 import {
-  company,
   destinationBySlug,
   destinations,
-  inr,
-  vehicles,
   whatsappUrl,
 } from "@/data/site";
 import { cn } from "@/lib/utils";
@@ -43,25 +37,21 @@ export const Route = createFileRoute("/destinations/$slug")({
     }
     const d = loaderData.destination;
     const path = `/destinations/${d.slug}`;
-    const [cheapestSlug, cheapestPrice] = Object.entries(d.fixedPrices).sort(
-      (a, b) => a[1] - b[1],
-    )[0]!;
-    const cheapest = vehicles.find((v) => v.slug === cheapestSlug)?.shortName ?? "Sedan";
-    const fromPrice = `Fixed fares from ${inr(cheapestPrice)} (${cheapest})`;
+    const fleetNote = "Sedans, Innovas, Travellers and Urbania with hill-trained drivers";
     const includesOoty = d.name.includes("Ooty");
     const title =
       d.type === "transfer"
-        ? `Ooty to ${d.name} Taxi — Fixed Fares | Rashe Holidays`
+        ? `Ooty to ${d.name} Taxi — Pickup & Drop | Rashe Holidays`
         : includesOoty
           ? `${d.name} Sightseeing Taxi & Day Tour | Rashe Holidays`
           : `${d.name} Sightseeing Taxi from Ooty | Rashe Holidays`;
     const description =
       d.type === "transfer"
-        ? `Ooty to ${d.name} taxi: ${d.kmFromOoty} km, ${d.hours}. ${fromPrice} with hill-trained drivers. Tolls and permits at actuals.`
+        ? `Ooty to ${d.name} taxi: ${d.kmFromOoty} km, ${d.hours}. ${fleetNote}.`
         : fitText(
             [3, 2, 1].map(
               (n) =>
-                `${d.name} sightseeing by taxi${includesOoty ? "" : " from Ooty"}: ${d.highlights.slice(0, n).join(", ")}. ${fromPrice}.`,
+                `${d.name} sightseeing by taxi${includesOoty ? "" : " from Ooty"}: ${d.highlights.slice(0, n).join(", ")}. ${fleetNote}.`,
             ),
           );
     return {
@@ -87,15 +77,9 @@ export const Route = createFileRoute("/destinations/$slug")({
 
 function DestinationDetail() {
   const { destination: d } = Route.useLoaderData();
-  const [selectedVehicleSlug, setSelectedVehicleSlug] = useState<string>("crysta");
-
-  const selectedVehicle =
-    vehicles.find((v) => v.slug === selectedVehicleSlug) || vehicles[0]!;
-  const price = d.fixedPrices[selectedVehicle.slug] ?? 0;
-
   const related = destinations.filter((item) => item.slug !== d.slug).slice(0, 3);
 
-  const bookingSummary = `Hi Rashe Holidays! I'd like to book a trip from Ooty to ${d.name} (${d.typeLabel}) for a ${selectedVehicle.name} (${selectedVehicle.seats} seater). Fixed package fare: ${inr(price)}.`;
+  const bookingSummary = `Hi Rashe Holidays! I'd like to book a trip from Ooty to ${d.name} (${d.typeLabel}) . Please share vehicle options and availability.`;
 
   return (
     <>
@@ -194,188 +178,68 @@ function DestinationDetail() {
                   </p>
                   <p className="text-xl font-bold">Ooty (Queen of Hills)</p>
                 </div>
-                <div className="text-right">
-                  <p className="text-[11px] font-bold uppercase tracking-widest text-gold">
-                    Fixed Rates From
-                  </p>
-                  <p className="text-2xl font-bold text-foreground">
-                    {inr(Math.min(...Object.values(d.fixedPrices)))}
-                  </p>
-                </div>
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Car Selection & Fixed Pricing Section */}
+      {/* Book this trip */}
       <section className="section-y bg-background">
         <div className="container-x">
-          <div className="text-center max-w-2xl mx-auto">
-            <span className="eyebrow">Vehicle Pricing</span>
-            <h2 className="mt-2 text-3xl font-bold tracking-tight sm:text-4xl">
-              Choose your car for <span className="display italic font-normal text-gold">{d.name}</span>
-            </h2>
-            <p className="mt-2 text-sm text-muted-foreground">
-              Click any vehicle below to inspect the fixed package rate, passenger capacity, and instant booking details.
-            </p>
-          </div>
-
-          {/* 6 Vehicles Grid */}
-          <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {vehicles.map((v) => {
-              const carPrice = d.fixedPrices[v.slug] ?? 0;
-              const isSelected = selectedVehicle.slug === v.slug;
-
-              return (
-                <button
-                  key={v.slug}
-                  type="button"
-                  onClick={() => setSelectedVehicleSlug(v.slug)}
-                  className={cn(
-                    "group relative flex flex-col text-left rounded-3xl border p-5 transition-all duration-300",
-                    isSelected
-                      ? "border-gold bg-gold-soft/50 ring-2 ring-gold/40 shadow-card"
-                      : "border-border bg-card hover:border-gold/60 hover:shadow-card-hover",
-                  )}
-                >
-                  <div className="flex items-center justify-between">
-                    <span className="rounded-full bg-secondary px-2.5 py-1 text-[11px] font-bold text-muted-foreground">
-                      {v.categoryLabel}
-                    </span>
-                    <span className="inline-flex items-center gap-1 text-xs font-semibold text-muted-foreground">
-                      <Users className="size-3.5 text-gold" /> {v.seats} Seats
-                    </span>
-                  </div>
-
-                  {/* Vehicle Image */}
-                  <div className="my-4 aspect-[16/9] w-full overflow-hidden rounded-2xl bg-muted/40 p-2 flex items-center justify-center">
-                    <img
-                      src={v.images[0]}
-                      alt={v.name}
-                      className="size-full object-contain transition-transform duration-300 group-hover:scale-105"
-                    />
-                  </div>
-
-                  <div>
-                    <h3 className="text-lg font-bold text-foreground">{v.name}</h3>
-                    <p className="mt-1 text-xs text-muted-foreground line-clamp-1">
-                      {v.tagline}
-                    </p>
-                  </div>
-
-                  {/* Price Block */}
-                  <div className="mt-4 pt-4 border-t border-border/80 flex items-baseline justify-between">
-                    <div>
-                      <span className="text-[10px] uppercase font-bold text-muted-foreground tracking-wider block">
-                        Fixed Fare
-                      </span>
-                      <span className="text-2xl font-bold tracking-tight text-foreground">
-                        {carPrice ? inr(carPrice) : "On request"}
-                      </span>
-                    </div>
-
-                    <span
-                      className={cn(
-                        "rounded-full px-3 py-1 text-xs font-bold transition-colors",
-                        isSelected
-                          ? "bg-gold text-ink"
-                          : "bg-secondary text-muted-foreground group-hover:text-foreground",
-                      )}
-                    >
-                      {isSelected ? "Selected" : "Select"}
-                    </span>
-                  </div>
-                </button>
-              );
-            })}
-          </div>
-
-          {/* Active Selection Summary Card & Book Now CTA */}
-          <div className="mt-12 rounded-[2rem] border border-gold/40 bg-card p-6 shadow-xl sm:p-10 lg:grid lg:grid-cols-[1.2fr_1fr] lg:gap-10 lg:items-center">
+          <div className="rounded-[2rem] border border-border bg-card p-6 shadow-card sm:p-10 lg:grid lg:grid-cols-[1.2fr_1fr] lg:items-center lg:gap-10">
             <div>
-              <span className="eyebrow">Trip Summary</span>
-              <h3 className="mt-2 text-2xl font-bold text-foreground sm:text-3xl">
-                Ooty → {d.name} in {selectedVehicle.name}
-              </h3>
+              <span className="eyebrow">Plan This Trip</span>
+              <h2 className="mt-2 text-3xl font-bold tracking-tight sm:text-4xl">
+                Ooty to <span className="display italic font-normal text-gold">{d.name}</span>
+              </h2>
+              <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
+                {d.type === "sightseeing"
+                  ? "A fixed day-tour route starting from Ooty."
+                  : `A fixed direct pickup or drop between Ooty and ${d.name}.`}{" "}
+                Choose any vehicle from our fleet when you book, from a 4-seater sedan to a
+                16-seater Urbania.
+              </p>
 
-              <div className="mt-6 grid grid-cols-2 gap-4 text-sm sm:grid-cols-3">
-                <div className="rounded-2xl border border-border bg-background p-3.5">
-                  <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground block">
-                    Starting Place
-                  </span>
-                  <span className="mt-1 font-semibold text-foreground flex items-center gap-1">
-                    <MapPin className="size-3.5 text-gold" /> Ooty
-                  </span>
-                </div>
-
-                <div className="rounded-2xl border border-border bg-background p-3.5">
-                  <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground block">
-                    Destination
-                  </span>
-                  <span className="mt-1 font-semibold text-foreground">{d.name}</span>
-                </div>
-
-                <div className="rounded-2xl border border-border bg-background p-3.5">
-                  <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground block">
-                    Car Selected
-                  </span>
-                  <span className="mt-1 font-semibold text-foreground">
-                    {selectedVehicle.shortName} ({selectedVehicle.seats}s)
-                  </span>
-                </div>
-              </div>
-
-              <ul className="mt-6 space-y-2 text-xs text-muted-foreground">
-                <li className="flex items-center gap-2 text-foreground font-medium">
-                  <Sparkles className="size-4 text-gold shrink-0" />
-                  Includes dedicated vehicle, fuel, and experienced hill-road driver allowance.
+              <ul className="mt-6 space-y-2.5 text-sm">
+                <li className="flex items-center gap-2.5 font-medium text-foreground">
+                  <Clock className="size-4 shrink-0 text-gold" />
+                  {d.hours}
+                  {d.kmFromOoty > 0 ? ` · about ${d.kmFromOoty} km from Ooty` : ""}
                 </li>
-                <li className="flex items-center gap-2 text-foreground font-medium">
-                  <Info className="size-4 text-gold shrink-0" />
-                  Toll, parking & state permit charges are NOT included and are billed at actuals as they vary state to state.
+                <li className="flex items-center gap-2.5 font-medium text-foreground">
+                  <Users className="size-4 shrink-0 text-gold" />
+                  Vehicles for 4 to 16 passengers
                 </li>
-                <li className="flex items-center gap-2">
-                  <ShieldCheck className="size-4 text-gold shrink-0" />
-                  Sanitized interiors, luggage room, and 24/7 travel desk customer support.
+                <li className="flex items-center gap-2.5 font-medium text-foreground">
+                  <ShieldCheck className="size-4 shrink-0 text-gold" />
+                  Sanitised interiors, experienced hill-road drivers and a 24/7 travel desk
                 </li>
               </ul>
             </div>
 
-            {/* Action Box */}
-            <div className="mt-8 lg:mt-0 rounded-2xl bg-ink p-6 text-ink-foreground border border-ink-border flex flex-col justify-between">
-              <div>
-                <p className="text-xs uppercase font-bold tracking-wider text-ink-muted">
-                  Package Fare ({d.typeLabel})
-                </p>
-                <p className="mt-2 text-4xl font-bold text-gold tracking-tight">
-                  {price ? inr(price) : "Contact Us"}
-                </p>
-                <p className="mt-1 text-xs text-ink-muted">
-                  Fixed package rate for {selectedVehicle.name} ({selectedVehicle.seats} seater)
-                </p>
-              </div>
+            <div className="mt-8 flex flex-col justify-between rounded-2xl border border-ink-border bg-ink p-6 text-ink-foreground lg:mt-0">
+              <p className="text-sm leading-relaxed text-ink-muted">
+                Send us your date and group size. Our team will call you back to confirm the
+                vehicle and timings.
+              </p>
 
-              <div className="mt-8 space-y-3">
+              <div className="mt-6 space-y-3">
                 <Button asChild variant="gold" size="xl" className="w-full">
                   <Link
                     to="/booking"
                     search={{
                       from: "Ooty",
                       to: d.name,
-                      category: selectedVehicle.category,
-                      vehicle: selectedVehicle.slug,
                       tripType: d.type === "sightseeing" ? "round-trip" : "one-way",
-                      passengers: Math.min(4, selectedVehicle.seats),
-                      fixedPrice: price,
                       destinationSlug: d.slug,
                     }}
                   >
-                    Book Now with {selectedVehicle.shortName} <ArrowRight />
+                    Book This Trip <ArrowRight />
                   </Link>
                 </Button>
 
-                <Button asChild variant="outline" size="lg" className="w-full text-foreground">
+                <Button asChild variant="outline-light" size="lg" className="w-full">
                   <a href={whatsappUrl(bookingSummary)} target="_blank" rel="noreferrer">
                     <WhatsAppIcon className="size-4" /> Book via WhatsApp
                   </a>
@@ -383,7 +247,7 @@ function DestinationDetail() {
               </div>
 
               <p className="mt-4 text-center text-[11px] text-ink-muted">
-                No immediate payment required. We will confirm your travel timings and details.
+                No advance payment needed.
               </p>
             </div>
           </div>

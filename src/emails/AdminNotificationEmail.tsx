@@ -244,7 +244,7 @@ ${props.specialRequirements ? `SPECIAL REQUIREMENTS:\n"${props.specialRequiremen
                   Dispatcher Quick Checklist
                 </div>
                 <div style="font-size:13px;color:${EMAIL_THEME.textSecondary};line-height:1.7;">
-                  ☐ Check fleet availability (Sedan / Crysta / Tempo)<br>
+                  ☐ Check fleet availability (Sedan / Crysta / Traveller)<br>
                   ☐ Calculate interstate toll & border permit (if applicable)<br>
                   ☐ Contact customer to confirm timing & advance payment
                 </div>

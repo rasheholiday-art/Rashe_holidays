@@ -10,7 +10,7 @@ import { pageHead } from "@/lib/seo";
 
 const title = "Ooty Sightseeing & Airport Taxi Packages | Rashe Holidays";
 const description =
-  "Fixed taxi fares from Ooty for Coonoor, Pykara and Mudumalai sightseeing, plus Coimbatore, Bangalore, Cochin, Calicut, and Trichy airport drops.";
+  "Taxi trips from Ooty for Coonoor, Pykara and Mudumalai sightseeing, plus Coimbatore, Bangalore, Cochin, Calicut, and Trichy airport drops.";
 
 export const Route = createFileRoute("/destinations/")({
   head: () => pageHead({ title, description, path: "/destinations" }),
@@ -76,7 +76,7 @@ function DestinationsPage() {
           </div>
 
           <p className="mt-6 text-sm text-muted-foreground">
-            All trips originate from <span className="font-semibold text-foreground">Ooty</span>. Click any destination below to view fixed car pricing, photos, and book your ride.
+            All trips originate from <span className="font-semibold text-foreground">Ooty</span>. Click any destination below to view highlights, photos, and book your ride.
           </p>
 
           <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">

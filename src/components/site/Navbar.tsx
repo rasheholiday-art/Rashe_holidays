@@ -62,12 +62,17 @@ export function Navbar() {
           </nav>
 
           <div className="flex items-center gap-2">
-            <a
-              href={company.phoneHref}
-              className="hidden xl:inline-flex items-center gap-2 text-[13.5px] font-medium mr-2 text-foreground hover:text-gold transition-colors"
-            >
-              <Phone className="size-4 text-gold" /> {company.phone}
-            </a>
+            <div className="hidden xl:flex items-center gap-2 mr-2 text-foreground">
+              <Phone className="size-4 shrink-0 text-gold" />
+              <span className="flex flex-col text-[12.5px] font-medium leading-snug">
+                <a href={company.phoneHref} className="hover:text-gold transition-colors">
+                  {company.phone}
+                </a>
+                <a href={company.phone2Href} className="hover:text-gold transition-colors">
+                  {company.phone2}
+                </a>
+              </span>
+            </div>
             <Button asChild variant="gold" className="hidden sm:inline-flex">
               <Link to="/booking">Book Your Ride</Link>
             </Button>
@@ -114,6 +119,11 @@ export function Navbar() {
             <Button asChild variant="outline" size="xl">
               <a href={company.phoneHref}>
                 <Phone /> Call {company.phone}
+              </a>
+            </Button>
+            <Button asChild variant="outline" size="xl">
+              <a href={company.phone2Href}>
+                <Phone /> Call {company.phone2}
               </a>
             </Button>
           </div>

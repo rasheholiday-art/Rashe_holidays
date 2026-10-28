@@ -653,7 +653,7 @@ function AdminDashboard({
               <option value="4-seater">4-Seater Sedan</option>
               <option value="7-seater">7-Seater (Crysta / HyCross)</option>
               <option value="9-seater">9-Seater Tavera</option>
-              <option value="12-seater">12-Seater Tempo Traveller</option>
+              <option value="12-seater">12-Seater Traveller</option>
               <option value="16-seater">16-Seater Urbania</option>
             </select>
 

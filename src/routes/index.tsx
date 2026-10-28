@@ -1,9 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight, PhoneCall } from "lucide-react";
 import { useEffect, useState } from "react";
-import hero1 from "@/assets/hero-1.jpg";
-import hero2 from "@/assets/hero-2.jpg";
-import hero3 from "@/assets/hero-3.jpg";
+import hero1 from "@/assets/hero-1.webp";
+import hero2 from "@/assets/hero-2.webp";
+import hero3 from "@/assets/hero-3.webp";
 import { Button } from "@/components/ui/button";
 import { SectionHeading } from "@/components/site/SectionHeading";
 import { Reveal } from "@/components/site/Reveal";
@@ -34,9 +34,9 @@ const heroSlides = [
   },
 ];
 
-const title = "Ooty Taxi, Cab & Tempo Traveller Booking | Rashe Holidays";
+const title = "Ooty Taxi, Cab & Traveller Booking | Rashe Holidays";
 const description =
-  "Ooty taxi & cab service: sedan, Innova Crysta, HyCross, Tavera, Tempo Traveller and Urbania with hill-trained drivers. Nilgiris sightseeing and airport transfers.";
+  "Ooty taxi & cab service: sedan, Innova Crysta, HyCross, Tavera, Traveller and Urbania with hill-trained drivers. Nilgiris sightseeing and airport transfers.";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -107,7 +107,7 @@ function Index() {
 
             {/* Descriptive Subtitle */}
             <p className="mt-5 max-w-xl text-base leading-relaxed text-ink-muted sm:text-lg animate-fade-up [animation-delay:160ms]">
-              Well-kept cars, experienced hill-road drivers and clear per-kilometre pricing. Choose
+              Well-kept cars, experienced hill-road drivers and a team you can reach 24/7. Choose
               one-way or round trip, pick your vehicle, and we confirm within 30 minutes.
             </p>
 
@@ -126,6 +126,11 @@ function Index() {
               <Button asChild variant="ghost" size="lg" className="text-ink-muted hover:text-white hover:bg-white/10">
                 <a href={company.phoneHref}>
                   <PhoneCall className="size-4 text-gold" /> {company.phone}
+                </a>
+              </Button>
+              <Button asChild variant="ghost" size="lg" className="text-ink-muted hover:text-white hover:bg-white/10">
+                <a href={company.phone2Href}>
+                  <PhoneCall className="size-4 text-gold" /> {company.phone2}
                 </a>
               </Button>
             </div>
@@ -168,7 +173,7 @@ function Index() {
             eyebrow="Trip Types"
             title="Choose how you"
             accent="travel"
-            description="Two simple ways to book. Both include the driver, fuel and transparent per-kilometre or fixed package rates."
+            description="Two simple ways to book. Both come with an experienced hill-road driver."
           />
           <div className="mt-14 grid gap-6 lg:grid-cols-2">
             <TripTypeCard type="one-way" />

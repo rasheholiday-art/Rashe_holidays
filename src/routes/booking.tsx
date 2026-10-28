@@ -4,9 +4,9 @@ import { BookingForm } from "@/components/site/BookingForm";
 import { bookingSearchSchema } from "@/lib/booking-search";
 import { pageHead } from "@/lib/seo";
 
-const title = "Book a Taxi in Ooty — Instant Fare Estimate | Rashe Holidays";
+const title = "Book a Taxi in Ooty — Quick Booking Request | Rashe Holidays";
 const description =
-  "Book a sedan, Innova Crysta, HyCross, Tavera, Tempo Traveller or Urbania in Ooty. See an instant fare estimate and get confirmation within 30 minutes.";
+  "Book a sedan, Innova Crysta, HyCross, Tavera, Traveller or Urbania in Ooty. Send a request and our team will contact you within 15 minutes.";
 
 export const Route = createFileRoute("/booking")({
   validateSearch: bookingSearchSchema,
@@ -22,7 +22,7 @@ function BookingPage() {
         eyebrow="Booking"
         title="Tell us about"
         accent="your trip"
-        description="Fill in the details below and see a live fare estimate. Our travel team confirms availability, driver details and the final price within 30 minutes."
+        description="Fill in the details below. Our travel team will contact you within 15 minutes to confirm availability and driver details."
       />
       <section className="section-y">
         <div className="container-x">

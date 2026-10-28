@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Clock, Mail, MapPin, MessageCircle, Phone, ShieldAlert } from "lucide-react";
+import { Clock, Mail, MapPin, MessageCircle, Phone } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { PageHero } from "@/components/site/PageHero";
 import { SectionHeading } from "@/components/site/SectionHeading";
@@ -7,6 +7,7 @@ import { Reveal } from "@/components/site/Reveal";
 import { FAQ } from "@/components/site/FAQ";
 import { company, whatsappUrl } from "@/data/site";
 import { businessJsonLd, jsonLdScript, pageHead } from "@/lib/seo";
+import { cn } from "@/lib/utils";
 
 const title = "Contact Rashe Holidays — Ooty Travels & Cab Booking";
 const description =
@@ -21,14 +22,23 @@ export const Route = createFileRoute("/contact")({
 });
 
 const cards = [
-  { icon: Phone, label: "Call us", value: company.phone, href: company.phoneHref },
-  { icon: MessageCircle, label: "WhatsApp", value: "Chat with a planner", href: whatsappUrl() },
-  { icon: Mail, label: "Email", value: company.email, href: `mailto:${company.email}` },
   {
-    icon: ShieldAlert,
-    label: "24×7 emergency",
-    value: company.emergency,
-    href: company.emergencyHref,
+    icon: Phone,
+    label: "Call us",
+    links: [
+      { value: company.phone, href: company.phoneHref },
+      { value: company.phone2, href: company.phone2Href },
+    ],
+  },
+  {
+    icon: MessageCircle,
+    label: "WhatsApp",
+    links: [{ value: "Chat with a planner", href: whatsappUrl() }],
+  },
+  {
+    icon: Mail,
+    label: "Email",
+    links: [{ value: company.email, href: `mailto:${company.email}` }],
   },
 ];
 
@@ -47,6 +57,11 @@ function ContactPage() {
               <Phone /> {company.phone}
             </a>
           </Button>
+          <Button asChild variant="gold" size="lg">
+            <a href={company.phone2Href}>
+              <Phone /> {company.phone2}
+            </a>
+          </Button>
           <Button asChild variant="outline-light" size="lg">
             <a href={whatsappUrl()} target="_blank" rel="noreferrer">
               WhatsApp us
@@ -57,23 +72,32 @@ function ContactPage() {
 
       <section className="section-y">
         <div className="container-x">
-          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {cards.map((c, i) => (
               <Reveal key={c.label} delay={i * 60}>
-                <a
-                  href={c.href}
-                  target={c.href.startsWith("http") ? "_blank" : undefined}
-                  rel="noreferrer"
-                  className="flex h-full flex-col rounded-3xl border border-border bg-card p-6 shadow-card transition-all duration-300 hover:-translate-y-1 hover:shadow-card-hover"
-                >
+                <div className="relative flex h-full flex-col rounded-3xl border border-border bg-card p-6 shadow-card transition-all duration-300 hover:-translate-y-1 hover:shadow-card-hover">
                   <span className="grid size-11 place-items-center rounded-2xl bg-secondary text-foreground">
                     <c.icon className="size-5" />
                   </span>
                   <span className="mt-5 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                     {c.label}
                   </span>
-                  <span className="mt-1 text-base font-semibold text-foreground">{c.value}</span>
-                </a>
+                  {c.links.map((l) => (
+                    <a
+                      key={l.href}
+                      href={l.href}
+                      target={l.href.startsWith("http") ? "_blank" : undefined}
+                      rel="noreferrer"
+                      className={cn(
+                        "mt-1 text-base font-semibold text-foreground transition-colors hover:text-gold",
+                        // a lone link makes the whole card clickable
+                        c.links.length === 1 && "after:absolute after:inset-0",
+                      )}
+                    >
+                      {l.value}
+                    </a>
+                  ))}
+                </div>
               </Reveal>
             ))}
           </div>

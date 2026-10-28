@@ -63,12 +63,12 @@ ${props.waitingDays && props.waitingDays > 0 ? `- Waiting Days: ${props.waitingD
 ${props.specialRequirements ? `- Special Requirements: ${props.specialRequirements}\n` : ""}
 WHAT HAPPENS NEXT:
 1. Our dispatch team is reviewing vehicle availability and route timings.
-2. We will contact you shortly via Call or WhatsApp to confirm your booking and final pricing.
+2. We will contact you shortly via Call or WhatsApp to confirm your booking details.
 3. Your driver details and cab registration number will be shared before departure.
 
 NEED ASSISTANCE?
 - WhatsApp: https://wa.me/${cleanPhone}
-- Phone: ${EMAIL_COMPANY.phone}
+- Phone: ${EMAIL_COMPANY.phone} / ${EMAIL_COMPANY.phone2}
 - Address: ${EMAIL_COMPANY.address}
 - Hours: 24 Hours / 7 Days a Week
 
@@ -300,6 +300,9 @@ ${EMAIL_COMPANY.siteUrl}
                     <a href="tel:${EMAIL_COMPANY.phone.replace(/\\s+/g, "")}" style="display:inline-block;background-color:${EMAIL_THEME.primary};color:#ffffff;font-size:14px;font-weight:700;padding:14px 24px;border-radius:10px;text-decoration:none;margin:0 6px 10px 6px;">
                       📞 Call 24×7: ${EMAIL_COMPANY.phone}
                     </a>
+                    <a href="tel:${EMAIL_COMPANY.phone2.replace(/\\s+/g, "")}" style="display:inline-block;background-color:${EMAIL_THEME.primary};color:#ffffff;font-size:14px;font-weight:700;padding:14px 24px;border-radius:10px;text-decoration:none;margin:0 6px 10px 6px;">
+                      📞 ${EMAIL_COMPANY.phone2}
+                    </a>
                   </td>
                 </tr>
               </table>
@@ -317,7 +320,8 @@ ${EMAIL_COMPANY.siteUrl}
               </div>
               <div style="font-size:12px;color:${EMAIL_THEME.textMuted};line-height:1.5;margin-bottom:12px;">
                 ${EMAIL_COMPANY.address}<br>
-                24×7 Helpline: <a href="tel:${EMAIL_COMPANY.phone.replace(/\\s+/g, "")}" style="color:${EMAIL_THEME.goldDark};text-decoration:none;font-weight:600;">${EMAIL_COMPANY.phone}</a> ·
+                24×7 Helpline: <a href="tel:${EMAIL_COMPANY.phone.replace(/\\s+/g, "")}" style="color:${EMAIL_THEME.goldDark};text-decoration:none;font-weight:600;">${EMAIL_COMPANY.phone}</a> /
+                <a href="tel:${EMAIL_COMPANY.phone2.replace(/\\s+/g, "")}" style="color:${EMAIL_THEME.goldDark};text-decoration:none;font-weight:600;">${EMAIL_COMPANY.phone2}</a> ·
                 Website: <a href="${EMAIL_COMPANY.siteUrl}" style="color:${EMAIL_THEME.goldDark};text-decoration:none;font-weight:600;">rasheholidays.com</a>
               </div>
               <div style="font-size:11px;color:#9ca3af;line-height:1.4;">

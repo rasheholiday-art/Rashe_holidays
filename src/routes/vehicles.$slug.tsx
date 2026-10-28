@@ -4,10 +4,9 @@ import { ArrowRight, Check, Luggage, Phone, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SectionHeading } from "@/components/site/SectionHeading";
 import { Reveal } from "@/components/site/Reveal";
-import { Stars } from "@/components/site/Stars";
 import { AvailabilityDot } from "@/components/site/AvailabilityDot";
 import { VehicleCard } from "@/components/site/VehicleCard";
-import { company, inr, vehicleBySlug, vehicles, whatsappUrl } from "@/data/site";
+import { company, vehicleBySlug, vehicles, whatsappUrl } from "@/data/site";
 import { cn } from "@/lib/utils";
 import { fitText, pageHead } from "@/lib/seo";
 import heroImg from "@/assets/hero-ooty.jpg";
@@ -29,7 +28,7 @@ export const Route = createFileRoute("/vehicles/$slug")({
     }
     const v = loaderData.vehicle;
     const title = `${v.shortName} Hire in Ooty (${v.seats} Seater) | Rashe Holidays`;
-    const facts = `${v.shortName} hire in Ooty with driver: ${v.seats} seats, ${v.luggage.toLowerCase()} luggage space. Starts from ${inr(v.pricing.roundTripPerKm)}/km.`;
+    const facts = `${v.shortName} hire in Ooty with driver: ${v.seats} seats, ${v.luggage.toLowerCase()} luggage space.`;
     const description = fitText([
       `${facts} ${v.tagline}.`,
       `${facts} Nilgiris sightseeing and airport transfers.`,
@@ -49,7 +48,6 @@ function VehicleDetail() {
   const { vehicle: v } = Route.useLoaderData();
   const [img, setImg] = useState(0);
   const related = vehicles.filter((o) => o.slug !== v.slug).slice(0, 3);
-  const p = v.pricing;
 
   return (
     <>
@@ -99,12 +97,6 @@ function VehicleDetail() {
             </div>
             <h1 className="mt-4 text-4xl font-semibold leading-[1.05] sm:text-5xl">{v.name}</h1>
             <p className="mt-3 text-base text-ink-muted sm:text-lg">{v.tagline}</p>
-            <div className="mt-4 flex items-center gap-3 text-sm text-ink-muted">
-              <Stars rating={v.rating} />
-              <span>
-                {v.rating} · {v.reviews} reviews
-              </span>
-            </div>
 
             <dl className="mt-8 grid grid-cols-3 gap-3">
               {[
@@ -125,13 +117,6 @@ function VehicleDetail() {
               ))}
             </dl>
 
-            <div className="mt-6 rounded-2xl border border-ink-border bg-ink-foreground/[0.04] p-5">
-              <p className="text-xs uppercase tracking-wider text-ink-muted">Starting from</p>
-              <p className="mt-1 text-3xl font-semibold text-gold">
-                {inr(p.roundTripPerKm)}
-                <span className="text-base font-medium text-ink-muted"> / km</span>
-              </p>
-            </div>
 
             <div className="mt-7 flex flex-wrap gap-3">
               <Button asChild variant="gold" size="lg">

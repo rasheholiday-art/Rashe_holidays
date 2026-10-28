@@ -10,7 +10,7 @@ import { pageHead } from "@/lib/seo";
 
 const title = "How to Book a Taxi in Ooty, Step by Step | Rashe Holidays";
 const description =
-  "From choosing a vehicle to confirmation on WhatsApp — see exactly how booking a cab or Tempo Traveller in Ooty with Rashe Holidays works, step by step.";
+  "From choosing a vehicle to confirmation on WhatsApp — see exactly how booking a cab or Traveller in Ooty with Rashe Holidays works, step by step.";
 
 export const Route = createFileRoute("/how-it-works")({
   head: () => pageHead({ title, description, path: "/how-it-works" }),
@@ -24,7 +24,7 @@ function HowItWorksPage() {
         eyebrow="How It Works"
         title="Booking takes"
         accent="four steps"
-        description="No app, no prepayment, no hidden charges. Send an enquiry and a travel planner confirms your vehicle, driver and final fare within 30 minutes."
+        description="No app and no prepayment. Send an enquiry and a travel planner confirms your vehicle, driver and timings within 30 minutes."
       >
         <Button asChild variant="gold" size="lg">
           <Link to="/booking">

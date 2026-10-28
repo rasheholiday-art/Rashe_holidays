@@ -51,7 +51,7 @@ export function DestinationCard({ d, className }: { d: Destination; className?: 
         <h3 className="mt-0.5 text-2xl font-bold tracking-tight">{d.name}</h3>
         <p className="mt-1 line-clamp-2 text-xs text-ink-muted">{d.blurb}</p>
         <span className="mt-4 inline-flex items-center gap-1.5 rounded-full bg-ink-foreground px-3.5 py-1.5 text-xs font-bold text-ink transition-colors group-hover:bg-gold">
-          View Fares & Details <ArrowUpRight className="size-3.5" />
+          View Details <ArrowUpRight className="size-3.5" />
         </span>
       </div>
     </Link>

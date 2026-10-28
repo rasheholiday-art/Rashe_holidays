@@ -1,9 +1,8 @@
 import { Link } from "@tanstack/react-router";
 import { ArrowUpRight, Briefcase, Snowflake, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { inr, type Vehicle } from "@/data/site";
+import { type Vehicle } from "@/data/site";
 import { cn } from "@/lib/utils";
-import { Stars } from "./Stars";
 import { AvailabilityDot } from "./AvailabilityDot";
 
 export function VehicleCard({ vehicle, className }: { vehicle: Vehicle; className?: string }) {
@@ -39,17 +38,9 @@ export function VehicleCard({ vehicle, className }: { vehicle: Vehicle; classNam
       </Link>
 
       <div className="flex flex-1 flex-col p-5 sm:p-6">
-        <div className="flex items-start justify-between gap-3">
-          <div className="min-w-0">
-            <h3 className="truncate text-xl font-semibold tracking-tight">{v.name}</h3>
-            <p className="mt-0.5 text-sm text-muted-foreground">{v.tagline}</p>
-          </div>
-          <div className="shrink-0 text-right">
-            <Stars rating={v.rating} size="size-3.5" />
-            <p className="mt-0.5 text-[11px] text-muted-foreground">
-              {v.rating} · {v.reviews} reviews
-            </p>
-          </div>
+        <div className="min-w-0">
+          <h3 className="truncate text-xl font-semibold tracking-tight">{v.name}</h3>
+          <p className="mt-0.5 text-sm text-muted-foreground">{v.tagline}</p>
         </div>
 
         <ul className="mt-5 grid grid-cols-3 gap-2 text-center text-[11px] font-semibold text-muted-foreground">
@@ -67,17 +58,7 @@ export function VehicleCard({ vehicle, className }: { vehicle: Vehicle; classNam
           </li>
         </ul>
 
-        <div className="mt-5 border-t border-border pt-4">
-          <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
-            Starts from
-          </p>
-          <p className="mt-1 text-2xl font-bold tracking-tight text-foreground">
-            {inr(v.pricing.roundTripPerKm)}
-            <span className="text-sm font-medium text-muted-foreground"> / km</span>
-          </p>
-        </div>
-
-        <div className="mt-5 grid grid-cols-2 gap-2.5 transition-transform duration-500 group-hover:translate-y-0">
+        <div className="mt-auto grid pt-5 grid-cols-2 gap-2.5 transition-transform duration-500 group-hover:translate-y-0">
           <Button asChild variant="outline">
             <Link to="/vehicles/$slug" params={{ slug: v.slug }}>
               View Details <ArrowUpRight />

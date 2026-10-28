@@ -9,7 +9,7 @@ import footerLogo from "@/assets/footer-logo.png";
 const fleetLinks = [
   { slug: "crysta", label: "Innova Crysta (7 Seater)" },
   { slug: "hycross", label: "Innova HyCross (7 Seater)" },
-  { slug: "tempo-traveller", label: "Tempo Traveller (12 Seater)" },
+  { slug: "tempo-traveller", label: "Traveller (12 Seater)" },
   { slug: "urbania", label: "Urbania (16 Seater)" },
   { slug: "sedan", label: "Sedan (4 Seater)" },
 ];
@@ -51,6 +51,16 @@ export function Footer() {
               >
                 <a href={company.phoneHref}>
                   <Phone /> {company.phone}
+                </a>
+              </Button>
+              <Button
+                asChild
+                variant="outline"
+                size="xl"
+                className="bg-transparent border-gold-foreground/30 text-gold-foreground hover:bg-gold-foreground/10 hover:border-gold-foreground/60"
+              >
+                <a href={company.phone2Href}>
+                  <Phone /> {company.phone2}
                 </a>
               </Button>
             </div>
@@ -136,7 +146,10 @@ export function Footer() {
             <ul className="mt-5 space-y-4 text-sm">
               <li className="flex gap-3">
                 <Phone className="size-4 shrink-0 text-gold" />
-                <a href={company.phoneHref}>{company.phone}</a>
+                <span className="flex flex-col gap-1">
+                  <a href={company.phoneHref}>{company.phone}</a>
+                  <a href={company.phone2Href}>{company.phone2}</a>
+                </span>
               </li>
               <li className="flex gap-3">
                 <Mail className="size-4 shrink-0 text-gold" />

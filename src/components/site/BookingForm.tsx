@@ -1,29 +1,46 @@
 import { Link } from "@tanstack/react-router";
-import { CheckCircle2, Info, RefreshCw, Sparkles, MapPin, Car } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
+import { CheckCircle2, Clock, PhoneCall, RefreshCw, ShieldCheck, Wallet } from "lucide-react";
+import { useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
-import {
-  categories,
-  destinations,
-  estimateDistance,
-  estimateFare,
-  inr,
-  locations,
-  vehicles,
-  type CategoryId,
-} from "@/data/site";
+import { destinations, locations, vehicles, type Destination } from "@/data/site";
 import type { BookingSearch } from "@/lib/booking-search";
 import { cn } from "@/lib/utils";
 import { whatsappUrl } from "@/data/site";
 import { WhatsAppIcon } from "./WhatsAppButton";
 import { saveBookingAsync } from "@/lib/bookings";
 import { validateBookingInput, formatIndianPhoneNumber } from "@/lib/api/bookings";
-import { calculateRouteDistance, type RouteCalculationResult } from "@/lib/route-calculator";
 
 const inputCls =
   "h-12 w-full rounded-xl border border-input bg-card px-4 text-sm font-medium text-foreground outline-none transition-colors placeholder:text-muted-foreground placeholder:font-normal focus:border-gold focus:ring-2 focus:ring-gold/30";
 
 type TripType = "one-way" | "round-trip";
+
+// Extra spellings that should open a fixed-route package. Plain city names
+// (Bangalore, Coimbatore, Kochi…) are deliberately absent: they are normal
+// trips where the customer picks the trip type. Only the airport itself is fixed.
+const FIXED_ROUTE_ALIASES: Partial<Record<string, string[]>> = {
+  "coimbatore-airport": ["cjb"],
+  "bangalore-airport": ["bengaluru airport", "kempegowda airport", "blr"],
+  "cochin-airport": ["kochi airport", "cok"],
+  "calicut-airport": ["kozhikode airport", "ccj"],
+  "trichy-airport": ["tiruchirappalli airport", "trz"],
+  mudumalai: ["mudumalai", "pykara and mudumalai", "pykara&mudumalai"],
+  "ooty-coonoor": ["ooty and coonoor", "ooty coonoor"],
+  coonoor: ["cnr"],
+  pykara: ["pykara lake"],
+};
+
+function findFixedRoute(from: string, to: string): Destination | null {
+  const f = from.trim().toLowerCase();
+  const t = to.trim().toLowerCase();
+  if (f !== "ooty" && t !== "ooty") return null;
+  const other = f === "ooty" ? t : f;
+  return (
+    destinations.find(
+      (d) => d.name.toLowerCase() === other || FIXED_ROUTE_ALIASES[d.slug]?.includes(other),
+    ) ?? null
+  );
+}
 
 export function BookingForm({ initial }: { initial: BookingSearch }) {
   // Today's date in local YYYY-MM-DD
@@ -55,84 +72,9 @@ export function BookingForm({ initial }: { initial: BookingSearch }) {
     [vehicle],
   );
   const category = selectedVehicle?.category;
-  const cat = category ? categories.find((c) => c.id === category) ?? null : null;
 
-  // Check if route matches a fixed package destination (e.g. Ooty -> Coonoor, Pykara, Mudumalai, Coimbatore Airport)
-  const matchedDestination = useMemo(() => {
-    const f = from.trim().toLowerCase();
-    const t = to.trim().toLowerCase();
-    const isFromOoty = f === "ooty";
-    const isToOoty = t === "ooty";
-    if (!isFromOoty && !isToOoty) return null;
-    const other = isFromOoty ? t : f;
-
-    // Chennai is strictly excluded from fixed package rates
-    if (other.includes("chennai")) return null;
-
-    return (
-      destinations.find((d) => {
-        const dName = d.name.toLowerCase();
-        if (dName === other) return true;
-        if (
-          d.slug === "coimbatore-airport" &&
-          (other === "coimbatore" || other === "coimbatore airport" || other === "cbe")
-        )
-          return true;
-        if (
-          d.slug === "bangalore-airport" &&
-          (other === "bangalore" ||
-            other === "bengaluru" ||
-            other === "bangalore airport" ||
-            other === "bang" ||
-            other === "blr")
-        )
-          return true;
-        if (
-          d.slug === "cochin-airport" &&
-          (other === "cochin" ||
-            other === "kochi" ||
-            other === "cochin airport" ||
-            other === "kochin" ||
-            other === "cok")
-        )
-          return true;
-        if (
-          d.slug === "calicut-airport" &&
-          (other === "calicut" ||
-            other === "kozhikode" ||
-            other === "calicut airport" ||
-            other === "ccj")
-        )
-          return true;
-        if (
-          d.slug === "trichy-airport" &&
-          (other === "trichy" ||
-            other === "tiruchirappalli" ||
-            other === "trichy airport" ||
-            other === "trz")
-        )
-          return true;
-        if (
-          d.slug === "mudumalai" &&
-          (other === "mudumalai" ||
-            other === "pykara & mudumalai" ||
-            other === "pykara and mudumalai" ||
-            other === "pykara&mudumalai")
-        )
-          return true;
-        if (
-          d.slug === "ooty-coonoor" &&
-          (other === "ooty & coonoor" ||
-            other === "ooty and coonoor" ||
-            other === "ooty coonoor")
-        )
-          return true;
-        if (d.slug === "coonoor" && (other === "coonoor" || other === "cnr")) return true;
-        if (d.slug === "pykara" && (other === "pykara" || other === "pykara lake")) return true;
-        return false;
-      }) ?? null
-    );
-  }, [from, to]);
+  // Fixed packages: Ooty sightseeing day tours and Ooty <-> airport transfers
+  const matchedDestination = useMemo(() => findFixedRoute(from, to), [from, to]);
 
   const isFixedDayTrip = Boolean(matchedDestination);
 
@@ -160,69 +102,6 @@ export function BookingForm({ initial }: { initial: BookingSearch }) {
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const [submitError, setSubmitError] = useState<string | null>(null);
 
-  // Require full place names (minimum 3 characters each) before initiating any route calculations
-  const hasValidRoute = from.trim().length >= 3 && to.trim().length >= 3;
-
-  // Dynamic route calculation state - blank by default unless pre-filled from search or destination
-  const [routeInfo, setRouteInfo] = useState<RouteCalculationResult | null>(() => {
-    const initFrom = initial.from ?? "";
-    const initTo = initial.to ?? "";
-    if (initFrom.trim().length < 3 || initTo.trim().length < 3) return null;
-    const sync = estimateDistance(initFrom, initTo);
-    return sync !== null ? { km: sync, source: "local", fromName: initFrom, toName: initTo } : null;
-  });
-  const [isCalculatingRoute, setIsCalculatingRoute] = useState(false);
-
-  useEffect(() => {
-    let isCancelled = false;
-    const cleanFrom = from.trim();
-    const cleanTo = to.trim();
-
-    // Do NOT calculate distance or display premature rates on single-letter entries
-    if (cleanFrom.length < 3 || cleanTo.length < 3) {
-      setRouteInfo(null);
-      setIsCalculatingRoute(false);
-      return;
-    }
-
-    // 1. Try local verified distance immediately
-    const syncDist = estimateDistance(cleanFrom, cleanTo);
-    if (syncDist !== null) {
-      setRouteInfo({ km: syncDist, source: "local", fromName: cleanFrom, toName: cleanTo });
-      setIsCalculatingRoute(false);
-      return;
-    }
-
-    // 2. Debounced OSRM calculation for typed/custom places (waits for full name to be typed)
-    setIsCalculatingRoute(true);
-    const timer = setTimeout(async () => {
-      try {
-        const result = await calculateRouteDistance(cleanFrom, cleanTo);
-        if (!isCancelled) {
-          setRouteInfo(result);
-          setIsCalculatingRoute(false);
-        }
-      } catch {
-        if (!isCancelled) {
-          setIsCalculatingRoute(false);
-        }
-      }
-    }, 700);
-
-    return () => {
-      isCancelled = true;
-      clearTimeout(timer);
-    };
-  }, [from, to]);
-
-  const activeFixedPrice = useMemo(() => {
-    if (!matchedDestination || !selectedVehicle) return null;
-    if (matchedDestination.fixedPrices[selectedVehicle.slug]) {
-      return matchedDestination.fixedPrices[selectedVehicle.slug];
-    }
-    return null;
-  }, [matchedDestination, selectedVehicle]);
-
   const effectiveTripType: TripType = isFixedDayTrip
     ? (matchedDestination?.type === "sightseeing" ? "round-trip" : "one-way")
     : tripType;
@@ -237,20 +116,6 @@ export function BookingForm({ initial }: { initial: BookingSearch }) {
 
   const effectiveDays = isFixedDayTrip ? 1 : calculatedDays;
 
-  const estimate = useMemo(() => {
-    if (!hasValidRoute || !selectedVehicle || !category) return null;
-    return estimateFare({
-      category,
-      vehicle: selectedVehicle.slug,
-      tripType: effectiveTripType,
-      from,
-      to,
-      days: effectiveDays,
-      waitingDays: 0,
-      customKm: routeInfo?.km,
-    });
-  }, [hasValidRoute, category, selectedVehicle, effectiveTripType, from, to, effectiveDays, routeInfo?.km]);
-
   const seatWarning = selectedVehicle ? passengers > selectedVehicle.seats : false;
 
   if (submitted) {
@@ -264,7 +129,7 @@ export function BookingForm({ initial }: { initial: BookingSearch }) {
           Thank you, {name.split(" ")[0]}!
         </h2>
         <p className="mx-auto mt-3 max-w-md text-[15px] leading-relaxed text-muted-foreground">
-          Your travel request has been received. A confirmation email with your trip summary has been dispatched to <strong className="text-foreground">{email}</strong>. Our team will contact you shortly to confirm timings and final pricing.
+          Your travel request has been received. A confirmation email with your trip summary has been dispatched to <strong className="text-foreground">{email}</strong>. Our team will contact you within 15 minutes to confirm timings and vehicle details.
         </p>
 
         <div className="mx-auto mt-8 max-w-md rounded-2xl bg-secondary p-5 text-left text-sm">
@@ -280,18 +145,7 @@ export function BookingForm({ initial }: { initial: BookingSearch }) {
           )}
           <Row k="Passengers" v={`${passengers}`} />
           {email && <Row k="Confirmation Sent To" v={email} />}
-          {activeFixedPrice ? (
-            <Row k="Fixed Package" v={`${inr(activeFixedPrice)} (fixed fare)`} />
-          ) : (
-            estimate && <Row k="Estimated Fare" v={`${inr(estimate.low)} – ${inr(estimate.high)} approx.`} />
-          )}
-          <Row k="Toll & Parking" v="At actuals (state to state)" />
         </div>
-        {!activeFixedPrice && (
-          <p className="mt-3 text-center text-[11px] text-muted-foreground">
-            * Fares are approximate and may be lesser depending on your exact itinerary and season.
-          </p>
-        )}
         <div className="mt-8 flex flex-wrap justify-center gap-3">
           <Button asChild variant="gold" size="lg">
             <a href={whatsappUrl(summary)} target="_blank" rel="noreferrer">
@@ -358,17 +212,6 @@ export function BookingForm({ initial }: { initial: BookingSearch }) {
             phone,
             email: email || undefined,
             notes: notes || undefined,
-            estimate: activeFixedPrice
-              ? {
-                  low: activeFixedPrice,
-                  high: activeFixedPrice,
-                  km: routeInfo?.km ?? 0,
-                  days: 1,
-                  waitingDays: 0,
-                  travelDays: 1,
-                  tollNote: "Tolls are not included and billed at actuals as they vary state to state",
-                }
-              : estimate,
           });
 
           setSubmitted(true);
@@ -519,7 +362,9 @@ export function BookingForm({ initial }: { initial: BookingSearch }) {
               </select>
               {isFixedDayTrip && (
                 <p className="mt-1 text-xs text-gold font-medium">
-                  {matchedDestination?.name} is a 1-day trip package with fixed pricing.
+                  {matchedDestination?.type === "sightseeing"
+                    ? `${matchedDestination.name} is a fixed 1-day sightseeing route.`
+                    : `Ooty ↔ ${matchedDestination?.name} is a fixed airport pickup / drop route.`}
                 </p>
               )}
             </L>
@@ -687,7 +532,7 @@ export function BookingForm({ initial }: { initial: BookingSearch }) {
       {/* Summary Sidebar */}
       <aside className="lg:sticky lg:top-24 rounded-[2rem] border border-border bg-card p-6 shadow-card">
         <div className="flex items-center justify-between">
-          <p className="eyebrow">Trip Fare</p>
+          <p className="eyebrow">Trip Summary</p>
           {matchedDestination && (
             <span className="rounded-full bg-gold/20 px-2 py-0.5 text-[10px] font-bold text-gold uppercase tracking-wider">
               {matchedDestination.typeLabel}
@@ -701,117 +546,29 @@ export function BookingForm({ initial }: { initial: BookingSearch }) {
           {!isFixedDayTrip && effectiveTripType === "round-trip" ? ` → ${from || "—"}` : ""}
         </p>
 
-        <div className="mt-5 rounded-2xl bg-ink p-5 text-ink-foreground">
-          {!hasValidRoute ? (
-            <div className="py-3 text-center">
-              <MapPin className="mx-auto size-5 text-gold/80" />
-              <p className="mt-2 text-sm font-semibold text-foreground">
-                Enter pickup & drop locations
-              </p>
-              <p className="mt-1 text-xs text-ink-muted leading-relaxed">
-                Please type full place names to calculate distance and view estimated fare.
-              </p>
-            </div>
-          ) : !selectedVehicle ? (
-            <div className="py-3 text-center">
-              <Car className="mx-auto size-5 text-gold/80" />
-              <p className="mt-2 text-sm font-semibold text-foreground">
-                Select a vehicle
-              </p>
-              <p className="mt-1 text-xs text-ink-muted leading-relaxed">
-                Choose your preferred vehicle in the form to view fare estimate.
-              </p>
-            </div>
-          ) : isCalculatingRoute ? (
-            <div className="py-4 text-center">
-              <RefreshCw className="mx-auto size-5 animate-spin text-gold" />
-              <p className="mt-2 text-xs font-semibold text-ink-muted">
-                Calculating road distance…
-              </p>
-            </div>
-          ) : activeFixedPrice ? (
-            <>
-              <div className="flex items-center justify-between">
-                <p className="text-[11px] font-bold uppercase tracking-wider text-ink-muted">
-                  Fixed Package Fare
-                </p>
-                <span className="rounded-full bg-gold/20 px-2 py-0.5 text-[10px] font-bold text-gold">
-                  Fixed Price
-                </span>
-              </div>
-              <p className="mt-1 text-3xl font-bold tracking-tight text-gold">
-                {inr(activeFixedPrice)}
-              </p>
-              <p className="mt-2 text-xs text-ink-muted">
-                Fixed package for Ooty → {matchedDestination?.name} ({selectedVehicle.name})
-              </p>
-            </>
-          ) : estimate ? (
-            <>
-              <div className="flex items-center justify-between">
-                <p className="text-[11px] font-bold uppercase tracking-wider text-ink-muted">
-                  Estimated fare <span className="text-gold font-normal lowercase">(approx.)</span>
-                </p>
-                {routeInfo?.source === "osrm" && (
-                  <span className="rounded-full bg-gold/20 px-2 py-0.5 text-[10px] font-bold text-gold">
-                    Live Route
-                  </span>
-                )}
-              </div>
-              <div className="mt-1 flex items-baseline gap-2 flex-wrap">
-                <p className="text-3xl font-bold tracking-tight">
-                  {inr(estimate.low)}{" "}
-                  <span className="text-base font-medium text-ink-muted">– {inr(estimate.high)}</span>
-                </p>
-                <span className="rounded-md bg-gold/15 px-2 py-0.5 text-xs font-semibold text-gold">
-                  approx.
-                </span>
-              </div>
-              <p className="mt-2 text-xs text-ink-muted">
-                ≈ {estimate.km} km ·{" "}
-                {effectiveTripType === "one-way"
-                  ? `${inr(selectedVehicle.pricing.oneWayPerKm)}/km`
-                  : `${inr(selectedVehicle.pricing.roundTripPerKm)}/km · ${estimate.days} day${estimate.days > 1 ? "s" : ""}`}
-              </p>
-            </>
-          ) : (
-            <div className="py-2">
-              <p className="text-[11px] font-bold uppercase tracking-wider text-ink-muted">
-                Custom Route
-              </p>
-              <p className="mt-1 text-base font-semibold">Custom itinerary</p>
-              <p className="mt-1 text-xs text-ink-muted">
-                Enter your pickup and destination to view live fare estimates.
-              </p>
-            </div>
-          )}
+        <div className="mt-5 rounded-2xl bg-ink p-5 text-center text-ink-foreground">
+          <PhoneCall className="mx-auto size-6 text-gold" />
+          <p className="mt-3 text-base font-semibold">
+            Our team will contact you within 15 minutes
+          </p>
+          <p className="mt-1.5 text-xs leading-relaxed text-ink-muted">
+            Send your request and a travel planner will call or WhatsApp you to confirm the
+            vehicle, driver and timings.
+          </p>
         </div>
-
-        {/* Pricing disclaimer note: Rates are not fixed and might be lesser (only for estimated fares, not fixed rates) */}
-        {!activeFixedPrice && estimate && (
-          <div className="mt-4 rounded-xl border border-gold/30 bg-gold-soft/30 p-3 text-xs">
-            <div className="flex items-start gap-2.5">
-              <Info className="size-4 shrink-0 text-gold mt-0.5" />
-              <p className="text-[11px] leading-relaxed text-muted-foreground">
-                <strong className="text-foreground font-semibold">Fare is approximate: </strong>
-                No rate is strictly fixed — your final fare might be <span className="text-gold font-semibold">lesser than the estimated fare</span> depending on your exact itinerary, sightseeing spots, and season.
-              </p>
-            </div>
-          </div>
-        )}
 
         <ul className="mt-4 space-y-2.5 text-xs text-muted-foreground">
           <li className="flex gap-2 text-foreground font-medium">
-            <Sparkles className="size-3.5 shrink-0 text-gold" />
-            Driver allowance included in fare
+            <Wallet className="size-3.5 shrink-0 text-gold" />
+            No advance payment required
           </li>
           <li className="flex gap-2 text-foreground font-medium">
-            <Info className="size-3.5 shrink-0 text-gold" />
-            Toll, parking & state permits are NOT included (billed at actuals as they vary state to state)
+            <ShieldCheck className="size-3.5 shrink-0 text-gold" />
+            Experienced, hill-trained drivers
           </li>
           <li className="flex gap-2 text-foreground font-medium">
-            <CheckCircle2 className="size-3.5 shrink-0 text-gold" />
-            Final fare confirmed before trip start — no hidden charges
+            <Clock className="size-3.5 shrink-0 text-gold" />
+            Available 24 hours, 7 days a week
           </li>
         </ul>
 

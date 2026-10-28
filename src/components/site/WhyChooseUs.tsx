@@ -1,4 +1,4 @@
-import { Armchair, BadgeIndianRupee, CarFront, Headset, Route, UserCheck } from "lucide-react";
+import { Armchair, CarFront, Headset, MapPinned, Route, UserCheck } from "lucide-react";
 import { Reveal } from "./Reveal";
 
 const items = [
@@ -13,9 +13,9 @@ const items = [
     text: "Experienced drivers who prioritize safety and comfort.",
   },
   {
-    icon: BadgeIndianRupee,
-    title: "Transparent Pricing",
-    text: "No hidden surprises. Clear and understandable pricing.",
+    icon: MapPinned,
+    title: "Local Expertise",
+    text: "An Ooty-based team that knows every viewpoint and hairpin in the Nilgiris.",
   },
   {
     icon: Headset,

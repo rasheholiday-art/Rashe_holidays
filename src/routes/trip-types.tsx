@@ -9,7 +9,7 @@ import { pageHead } from "@/lib/seo";
 
 const title = "One Way & Round Trip Taxi from Ooty | Rashe Holidays";
 const description =
-  "Understand the difference between one-way and round-trip cab bookings in Ooty, how fares are calculated, and which option suits your journey.";
+  "Understand the difference between one-way and round-trip cab bookings in Ooty, what each includes, and which option suits your journey.";
 
 export const Route = createFileRoute("/trip-types")({
   head: () => pageHead({ title, description, path: "/trip-types" }),
@@ -18,13 +18,7 @@ export const Route = createFileRoute("/trip-types")({
 
 const compare = [
   { label: "Journey", one: "Pickup to destination only", round: "Destination and back to pickup" },
-  {
-    label: "Billing",
-    one: "Per km, one direction (min 100 km)",
-    round: "Per km round distance, min 250 km/day",
-  },
   { label: "Duration", one: "Single day", round: "One or multiple days" },
-  { label: "Driver allowance", one: "Charged once", round: "Charged per day" },
   {
     label: "Best for",
     one: "Airport drops, relocations",
@@ -39,7 +33,7 @@ function TripTypes() {
         eyebrow="Trip Types"
         title="One way or"
         accent="round trip?"
-        description="Two straightforward ways to travel with us. Pick the one that matches your plan — both include driver, fuel and a fixed per-kilometre rate."
+        description="Two straightforward ways to travel with us. Pick the one that matches your plan — both come with an experienced hill-road driver."
       >
         <Button asChild variant="gold" size="lg">
           <Link to="/booking">

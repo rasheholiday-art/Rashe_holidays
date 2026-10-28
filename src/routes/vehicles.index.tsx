@@ -2,18 +2,16 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { PageHero } from "@/components/site/PageHero";
-import { SectionHeading } from "@/components/site/SectionHeading";
 import { VehicleCard } from "@/components/site/VehicleCard";
 import { Reveal } from "@/components/site/Reveal";
-import { PricingTable } from "@/components/site/PricingTable";
 import { vehiclesSearchSchema } from "@/lib/booking-search";
 import { categories, vehicles } from "@/data/site";
 import { cn } from "@/lib/utils";
 import { pageHead } from "@/lib/seo";
 
-const title = "Ooty Cab & Tempo Traveller Rental — Our Fleet | Rashe Holidays";
+const title = "Ooty Cab & Traveller Rental — Our Fleet | Rashe Holidays";
 const description =
-  "Compare our Ooty fleet: sedan (4), Innova Crysta and HyCross (7), Tavera (9), Tempo Traveller (12) and Urbania (16). Per-km and day-rental rates with driver.";
+  "Compare our Ooty fleet: sedan (4), Innova Crysta and HyCross (7), Tavera (9), Traveller (12) and Urbania (16). Every vehicle comes with a hill-trained driver.";
 
 export const Route = createFileRoute("/vehicles/")({
   validateSearch: vehiclesSearchSchema,
@@ -74,18 +72,7 @@ function VehiclesPage() {
               </Reveal>
             ))}
           </div>
-        </div>
-      </section>
 
-      <section className="bg-secondary/50 py-20 sm:py-28">
-        <div className="container-x">
-          <SectionHeading
-            align="center"
-            eyebrow="Pricing"
-            title="Rates for every"
-            accent="category"
-          />
-          <PricingTable />
           <div className="mt-12 text-center">
             <Button asChild variant="gold" size="lg">
               <Link to="/booking">
@@ -95,6 +82,7 @@ function VehiclesPage() {
           </div>
         </div>
       </section>
+
     </>
   );
 }

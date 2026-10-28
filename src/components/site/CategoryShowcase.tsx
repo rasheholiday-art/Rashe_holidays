@@ -5,7 +5,6 @@ import { categories, vehiclesByCategory, type CategoryId } from "@/data/site";
 import { cn } from "@/lib/utils";
 import { Reveal } from "./Reveal";
 import { AvailabilityDot } from "./AvailabilityDot";
-import { Stars } from "./Stars";
 
 const order: CategoryId[] = ["7-seater", "4-seater", "9-seater", "12-seater", "16-seater"];
 
@@ -69,13 +68,9 @@ export function CategoryShowcase() {
               <div className={cn("flex flex-col p-7 sm:p-10 lg:p-12", flip && "lg:order-1")}>
                 <div className="flex items-center gap-3">
                   <AvailabilityDot available />
-                  <span className="text-xs text-muted-foreground">
-                    <Stars rating={hero.rating} size="size-3" className="mr-1 align-middle" />
-                    {hero.rating} ({hero.reviews})
-                  </span>
                   {hasMultiple && (
                     <span className="text-xs text-muted-foreground">
-                      · {list.length} models available
+                      {list.length} models available
                     </span>
                   )}
                 </div>

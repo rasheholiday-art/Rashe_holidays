@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Phone } from "lucide-react";
 import aboutImg from "@/assets/about-ooty.jpg";
 import { Button } from "@/components/ui/button";
 import { PageHero } from "@/components/site/PageHero";
@@ -26,8 +26,8 @@ const values = [
     d: "We live in Ooty. Our drivers know every hairpin, viewpoint and shortcut in the Nilgiris — and when the fog rolls in.",
   },
   {
-    t: "Honest pricing",
-    d: "Per-kilometre rates shared upfront, tolls and permits itemised at actuals. No surge, no surprise additions after the trip.",
+    t: "Clear communication",
+    d: "Your route, vehicle and timings are confirmed before the trip, with updates on call or WhatsApp along the way.",
   },
   {
     t: "Cared-for vehicles",
@@ -77,6 +77,32 @@ function AboutPage() {
                 <p className="mt-1 text-sm text-muted-foreground">{s.label}</p>
               </div>
             ))}
+          </Reveal>
+        </div>
+      </section>
+
+      <section className="pb-20 sm:pb-28">
+        <div className="container-x">
+          <Reveal className="flex flex-col gap-6 rounded-3xl border border-border bg-card p-7 shadow-card sm:flex-row sm:items-center sm:justify-between sm:p-9">
+            <div className="flex items-center gap-5">
+              <span className="grid size-16 shrink-0 place-items-center rounded-full bg-ink text-lg font-bold text-ink-foreground">
+                {company.owner.initials}
+              </span>
+              <div>
+                <p className="eyebrow">Meet the Owner</p>
+                <h2 className="mt-2 text-2xl font-semibold tracking-tight sm:text-3xl">
+                  {company.owner.name}
+                </h2>
+                <p className="mt-0.5 text-sm text-muted-foreground">
+                  {company.owner.role}, {company.name}
+                </p>
+              </div>
+            </div>
+            <Button asChild variant="gold" size="lg" className="self-start sm:self-auto">
+              <a href={company.phone2Href}>
+                <Phone /> {company.phone2}
+              </a>
+            </Button>
           </Reveal>
         </div>
       </section>
